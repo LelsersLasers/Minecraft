@@ -67,9 +67,16 @@ impl CameraController {
             pitch_sin,
         ).normalized()
     }
-    // fn calc_right(&self) -> Vector3 {
-    //     todo!()
-    // }
+    fn calc_right(&self) -> Vector3 {
+        let (yaw_sin, yaw_cos) = (self.yaw - std::f32::consts::PI / 2.0).sin_cos();
+        let (pitch_sin, pitch_cos) = self.pitch.sin_cos();
+
+        Vector3::new(
+            yaw_cos * pitch_cos,
+            yaw_sin * pitch_cos,
+            pitch_sin,
+        ).normalized()
+    }
     fn update(&mut self, rl: &mut RaylibHandle) {
         let mouse_position = rl.get_mouse_position();
 
@@ -128,6 +135,14 @@ fn main() {
         }
         if rl.is_key_down(KeyboardKey::KEY_S) {
             let dir = camera_controller.calc_forward();
+            camera_controller.move_by(-dir * 0.1);
+        }
+        if rl.is_key_down(KeyboardKey::KEY_D) {
+            let dir = camera_controller.calc_right();
+            camera_controller.move_by(dir * 0.1);
+        }
+        if rl.is_key_down(KeyboardKey::KEY_A) {
+            let dir = camera_controller.calc_right();
             camera_controller.move_by(-dir * 0.1);
         }
 
