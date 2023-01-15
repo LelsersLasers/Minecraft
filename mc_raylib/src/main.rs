@@ -53,15 +53,12 @@ fn main() {
         60.0,                        // fov in degrees
     ));
 
-
     let mut chunk = Chunk::new(Vector3::zero());
     chunk.generate_blocks();
     chunk.generate_triangles();
 
-
     let mut last_time = instant::now();
     let mut delta_time = 1.0 / 60.0;
-
 
     while !rl.window_should_close() {
         camera_controller.update(&mut rl);
@@ -122,6 +119,7 @@ fn main() {
                 Color::PINK,
             );
 
+            // block triangles
             let mut triangles = Vec::new();
             triangles.extend(chunk.triangles.iter().cloned());
             if faces {
@@ -134,10 +132,15 @@ fn main() {
                     );
                 }
             }
-            if wire_frame { // note: doesn't show backface culling
+            if wire_frame {
+                // note: doesn't show backface culling
                 for triangle in triangles.iter() {
                     for i in 0..3 {
-                        rm3.draw_line_3D(triangle.vertices[i], triangle.vertices[(i + 1) % 3], Color::BLACK);
+                        rm3.draw_line_3D(
+                            triangle.vertices[i],
+                            triangle.vertices[(i + 1) % 3],
+                            Color::BLACK,
+                        );
                     }
                 }
             }
