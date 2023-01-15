@@ -2,13 +2,16 @@
 use raylib::prelude::*;
 
 mod dir;
-use crate::dir::Dir;
+// use crate::dir::Dir;
 
 mod block_type;
 // use crate::block_type::BlockType;
 
 mod block;
 // use crate::block::Block;
+
+mod triangle;
+// use crate::triangle::Triangle;
 
 mod chunk;
 use crate::chunk::Chunk;
@@ -47,22 +50,16 @@ fn main() {
         60.0,                        // fov in degrees
     ));
 
-    // let mut blocks: Vec<Block> = Vec::new();
-    // // let mut rng = rand::thread_rng();
-    // // for x in -10..10 {
-    // //     for y in -10..10 {
-    // //         let block = Block::new(BlockType::Dirt);
-    // //         blocks.push(block);
-    // //     }
-    // // }
-    // blocks.push(Block::new(BlockType::Grass));
 
     let mut chunk = Chunk::new(Vector3::zero());
-    chunk.generate();
+    chunk.generate_blocks();
+    chunk.generate_triangles();
+
 
     let mut last_time = instant::now();
     let mut delta_time = 1.0 / 60.0;
 
+    
     while !rl.window_should_close() {
         camera_controller.update(&mut rl);
 
@@ -103,6 +100,7 @@ fn main() {
         {
             let mut rm3 = rdh.begin_mode3D(camera_controller.camera);
 
+            // chunk outline
             rm3.draw_cube_wires(
                 chunk.position + Vector3::one() * (mn::CHUNK_SIZE as f32 / 2.0), // idk why this is "+"
                 mn::CHUNK_SIZE as f32,
@@ -111,169 +109,20 @@ fn main() {
                 Color::PINK,
             );
 
-            for x in 0..mn::CHUNK_SIZE {
-                for y in 0..mn::CHUNK_SIZE {
-                    for z in 0..mn::CHUNK_SIZE {
-                        let pos = chunk.position + Vector3::new(x as f32, y as f32, z as f32);
-
-                        let block = chunk.get_block_at(x, y, z);
-                        if (block.get_transparent)() {
-                            continue;
-                        }
-
-                        for dir in Dir::dirs() {
-                            let (dir_x, dir_y, dir_z) = dir.get_tuple();
-
-                            let neighbor_idx =
-                                (x as i32 + dir_x, y as i32 + dir_y, z as i32 + dir_z);
-
-                            // not in chunk -> skip (TODO: check in neighbor chunks)
-                            if neighbor_idx.0 < 0
-                                || neighbor_idx.0 >= mn::CHUNK_SIZE as i32
-                                || neighbor_idx.1 < 0
-                                || neighbor_idx.1 >= mn::CHUNK_SIZE as i32
-                                || neighbor_idx.2 < 0
-                                || neighbor_idx.2 >= mn::CHUNK_SIZE as i32
-                            {
-                                continue;
-                            }
-
-                            let neighbor = chunk.get_block_at(
-                                neighbor_idx.0 as usize,
-                                neighbor_idx.1 as usize,
-                                neighbor_idx.2 as usize,
-                            );
-
-                            let neighbor_transparent = (neighbor.get_transparent)();
-
-                            if !neighbor_transparent {
-                                continue;
-                            }
-
-                            // TODO: emit_face
-                            match dir {
-                                Dir::Top => {
-                                    rm3.draw_triangle3D(
-                                        pos + Vector3::new(0.0, 0.0, 1.0),
-                                        pos + Vector3::new(1.0, 0.0, 1.0),
-                                        pos + Vector3::new(0.0, 1.0, 1.0),
-                                        (block.get_color)(),
-                                    );
-                                    rm3.draw_triangle3D(
-                                        pos + Vector3::new(1.0, 0.0, 1.0),
-                                        pos + Vector3::new(1.0, 1.0, 1.0),
-                                        pos + Vector3::new(0.0, 1.0, 1.0),
-                                        (block.get_color)(),
-                                    );
-                                }
-                                Dir::Bottom => {
-                                    rm3.draw_triangle3D(
-                                        pos + Vector3::new(0.0, 0.0, 0.0),
-                                        pos + Vector3::new(0.0, 1.0, 0.0),
-                                        pos + Vector3::new(1.0, 0.0, 0.0),
-                                        (block.get_color)(),
-                                    );
-                                    rm3.draw_triangle3D(
-                                        pos + Vector3::new(1.0, 0.0, 0.0),
-                                        pos + Vector3::new(0.0, 1.0, 0.0),
-                                        pos + Vector3::new(1.0, 1.0, 0.0),
-                                        (block.get_color)(),
-                                    );
-                                }
-                                Dir::Right => {
-                                    rm3.draw_triangle3D(
-                                        pos + Vector3::new(0.0, 1.0, 0.0),
-                                        pos + Vector3::new(0.0, 1.0, 1.0),
-                                        pos + Vector3::new(1.0, 1.0, 0.0),
-                                        (block.get_color)(),
-                                    );
-                                    rm3.draw_triangle3D(
-                                        pos + Vector3::new(1.0, 1.0, 0.0),
-                                        pos + Vector3::new(0.0, 1.0, 1.0),
-                                        pos + Vector3::new(1.0, 1.0, 1.0),
-                                        (block.get_color)(),
-                                    );
-                                }
-                                Dir::Left => {
-                                    rm3.draw_triangle3D(
-                                        pos + Vector3::new(0.0, 0.0, 0.0),
-                                        pos + Vector3::new(1.0, 0.0, 0.0),
-                                        pos + Vector3::new(0.0, 0.0, 1.0),
-                                        (block.get_color)(),
-                                    );
-                                    rm3.draw_triangle3D(
-                                        pos + Vector3::new(1.0, 0.0, 0.0),
-                                        pos + Vector3::new(1.0, 0.0, 1.0),
-                                        pos + Vector3::new(0.0, 0.0, 1.0),
-                                        (block.get_color)(),
-                                    );
-                                }
-                                Dir::Forward => {
-                                    rm3.draw_triangle3D(
-                                        pos + Vector3::new(1.0, 0.0, 0.0),
-                                        pos + Vector3::new(1.0, 1.0, 0.0),
-                                        pos + Vector3::new(1.0, 0.0, 1.0),
-                                        (block.get_color)(),
-                                    );
-                                    rm3.draw_triangle3D(
-                                        pos + Vector3::new(1.0, 0.0, 1.0),
-                                        pos + Vector3::new(1.0, 1.0, 0.0),
-                                        pos + Vector3::new(1.0, 1.0, 1.0),
-                                        (block.get_color)(),
-                                    );
-                                }
-                                Dir::Backward => {
-                                    rm3.draw_triangle3D(
-                                        pos + Vector3::new(0.0, 0.0, 0.0),
-                                        pos + Vector3::new(0.0, 0.0, 1.0),
-                                        pos + Vector3::new(0.0, 1.0, 0.0),
-                                        (block.get_color)(),
-                                    );
-                                    rm3.draw_triangle3D(
-                                        pos + Vector3::new(0.0, 0.0, 1.0),
-                                        pos + Vector3::new(0.0, 1.0, 1.0),
-                                        pos + Vector3::new(0.0, 1.0, 0.0),
-                                        (block.get_color)(),
-                                    );
-                                }
-                            }
-                        }
-
-                        // let block = chunk.get_block_at(x, y, z);
-                        // if !(block.get_transparent)() {
-                        //     let werid_cube_offset = Vector3::one() * 0.5;
-                        //     // rm3.draw_cube(pos + werid_cube_offset, 1.0, 1.0, 1.0, (block.get_color)());
-                        //     rm3.draw_cube_wires(
-                        //         pos + werid_cube_offset,
-                        //         1.0,
-                        //         1.0,
-                        //         1.0,
-                        //         Color::BLACK,
-                        //     );
-                        //     // rm3.draw_triangle3D(
-                        //     //     pos + Vector3::new(0.0, 0.0, 0.0),
-                        //     //     pos + Vector3::new(1.0, 1.0, 0.0),
-                        //     //     pos + Vector3::new(0.0, 1.0, 0.0),
-                        //     //     (block.get_color)()
-                        //     // );
-                        // }
-                    }
+            let mut triangles = Vec::new();
+            triangles.extend(chunk.triangles.iter().cloned());
+            for triangle in triangles {
+                rm3.draw_triangle3D(
+                    triangle.vertices[0],
+                    triangle.vertices[1],
+                    triangle.vertices[2],
+                    triangle.color,
+                );
+                for i in 0..3 {
+                    rm3.draw_line_3D(triangle.vertices[i], triangle.vertices[(i + 1) % 3], Color::BLACK);
                 }
             }
 
-            // d2.draw_plane(
-            //     Vector3::new(0.0, 0.0, 0.0),
-            //     Vector2::new(32.0, 32.0),
-            //     Color::LIGHTGRAY,
-            // );
-            // d2.draw_cube(Vector3::new(-16.0, 2.5, 0.0), 1.0, 5.0, 32.0, Color::BLUE);
-            // d2.draw_cube(Vector3::new(16.0, 2.5, 0.0), 1.0, 5.0, 32.0, Color::LIME);
-            // d2.draw_cube(Vector3::new(0.0, 2.5, 16.0), 32.0, 5.0, 1.0, Color::GOLD);
-
-            // for column in columns.iter() {
-            //     d2.draw_cube(column.position, 2.0, column.height, 2.0, column.color);
-            //     d2.draw_cube_wires(column.position, 2.0, column.height, 2.0, Color::MAROON);
-            // }
         }
 
         // crosshair

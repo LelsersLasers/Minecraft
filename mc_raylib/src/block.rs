@@ -2,6 +2,7 @@ use raylib::prelude::*;
 
 use crate::block_type::BlockType;
 
+#[derive(Clone, Copy)]
 pub struct Block {
     pub block_type: BlockType,
     pub get_color: fn() -> Color,
