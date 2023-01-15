@@ -4,23 +4,44 @@ use raylib::prelude::*;
 const WINDOW_WIDTH: i32 = 1280;
 const WINDOW_HEIGHT: i32 = 720;
 
-struct Block {
-    position: Vector3,
-    color: Color,
+#[derive(Clone, Copy)]
+enum BlockType {
+    Grass,
+    Dirt,
+    Stone,
+    Bedrock,
 }
-impl Block {
-    fn new(position: Vector3, color: Color) -> Self {
-        Self { position, color }
+impl BlockType {
+    fn get_color_fn(&self) -> fn() -> Color {
+        match self {
+            BlockType::Grass => || Color::GREEN,
+            BlockType::Dirt => || Color::BROWN,
+            BlockType::Stone => || Color::DARKGRAY,
+            BlockType::Bedrock => || Color::BLACK,
+        }
     }
 }
-// impl Default for Block {
-//     fn default() -> Self {
-//         Self {
-//             position: Vector3::new(0.0, 0.0, 0.0),
-//             color: Color::RED,
-//         }
-//     }
-// }
+
+struct Block {
+    block_type: BlockType,
+    get_color: fn() -> Color,
+}
+impl Block {
+    fn new(block_type: BlockType) -> Self {
+        Self {
+            block_type,
+            get_color: block_type.get_color_fn(),
+        }
+    }
+}
+impl Default for Block {
+    fn default() -> Self {
+        Self {
+            block_type: BlockType::Grass,
+            get_color: BlockType::Grass.get_color_fn()
+        }
+    }
+}
 
 // struct Player {
 //     position: Vector3,
@@ -109,16 +130,14 @@ fn main() {
     ));
 
     let mut blocks: Vec<Block> = Vec::new();
-    let mut rng = rand::thread_rng();
-    for x in -10..10 {
-        for y in -10..10 {
-            let block = Block::new(
-                Vector3::new(x as f32, y as f32, rng.gen_range(0.0..10.0)),
-                Color::RED,
-            );
-            blocks.push(block);
-        }
-    }
+    // let mut rng = rand::thread_rng();
+    // for x in -10..10 {
+    //     for y in -10..10 {
+    //         let block = Block::new(BlockType::Dirt);
+    //         blocks.push(block);
+    //     }
+    // }
+    blocks.push(Block::new(BlockType::Grass));
 
     let mut last_time = instant::now();
     let mut delta_time = 1.0 / 60.0;
@@ -165,8 +184,15 @@ fn main() {
             rm3.draw_cube(Vector3::new(2.0, 0.0, 0.0), 1.0, 1.0, 1.0, Color::RED);
 
             for block in blocks.iter() {
-                rm3.draw_cube(block.position, 1.0, 1.0, 1.0, block.color);
-                rm3.draw_cube_wires(block.position, 1.0, 1.0, 1.0, Color::BLACK);
+                rm3.draw_cube(
+                    Vector3::zero(),
+                    1.0,
+                    1.0,
+                    1.0,
+                    (block.get_color)()
+                );
+
+                // rm3.draw_cube_wires(block.position, 1.0, 1.0, 1.0, Color::BLACK);
             }
 
             // d2.draw_plane(
