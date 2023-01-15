@@ -17,8 +17,8 @@ impl CameraController {
             camera,
 
             mouse_position: Vector2::new(
-                mn::WINDOW_WIDTH as f32 / 2.0,
-                mn::WINDOW_HEIGHT as f32 / 2.0,
+                mn::WINDOW_WIDTH_START as f32 / 2.0,
+                mn::WINDOW_HEIGHT_START as f32 / 2.0,
             ),
             mouse_sensitivity: mn::MOUSE_SENSITIVITY,
 

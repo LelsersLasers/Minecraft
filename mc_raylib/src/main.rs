@@ -34,7 +34,7 @@ use crate::consts as mn; // mn = magic numbers
 
 fn main() {
     let (mut rl, thread) = raylib::init()
-        .size(mn::WINDOW_WIDTH, mn::WINDOW_HEIGHT)
+        .size(mn::WINDOW_WIDTH_START, mn::WINDOW_HEIGHT_START)
         .title("Minecraft ig")
         .build();
 
@@ -59,7 +59,7 @@ fn main() {
     let mut last_time = instant::now();
     let mut delta_time = 1.0 / 60.0;
 
-    
+
     while !rl.window_should_close() {
         camera_controller.update(&mut rl);
 
@@ -92,6 +92,10 @@ fn main() {
                 rl.disable_cursor();
             }
         }
+
+        // must do immutable borrow of rl before mutable borrow (when creating rdh)
+        let window_width = rl.get_screen_width();
+        let window_height = rl.get_screen_height();
 
         let mut rdh = rl.begin_drawing(&thread);
 
@@ -127,17 +131,17 @@ fn main() {
 
         // crosshair
         rdh.draw_line(
-            mn::WINDOW_WIDTH as i32 / 2 - 10,
-            mn::WINDOW_HEIGHT as i32 / 2,
-            mn::WINDOW_WIDTH as i32 / 2 + 10,
-            mn::WINDOW_HEIGHT as i32 / 2,
+            window_width as i32 / 2 - 10,
+            window_height as i32 / 2,
+            window_width as i32 / 2 + 10,
+            window_height as i32 / 2,
             Color::BLACK,
         );
         rdh.draw_line(
-            mn::WINDOW_WIDTH as i32 / 2,
-            mn::WINDOW_HEIGHT as i32 / 2 - 10,
-            mn::WINDOW_WIDTH as i32 / 2,
-            mn::WINDOW_HEIGHT as i32 / 2 + 10,
+            window_width as i32 / 2,
+            window_height as i32 / 2 - 10,
+            window_width as i32 / 2,
+            window_height as i32 / 2 + 10,
             Color::BLACK,
         );
 
