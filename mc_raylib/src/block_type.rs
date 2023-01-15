@@ -25,13 +25,13 @@ impl BlockType {
             BlockType::Bedrock => || Color::BLACK,
         }
     }
-    pub fn get_transparent_fn(&self) -> fn() -> bool {
+    pub fn get_transparent(&self) -> bool {
         match self {
-            BlockType::Air => || true,
-            BlockType::Grass => || false,
-            BlockType::Dirt => || false,
-            BlockType::Stone => || false,
-            BlockType::Bedrock => || false,
+            BlockType::Air => true,
+            BlockType::Grass => false,
+            BlockType::Dirt => false,
+            BlockType::Stone => false,
+            BlockType::Bedrock => false,
         }
     }
 }

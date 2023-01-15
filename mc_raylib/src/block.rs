@@ -6,14 +6,14 @@ use crate::block_type::BlockType;
 pub struct Block {
     pub block_type: BlockType,
     pub get_color: fn() -> Color,
-    pub get_transparent: fn() -> bool,
+    pub transparent: bool,
 }
 impl Block {
     pub fn new(block_type: BlockType) -> Self {
         Self {
             block_type,
             get_color: block_type.get_color_fn(),
-            get_transparent: block_type.get_transparent_fn(),
+            transparent: block_type.get_transparent(),
         }
     }
 }
@@ -23,7 +23,7 @@ impl Default for Block {
         Self {
             block_type: default_block_type,
             get_color: default_block_type.get_color_fn(),
-            get_transparent: default_block_type.get_transparent_fn(),
+            transparent: default_block_type.get_transparent(),
         }
     }
 }
