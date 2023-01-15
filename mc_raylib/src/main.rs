@@ -43,6 +43,9 @@ fn main() {
     let mut cursor_enabled = false;
     rl.disable_cursor();
 
+    let mut wire_frame = false;
+    let mut faces = true;
+
     let mut camera_controller = CameraController::new(Camera3D::perspective(
         Vector3::new(0.0, 0.0, 0.0), // Camera position
         Vector3::new(1.0, 0.0, 0.0), // Camera looking at point
@@ -92,6 +95,12 @@ fn main() {
                 rl.disable_cursor();
             }
         }
+        if rl.is_key_pressed(KeyboardKey::KEY_F) {
+            wire_frame = !wire_frame;
+        }
+        if rl.is_key_pressed(KeyboardKey::KEY_G) {
+            faces = !faces;
+        }
 
         // must do immutable borrow of rl before mutable borrow (when creating rdh)
         let window_width = rl.get_screen_width();
@@ -115,18 +124,23 @@ fn main() {
 
             let mut triangles = Vec::new();
             triangles.extend(chunk.triangles.iter().cloned());
-            for triangle in triangles {
-                rm3.draw_triangle3D(
-                    triangle.vertices[0],
-                    triangle.vertices[1],
-                    triangle.vertices[2],
-                    triangle.color,
-                );
-                for i in 0..3 {
-                    rm3.draw_line_3D(triangle.vertices[i], triangle.vertices[(i + 1) % 3], Color::BLACK);
+            if faces {
+                for triangle in triangles.iter() {
+                    rm3.draw_triangle3D(
+                        triangle.vertices[0],
+                        triangle.vertices[1],
+                        triangle.vertices[2],
+                        triangle.color,
+                    );
                 }
             }
-
+            if wire_frame { // note: doesn't show backface culling
+                for triangle in triangles.iter() {
+                    for i in 0..3 {
+                        rm3.draw_line_3D(triangle.vertices[i], triangle.vertices[(i + 1) % 3], Color::BLACK);
+                    }
+                }
+            }
         }
 
         // crosshair
@@ -158,7 +172,7 @@ fn main() {
         let forward_text = format!("- forward: {:?}", camera_controller.calc_forward());
 
         let fps_text = format!("- FPS: {:.0}", 1.0 / delta_time);
-        let delta_text = format!("- Delta: {:.0} ms", delta_time * 1000.0);
+        let delta_text = format!("- Delta: {:.3} ms", delta_time * 1000.0);
 
         rdh.draw_text(&yaw_text, 40, 40, 10, Color::DARKGRAY);
         rdh.draw_text(&pitch_text, 40, 60, 10, Color::DARKGRAY);
