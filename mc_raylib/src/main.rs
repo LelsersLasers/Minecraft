@@ -1,47 +1,17 @@
 use rand::prelude::*;
 use raylib::prelude::*;
 
-const WINDOW_WIDTH: i32 = 1280;
-const WINDOW_HEIGHT: i32 = 720;
+mod block_type;
+use crate::block_type::BlockType;
 
-#[derive(Clone, Copy)]
-enum BlockType {
-    Grass,
-    Dirt,
-    Stone,
-    Bedrock,
-}
-impl BlockType {
-    fn get_color_fn(&self) -> fn() -> Color {
-        match self {
-            BlockType::Grass => || Color::GREEN,
-            BlockType::Dirt => || Color::BROWN,
-            BlockType::Stone => || Color::DARKGRAY,
-            BlockType::Bedrock => || Color::BLACK,
-        }
-    }
-}
+mod block;
+use crate::block::Block;
 
-struct Block {
-    block_type: BlockType,
-    get_color: fn() -> Color,
-}
-impl Block {
-    fn new(block_type: BlockType) -> Self {
-        Self {
-            block_type,
-            get_color: block_type.get_color_fn(),
-        }
-    }
-}
-impl Default for Block {
-    fn default() -> Self {
-        Self {
-            block_type: BlockType::Grass,
-            get_color: BlockType::Grass.get_color_fn()
-        }
-    }
-}
+mod camera_controller;
+use crate::camera_controller::CameraController;
+
+mod consts;
+use crate::consts as mn; // mn = magic numbers
 
 // struct Player {
 //     position: Vector3,
@@ -53,67 +23,9 @@ impl Default for Block {
 //     fn update(&mut self) {}
 // }
 
-struct CameraController {
-    camera: Camera3D,
-
-    mouse_position: Vector2,
-    mouse_sensitivity: f32,
-
-    yaw: f32,   // left/right
-    pitch: f32, // up/down
-}
-impl CameraController {
-    fn new(camera: Camera3D) -> Self {
-        Self {
-            camera,
-
-            mouse_position: Vector2::new(WINDOW_WIDTH as f32 / 2.0, WINDOW_HEIGHT as f32 / 2.0),
-            mouse_sensitivity: 1.0 / 400.0,
-
-            yaw: 0.0,
-            pitch: 0.0,
-        }
-    }
-    fn move_by(&mut self, vec: Vector3) {
-        self.camera.position += vec;
-        self.camera.target += vec;
-    }
-    fn calc_forward(&self) -> Vector3 {
-        let (yaw_sin, yaw_cos) = self.yaw.sin_cos();
-        let (pitch_sin, pitch_cos) = self.pitch.sin_cos();
-
-        Vector3::new(yaw_cos * pitch_cos, yaw_sin * pitch_cos, pitch_sin).normalized()
-    }
-    fn calc_right(&self) -> Vector3 {
-        // TODO: maybe just use x/y of yaw instead?
-        let (yaw_sin, yaw_cos) = (self.yaw - std::f32::consts::PI / 2.0).sin_cos();
-        let (pitch_sin, pitch_cos) = self.pitch.sin_cos();
-
-        Vector3::new(yaw_cos * pitch_cos, yaw_sin * pitch_cos, pitch_sin).normalized()
-    }
-    fn update(&mut self, rl: &mut RaylibHandle) {
-        let mouse_position = rl.get_mouse_position();
-
-        let mouse_delta = self.mouse_position - mouse_position;
-        self.mouse_position = mouse_position;
-
-        self.yaw += mouse_delta.x * self.mouse_sensitivity;
-        self.pitch += mouse_delta.y * self.mouse_sensitivity;
-
-        if self.pitch >= std::f32::consts::PI / 2.0 {
-            self.pitch = std::f32::consts::PI / 2.0 - 0.001;
-        }
-        if self.pitch <= -std::f32::consts::PI / 2.0 {
-            self.pitch = -std::f32::consts::PI / 2.0 + 0.001;
-        }
-
-        self.camera.target = self.camera.position + self.calc_forward();
-    }
-}
-
 fn main() {
     let (mut rl, thread) = raylib::init()
-        .size(WINDOW_WIDTH, WINDOW_HEIGHT)
+        .size(mn::WINDOW_WIDTH, mn::WINDOW_HEIGHT)
         .title("Minecraft ig")
         .build();
 
@@ -184,13 +96,7 @@ fn main() {
             rm3.draw_cube(Vector3::new(2.0, 0.0, 0.0), 1.0, 1.0, 1.0, Color::RED);
 
             for block in blocks.iter() {
-                rm3.draw_cube(
-                    Vector3::zero(),
-                    1.0,
-                    1.0,
-                    1.0,
-                    (block.get_color)()
-                );
+                rm3.draw_cube(Vector3::zero(), 1.0, 1.0, 1.0, (block.get_color)());
 
                 // rm3.draw_cube_wires(block.position, 1.0, 1.0, 1.0, Color::BLACK);
             }
@@ -212,17 +118,17 @@ fn main() {
 
         // crosshair
         rdh.draw_line(
-            WINDOW_WIDTH as i32 / 2 - 10,
-            WINDOW_HEIGHT as i32 / 2,
-            WINDOW_WIDTH as i32 / 2 + 10,
-            WINDOW_HEIGHT as i32 / 2,
+            mn::WINDOW_WIDTH as i32 / 2 - 10,
+            mn::WINDOW_HEIGHT as i32 / 2,
+            mn::WINDOW_WIDTH as i32 / 2 + 10,
+            mn::WINDOW_HEIGHT as i32 / 2,
             Color::BLACK,
         );
         rdh.draw_line(
-            WINDOW_WIDTH as i32 / 2,
-            WINDOW_HEIGHT as i32 / 2 - 10,
-            WINDOW_WIDTH as i32 / 2,
-            WINDOW_HEIGHT as i32 / 2 + 10,
+            mn::WINDOW_WIDTH as i32 / 2,
+            mn::WINDOW_HEIGHT as i32 / 2 - 10,
+            mn::WINDOW_WIDTH as i32 / 2,
+            mn::WINDOW_HEIGHT as i32 / 2 + 10,
             Color::BLACK,
         );
 
