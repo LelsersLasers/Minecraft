@@ -60,7 +60,7 @@ impl Chunk {
                     let pos = self.position + Vector3::new(x as f32, y as f32, z as f32);
 
                     let block = self.get_block_at(x, y, z);
-                    if (block.get_transparent)() {
+                    if block.transparent {
                         continue;
                     }
 
@@ -87,7 +87,7 @@ impl Chunk {
                             neighbor_idx.2 as usize,
                         );
 
-                        let neighbor_transparent = (neighbor.get_transparent)();
+                        let neighbor_transparent = neighbor.transparent;
 
                         if !neighbor_transparent {
                             continue;
