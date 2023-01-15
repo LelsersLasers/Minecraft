@@ -38,14 +38,14 @@ struct CameraController {
     mouse_position: Vector2,
     mouse_sensitivity: f32,
 
-    yaw: f32,       // left/right
-    pitch: f32,     // up/down
+    yaw: f32,   // left/right
+    pitch: f32, // up/down
 }
 impl CameraController {
     fn new(camera: Camera3D) -> Self {
         Self {
             camera,
-            
+
             mouse_position: Vector2::new(WINDOW_WIDTH as f32 / 2.0, WINDOW_HEIGHT as f32 / 2.0),
             mouse_sensitivity: 1.0 / 400.0,
 
@@ -61,21 +61,14 @@ impl CameraController {
         let (yaw_sin, yaw_cos) = self.yaw.sin_cos();
         let (pitch_sin, pitch_cos) = self.pitch.sin_cos();
 
-        Vector3::new(
-            yaw_cos * pitch_cos,
-            yaw_sin * pitch_cos,
-            pitch_sin,
-        ).normalized()
+        Vector3::new(yaw_cos * pitch_cos, yaw_sin * pitch_cos, pitch_sin).normalized()
     }
     fn calc_right(&self) -> Vector3 {
+        // TODO: maybe just use x/y of yaw instead?
         let (yaw_sin, yaw_cos) = (self.yaw - std::f32::consts::PI / 2.0).sin_cos();
         let (pitch_sin, pitch_cos) = self.pitch.sin_cos();
 
-        Vector3::new(
-            yaw_cos * pitch_cos,
-            yaw_sin * pitch_cos,
-            pitch_sin,
-        ).normalized()
+        Vector3::new(yaw_cos * pitch_cos, yaw_sin * pitch_cos, pitch_sin).normalized()
     }
     fn update(&mut self, rl: &mut RaylibHandle) {
         let mouse_position = rl.get_mouse_position();
@@ -103,21 +96,17 @@ fn main() {
         .title("Minecraft ig")
         .build();
 
-    let ws = WindowState::default().set_window_resizable(true);
-    rl.set_window_state(ws);
-
-    rl.set_target_fps(60);
+    rl.set_window_state(WindowState::default().set_window_resizable(true));
 
     let mut cursor_enabled = false;
     rl.disable_cursor();
 
     let mut camera_controller = CameraController::new(Camera3D::perspective(
-        Vector3::new(0.0, 0.0, 0.0),     // Camera position
-        Vector3::new(1.0, 0.0, 0.0),        // Camera looking at point
-        Vector3::new(0.0, 0.0, 1.0),        // Z is vertical axis
-        60.0,                               // fov in degrees
+        Vector3::new(0.0, 0.0, 0.0), // Camera position
+        Vector3::new(1.0, 0.0, 0.0), // Camera looking at point
+        Vector3::new(0.0, 0.0, 1.0), // Z is vertical axis
+        60.0,                        // fov in degrees
     ));
-
 
     let mut blocks: Vec<Block> = Vec::new();
     let mut rng = rand::thread_rng();
@@ -131,26 +120,31 @@ fn main() {
         }
     }
 
-    while !rl.window_should_close() {
-        // rl.update_camera(&mut camera);
+    let mut last_time = instant::now();
+    let mut delta_time = 1.0 / 60.0;
 
+    while !rl.window_should_close() {
         camera_controller.update(&mut rl);
 
-        if rl.is_key_down(KeyboardKey::KEY_W) {
-            let dir = camera_controller.calc_forward();
-            camera_controller.move_by(dir * 0.1);
-        }
-        if rl.is_key_down(KeyboardKey::KEY_S) {
-            let dir = camera_controller.calc_forward();
-            camera_controller.move_by(-dir * 0.1);
-        }
-        if rl.is_key_down(KeyboardKey::KEY_D) {
-            let dir = camera_controller.calc_right();
-            camera_controller.move_by(dir * 0.1);
-        }
-        if rl.is_key_down(KeyboardKey::KEY_A) {
-            let dir = camera_controller.calc_right();
-            camera_controller.move_by(-dir * 0.1);
+        {
+            let mut move_vec = Vector3::zero();
+
+            if rl.is_key_down(KeyboardKey::KEY_W) {
+                move_vec += camera_controller.calc_forward();
+            }
+            if rl.is_key_down(KeyboardKey::KEY_S) {
+                move_vec -= camera_controller.calc_forward();
+            }
+            if rl.is_key_down(KeyboardKey::KEY_D) {
+                move_vec += camera_controller.calc_right();
+            }
+            if rl.is_key_down(KeyboardKey::KEY_A) {
+                move_vec -= camera_controller.calc_right();
+            }
+
+            if move_vec != Vector3::zero() {
+                camera_controller.move_by(move_vec * delta_time * 10.0);
+            }
         }
 
         if rl.is_key_pressed(KeyboardKey::KEY_SPACE) {
@@ -168,29 +162,11 @@ fn main() {
 
         {
             let mut rm3 = rdh.begin_mode3D(camera_controller.camera);
-            rm3.draw_cube(
-                Vector3::new(2.0, 0.0, 0.0),
-                1.0,
-                1.0,
-                1.0,
-                Color::RED,
-            );
+            rm3.draw_cube(Vector3::new(2.0, 0.0, 0.0), 1.0, 1.0, 1.0, Color::RED);
 
             for block in blocks.iter() {
-                rm3.draw_cube(
-                    block.position,
-                    1.0,
-                    1.0,
-                    1.0,
-                    block.color,
-                );
-                rm3.draw_cube_wires(
-                    block.position,
-                    1.0,
-                    1.0,
-                    1.0,
-                    Color::BLACK,
-                );
+                rm3.draw_cube(block.position, 1.0, 1.0, 1.0, block.color);
+                rm3.draw_cube_wires(block.position, 1.0, 1.0, 1.0, Color::BLACK);
             }
 
             // d2.draw_plane(
@@ -224,20 +200,21 @@ fn main() {
             Color::BLACK,
         );
 
-        rdh.draw_rectangle(10, 10, 220, 70, Color::SKYBLUE);
-        rdh.draw_rectangle_lines(10, 10, 220, 70, Color::BLUE);
-        rdh.draw_text(
-            "Camera info:",
-            20,
-            20,
-            10,
-            Color::BLACK,
-        );
+        rdh.draw_rectangle(10, 10, 220, 90, Color::SKYBLUE);
+        rdh.draw_rectangle_lines(10, 10, 220, 90, Color::BLUE);
+        rdh.draw_text("Info:", 20, 20, 10, Color::BLACK);
 
-        let pitch_text = format!("- pitch: {}", camera_controller.pitch);
         let yaw_text = format!("- yaw: {}", camera_controller.yaw);
+        let pitch_text = format!("- pitch: {}", camera_controller.pitch);
 
-        rdh.draw_text(&pitch_text, 40, 40, 10, Color::DARKGRAY);
-        rdh.draw_text(&yaw_text, 40, 60, 10, Color::DARKGRAY);
+        rdh.draw_text(&yaw_text, 40, 40, 10, Color::DARKGRAY);
+        rdh.draw_text(&pitch_text, 40, 60, 10, Color::DARKGRAY);
+
+        let current_time = instant::now();
+        delta_time = (current_time - last_time) as f32 / 1000.0;
+        last_time = current_time;
+
+        let fps_text = format!("- FPS: {:.0}", 1.0 / delta_time);
+        rdh.draw_text(&fps_text, 40, 80, 10, Color::DARKGRAY);
     }
 }

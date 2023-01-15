@@ -7,4 +7,6 @@ edition = "2021"
 
 [dependencies]
 raylib = "3.7"
+
 rand = "0.8.5"
+instant = "0.1"
