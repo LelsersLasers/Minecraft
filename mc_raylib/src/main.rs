@@ -53,7 +53,7 @@ fn main() {
         60.0,                        // fov in degrees
     ));
 
-    let mut chunk = Chunk::new(Vector3::zero());
+    let mut chunk = Chunk::new((0, 0, 0));
     chunk.generate_blocks();
     chunk.generate_triangles();
 
@@ -112,7 +112,7 @@ fn main() {
 
             // chunk outline
             rm3.draw_cube_wires(
-                chunk.position + Vector3::one() * (mn::CHUNK_SIZE as f32 / 2.0), // idk why this is "+"
+                chunk.get_world_pos() + Vector3::one() * (mn::CHUNK_SIZE as f32 / 2.0), // idk why this is "+"
                 mn::CHUNK_SIZE as f32,
                 mn::CHUNK_SIZE as f32,
                 mn::CHUNK_SIZE as f32,
