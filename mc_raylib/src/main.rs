@@ -141,13 +141,11 @@ fn main() {
                 //         }
                 //     }
                 // }
-            }
 
-            for tringle_set in &world.triangles {
-                tri_count += tringle_set.len();
+                tri_count += chunk.triangles.len();
 
                 if faces {
-                    for triangle in tringle_set {
+                    for triangle in &chunk.triangles {
                         rm3.draw_triangle3D(
                             triangle.vertices[0],
                             triangle.vertices[1],
@@ -158,7 +156,7 @@ fn main() {
                 }
                 if wire_frame {
                     // note: doesn't show backface culling
-                    for triangle in tringle_set {
+                    for triangle in &chunk.triangles {
                         for i in 0..3 {
                             rm3.draw_line_3D(
                                 triangle.vertices[i],

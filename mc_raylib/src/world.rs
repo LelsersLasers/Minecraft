@@ -1,20 +1,16 @@
 use crate::block::Block;
 use crate::block_type::BlockType;
 use crate::chunk::Chunk;
-use crate::triangle::Triangle;
 
 use crate::consts as mn;
 
 pub struct World {
-    // parrallel arrays
     pub chunks: Vec<Chunk>,
-    pub triangles: Vec<Vec<Triangle>>,
 }
 impl World {
     pub fn new() -> Self {
         Self {
             chunks: Vec::with_capacity(mn::WORLD_SIZE * mn::WORLD_SIZE * mn::WORLD_SIZE),
-            triangles: Vec::new(),
         }
     }
     pub fn generate_chunks(&mut self) {
@@ -28,16 +24,13 @@ impl World {
                 }
             }
         }
-        self.triangles = self
-            .chunks
-            .iter()
-            .map(|c| c.generate_triangles(&self))
-            .collect();
     }
     pub fn update_chunk_triangles(&mut self) {
         for i in 0..self.chunks.len() {
             if self.chunks[i].dirty {
-                self.triangles[i] = self.chunks[i].generate_triangles(&self);
+                // Chunk::generate_triangles must not mutate a chunk because barrow checker
+                self.chunks[i].triangles = self.chunks[i].generate_triangles(&self);
+                self.chunks[i].dirty = false;
             }
         }
     }

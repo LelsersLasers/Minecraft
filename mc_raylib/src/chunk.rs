@@ -13,6 +13,7 @@ pub struct Chunk {
     pub blocks: Vec<Block>,
     pub position: (i32, i32, i32), // offset from origin in chunks
 
+    pub triangles: Vec<Triangle>,
     pub dirty: bool, // if true, the chunk needs to be re-rendered
 }
 impl Chunk {
@@ -20,6 +21,7 @@ impl Chunk {
         Self {
             blocks: Vec::with_capacity(mn::CHUNK_SIZE * mn::CHUNK_SIZE * mn::CHUNK_SIZE),
             position,
+            triangles: Vec::new(),
             dirty: true,
         }
     }
@@ -41,8 +43,7 @@ impl Chunk {
         for _x in 0..mn::CHUNK_SIZE {
             for _y in 0..mn::CHUNK_SIZE {
                 for _z in 0..mn::CHUNK_SIZE {
-                    // let block_type = BlockType::get_random_block_type();
-                    let block_type = BlockType::Grass;
+                    let block_type = BlockType::get_random_block_type();
                     let block = Block::new(block_type);
                     self.blocks.push(block);
                 }
@@ -52,7 +53,6 @@ impl Chunk {
     }
     pub fn generate_triangles(&self, world: &World) -> Vec<Triangle> {
         println!("Generating triangles: {:?}", self.position);
-        // self.triangles.clear();
 
         let mut triangles = Vec::new();
 
@@ -68,11 +68,13 @@ impl Chunk {
 
                     // for ((dir_x, dir_y, dir_z), triangle_offset) in
                     //     Dir::tuples().iter().zip(Dir::triangle_offsets())
-                    for ((dir, (dir_x, dir_y, dir_z)), triangle_offset) in Dir::dirs().iter().zip(Dir::tuples()).zip(Dir::triangle_offsets())
+                    for ((dir, (dir_x, dir_y, dir_z)), triangle_offset) in Dir::dirs()
+                        .iter()
+                        .zip(Dir::tuples())
+                        .zip(Dir::triangle_offsets())
                     {
                         let neighbor_idx = (x as i32 + dir_x, y as i32 + dir_y, z as i32 + dir_z);
 
-                        // not in chunk -> skip (TODO: check in neighbor chunks)
                         let neighbor = if Chunk::in_bounds(neighbor_idx) {
                             self.get_block_at(
                                 neighbor_idx.0 as usize,
@@ -80,8 +82,6 @@ impl Chunk {
                                 neighbor_idx.2 as usize,
                             )
                         } else {
-                            // TODO!
-                            // Block::new(BlockType::Air)
                             world.get_block_at(
                                 (
                                     self.position.0 as i32 + dir_x,
@@ -101,12 +101,6 @@ impl Chunk {
                         }
 
                         for to in triangle_offset {
-                            // self.triangles.push(Triangle::new(
-                            //     pos + mn::CUBE_VERTICES[to[0]],
-                            //     pos + mn::CUBE_VERTICES[to[1]],
-                            //     pos + mn::CUBE_VERTICES[to[2]],
-                            //     (block.get_color)(),
-                            // ));
                             triangles.push(Triangle::new(
                                 pos + mn::CUBE_VERTICES[to[0]],
                                 pos + mn::CUBE_VERTICES[to[1]],
@@ -118,7 +112,6 @@ impl Chunk {
                 }
             }
         }
-        // self.dirty = false;
         triangles
     }
     pub fn in_bounds(idx: (i32, i32, i32)) -> bool {
