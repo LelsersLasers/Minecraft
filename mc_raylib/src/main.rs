@@ -87,6 +87,21 @@ fn main() {
             }
         }
 
+        {
+            if rl.is_key_down(KeyboardKey::KEY_UP) {
+                camera_controller.pitch += delta_time * PI / 2.0;
+            }
+            if rl.is_key_down(KeyboardKey::KEY_DOWN) {
+                camera_controller.pitch -= delta_time * PI / 2.0;
+            }
+            if rl.is_key_down(KeyboardKey::KEY_RIGHT) {
+                camera_controller.yaw -= delta_time * PI / 2.0;
+            }
+            if rl.is_key_down(KeyboardKey::KEY_LEFT) {
+                camera_controller.yaw += delta_time * PI / 2.0;
+            }
+        }
+
         if rl.is_key_pressed(KeyboardKey::KEY_SPACE) {
             cursor_enabled = !cursor_enabled;
             if cursor_enabled {
