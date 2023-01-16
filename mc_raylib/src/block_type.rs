@@ -3,6 +3,8 @@ use rand::prelude::*;
 
 use raylib::prelude::*;
 
+use crate::dir::Dir;
+
 #[derive(Clone, Copy)]
 pub enum BlockType {
     Air,
@@ -16,13 +18,23 @@ impl BlockType {
         let mut rng = rand::thread_rng();
         rng.gen()
     }
-    pub fn get_color_fn(&self) -> fn() -> Color {
+    pub fn get_color_fn(&self) -> fn(&Dir) -> Color {
         match self {
-            BlockType::Air => || Color::BLANK,
-            BlockType::Grass => || Color::GREEN,
-            BlockType::Dirt => || Color::BROWN,
-            BlockType::Stone => || Color::DARKGRAY,
-            BlockType::Bedrock => || Color::BLACK,
+            BlockType::Air => |_dir| Color::BLANK,
+            BlockType::Grass => |_dir| {
+                Color::GREEN
+                // match dir {
+                //     Dir::Top => Color::GREEN,
+                //     Dir::Bottom => Color::BROWN, //
+                //     Dir::Right => Color::PINK,
+                //     Dir::Left => Color::PURPLE, //
+                //     Dir::Forward => Color::BLUE, //
+                //     Dir::Backward => Color::RED,
+                // }
+            },
+            BlockType::Dirt => |_dir| Color::BROWN,
+            BlockType::Stone => |_dir| Color::DARKGRAY,
+            BlockType::Bedrock => |_dir| Color::BLACK,
         }
     }
     pub fn get_transparent(&self) -> bool {

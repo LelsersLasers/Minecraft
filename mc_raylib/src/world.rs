@@ -18,6 +18,7 @@ impl World {
         }
     }
     pub fn generate_chunks(&mut self) {
+        self.chunks.clear();
         for x in 0..mn::WORLD_SIZE {
             for y in 0..mn::WORLD_SIZE {
                 for z in 0..mn::WORLD_SIZE {
@@ -27,7 +28,11 @@ impl World {
                 }
             }
         }
-        self.triangles = self.chunks.iter().map(|c| c.generate_triangles(&self)).collect();
+        self.triangles = self
+            .chunks
+            .iter()
+            .map(|c| c.generate_triangles(&self))
+            .collect();
     }
     pub fn update_chunk_triangles(&mut self) {
         for i in 0..self.chunks.len() {

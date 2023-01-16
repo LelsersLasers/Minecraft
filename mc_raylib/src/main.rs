@@ -56,11 +56,9 @@ fn main() {
         60.0,                        // fov in degrees
     ));
 
-
     let mut world = World::new();
     world.generate_chunks();
     world.update_chunk_triangles();
-    
 
     let mut last_time = instant::now();
     let mut delta_time = 1.0 / 60.0;
@@ -103,6 +101,10 @@ fn main() {
         if rl.is_key_pressed(KeyboardKey::KEY_G) {
             faces = !faces;
         }
+        if rl.is_key_pressed(KeyboardKey::KEY_R) {
+            world.generate_chunks();
+            world.update_chunk_triangles();
+        }
 
         // must do immutable borrow of rl before mutable borrow (when creating rdh)
         let window_width = rl.get_screen_width();
@@ -115,7 +117,7 @@ fn main() {
         {
             let mut rm3 = rdh.begin_mode3D(camera_controller.camera);
 
-            // let mut tri_count = 0;
+            let mut tri_count = 0;
 
             for chunk in &world.chunks {
                 // chunk outline
@@ -142,7 +144,7 @@ fn main() {
             }
 
             for tringle_set in &world.triangles {
-                // tri_count += tringle_set.len();
+                tri_count += tringle_set.len();
 
                 if faces {
                     for triangle in tringle_set {
@@ -167,7 +169,7 @@ fn main() {
                     }
                 }
             }
-            // println!("triangles: {}", tri_count);
+            println!("triangles: {}", tri_count);
         }
 
         // crosshair

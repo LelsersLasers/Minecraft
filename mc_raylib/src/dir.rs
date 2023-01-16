@@ -1,23 +1,23 @@
 pub enum Dir {
-    // Top,
-// Bottom,
-// Right,
-// Left,
-// Forward,
-// Backward,
+    Top,
+    Bottom,
+    Right,
+    Left,
+    Forward,
+    Backward,
 }
 // note: all these functions return are parrallel arrays
 impl Dir {
-    // pub fn dirs() -> [Dir; 6] {
-    //     [
-    //         Dir::Top,
-    //         Dir::Bottom,
-    //         Dir::Right,
-    //         Dir::Left,
-    //         Dir::Forward,
-    //         Dir::Backward,
-    //     ]
-    // }
+    pub fn dirs() -> [Dir; 6] {
+        [
+            Dir::Top,
+            Dir::Bottom,
+            Dir::Right,
+            Dir::Left,
+            Dir::Forward,
+            Dir::Backward,
+        ]
+    }
     pub fn tuples() -> [(i32, i32, i32); 6] {
         [
             (0, 0, 1),

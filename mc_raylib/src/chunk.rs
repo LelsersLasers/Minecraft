@@ -39,12 +39,10 @@ impl Chunk {
         // let mut rng = rand::thread_rng();
 
         for _x in 0..mn::CHUNK_SIZE {
-            for y in 0..mn::CHUNK_SIZE {
+            for _y in 0..mn::CHUNK_SIZE {
                 for _z in 0..mn::CHUNK_SIZE {
-                    let mut block_type = BlockType::Grass;
-                    if y % 2 == 0 {
-                        block_type = BlockType::get_random_block_type();
-                    }
+                    // let block_type = BlockType::get_random_block_type();
+                    let block_type = BlockType::Grass;
                     let block = Block::new(block_type);
                     self.blocks.push(block);
                 }
@@ -68,8 +66,9 @@ impl Chunk {
                         continue;
                     }
 
-                    for ((dir_x, dir_y, dir_z), triangle_offset) in
-                        Dir::tuples().iter().zip(Dir::triangle_offsets())
+                    // for ((dir_x, dir_y, dir_z), triangle_offset) in
+                    //     Dir::tuples().iter().zip(Dir::triangle_offsets())
+                    for ((dir, (dir_x, dir_y, dir_z)), triangle_offset) in Dir::dirs().iter().zip(Dir::tuples()).zip(Dir::triangle_offsets())
                     {
                         let neighbor_idx = (x as i32 + dir_x, y as i32 + dir_y, z as i32 + dir_z);
 
@@ -112,7 +111,7 @@ impl Chunk {
                                 pos + mn::CUBE_VERTICES[to[0]],
                                 pos + mn::CUBE_VERTICES[to[1]],
                                 pos + mn::CUBE_VERTICES[to[2]],
-                                (block.get_color)(),
+                                (block.get_color)(dir),
                             ));
                         }
                     }

@@ -1,11 +1,12 @@
 use raylib::prelude::*;
 
 use crate::block_type::BlockType;
+use crate::dir::Dir;
 
 #[derive(Clone, Copy)]
 pub struct Block {
     pub block_type: BlockType,
-    pub get_color: fn() -> Color,
+    pub get_color: fn(&Dir) -> Color,
     pub transparent: bool,
 }
 impl Block {
