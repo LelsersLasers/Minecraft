@@ -35,11 +35,15 @@ impl Chunk {
         )
     }
     pub fn generate_blocks(&mut self) {
+        println!("Generating blocks: {:?}", self.position);
         // let mut rng = rand::thread_rng();
-        for x in 0..mn::CHUNK_SIZE {
+        for _x in 0..mn::CHUNK_SIZE {
             for y in 0..mn::CHUNK_SIZE {
-                for z in 0..mn::CHUNK_SIZE {
-                    // let mut block_type = BlockType::Air;
+                for _z in 0..mn::CHUNK_SIZE {
+                    let mut block_type = BlockType::Grass;
+                    if y % 2 == 0 {
+                        block_type = BlockType::get_random_block_type();
+                    }
                     // if x == 0 || x == mn::CHUNK_SIZE - 1 || z == 0 || z == mn::CHUNK_SIZE - 1 {
                     // } else if (1..=4).contains(&y) {
                     //     block_type = BlockType::Dirt;
@@ -56,7 +60,7 @@ impl Chunk {
                     // {
                     //     block_type = BlockType::get_random_block_type()
                     // }
-                    let block_type = BlockType::get_random_block_type();
+                    // let block_type = BlockType::get_random_block_type();
                     let block = Block::new(block_type);
                     self.blocks.push(block);
                 }
@@ -65,6 +69,7 @@ impl Chunk {
         self.dirty = true;
     }
     pub fn generate_triangles(&mut self) {
+        println!("Generating triangles: {:?}", self.position);
         self.triangles.clear();
 
         for x in 0..mn::CHUNK_SIZE {
@@ -83,15 +88,6 @@ impl Chunk {
                         let neighbor_idx = (x as i32 + dir_x, y as i32 + dir_y, z as i32 + dir_z);
 
                         // not in chunk -> skip (TODO: check in neighbor chunks)
-                        if Chunk::in_bounds(neighbor_idx) {
-                            self.get_block_at(
-                                neighbor_idx.0 as usize,
-                                neighbor_idx.1 as usize,
-                                neighbor_idx.2 as usize,
-                            );
-                        } else {
-                        }
-
                         let neighbor = if Chunk::in_bounds(neighbor_idx) {
                             self.get_block_at(
                                 neighbor_idx.0 as usize,
@@ -99,6 +95,7 @@ impl Chunk {
                                 neighbor_idx.2 as usize,
                             )
                         } else {
+                            // TODO!
                             Block::new(BlockType::Air)
                         };
 

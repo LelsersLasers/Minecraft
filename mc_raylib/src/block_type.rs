@@ -38,13 +38,13 @@ impl BlockType {
 impl Distribution<BlockType> for Standard {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> BlockType {
         match rng.gen_range(0..4) {
-            0 => BlockType::Air,
+            // 0 => BlockType::Air,
             1 => BlockType::Grass,
             2 => BlockType::Dirt,
             3 => BlockType::Stone,
             4 => BlockType::Bedrock,
-            _ => BlockType::Air, // idk why this is needed
-                                 // _ => BlockType::Grass,
+            // _ => BlockType::Air, // idk why this is needed
+            _ => BlockType::Grass,
         }
     }
 }

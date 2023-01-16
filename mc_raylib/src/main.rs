@@ -1,4 +1,4 @@
-// use rand::prelude::*;
+use rand::prelude::*;
 use raylib::prelude::*;
 
 mod dir;
@@ -14,7 +14,10 @@ mod triangle;
 // use crate::triangle::Triangle;
 
 mod chunk;
-use crate::chunk::Chunk;
+// use crate::chunk::Chunk;
+
+mod world;
+use crate::world::World;
 
 mod camera_controller;
 use crate::camera_controller::CameraController;
@@ -44,7 +47,7 @@ fn main() {
     rl.disable_cursor();
 
     let mut wire_frame = false;
-    let mut faces = true;
+    let mut faces = false;
 
     let mut camera_controller = CameraController::new(Camera3D::perspective(
         Vector3::new(0.0, 0.0, 0.0), // Camera position
@@ -53,9 +56,12 @@ fn main() {
         60.0,                        // fov in degrees
     ));
 
-    let mut chunk = Chunk::new((0, 0, 0));
-    chunk.generate_blocks();
-    chunk.generate_triangles();
+    // let mut chunk = Chunk::new((0, 0, 0));
+    // chunk.generate_blocks();
+    // chunk.generate_triangles();
+    let mut world = World::new();
+    world.generate_chunks();
+    world.update_chunk_triangles();
 
     let mut last_time = instant::now();
     let mut delta_time = 1.0 / 60.0;
@@ -80,7 +86,7 @@ fn main() {
             }
 
             if move_vec != Vector3::zero() {
-                camera_controller.move_by(move_vec * delta_time * 10.0);
+                camera_controller.move_by(move_vec.normalized() * delta_time * 20.0);
             }
         }
 
@@ -110,42 +116,66 @@ fn main() {
         {
             let mut rm3 = rdh.begin_mode3D(camera_controller.camera);
 
-            // chunk outline
-            rm3.draw_cube_wires(
-                chunk.get_world_pos() + Vector3::one() * (mn::CHUNK_SIZE as f32 / 2.0), // idk why this is "+"
-                mn::CHUNK_SIZE as f32,
-                mn::CHUNK_SIZE as f32,
-                mn::CHUNK_SIZE as f32,
-                Color::PINK,
-            );
+            for chunk in &world.chunks {
+                // chunk outline
+                rm3.draw_cube_wires(
+                    chunk.get_world_pos() + Vector3::one() * (mn::CHUNK_SIZE as f32 / 2.0),
+                    mn::CHUNK_SIZE as f32,
+                    mn::CHUNK_SIZE as f32,
+                    mn::CHUNK_SIZE as f32,
+                    Color::PINK,
+                );
 
-            // block triangles
-            let mut triangles = Vec::new();
-            triangles.extend(chunk.triangles.iter().cloned());
-            if faces {
-                for triangle in triangles.iter() {
-                    rm3.draw_triangle3D(
-                        triangle.vertices[0],
-                        triangle.vertices[1],
-                        triangle.vertices[2],
-                        triangle.color,
-                    );
-                }
+                // for x in 0..mn::CHUNK_SIZE {
+                //     for y in 0..mn::CHUNK_SIZE {
+                //         for z in 0..mn::CHUNK_SIZE {
+                //             let pos = chunk.get_world_pos() + Vector3::new(x as f32, y as f32, z as f32) + Vector3::one() * 0.5;
+                //             let block = chunk.get_block_at(x, y, z);
+                //             if !block.transparent {
+                //                 rm3.draw_cube(pos, 1.0, 1.0, 1.0, (block.get_color)());
+                //                 // rm3.draw_cube_wires(pos, 1.0, 1.0, 1.0, Color::PURPLE);
+                //             }
+                //         }
+                //     }
+                // }
             }
-            if wire_frame {
-                // note: doesn't show backface culling
-                for triangle in triangles.iter() {
-                    for i in 0..3 {
-                        rm3.draw_line_3D(
-                            triangle.vertices[i],
-                            triangle.vertices[(i + 1) % 3],
-                            Color::BLACK,
+            let mut rng = rand::thread_rng();
+            // let start_i = rng.gen_range(0..world.chunks.len() - 1);
+            for i in 0..world.chunks.len() {
+            // {
+                // if i > 6 {
+                //     break;
+                // }
+
+                let chunk = &world.chunks[i];
+                // block triangles
+                if faces {
+                    for triangle in &chunk.triangles {
+                        rm3.draw_triangle3D(
+                            triangle.vertices[0],
+                            triangle.vertices[1],
+                            triangle.vertices[2],
+                            triangle.color,
                         );
+                    }
+                }
+                if wire_frame {
+                    // note: doesn't show backface culling
+                    for triangle in &chunk.triangles {
+                        for i in 0..3 {
+                            rm3.draw_line_3D(
+                                triangle.vertices[i],
+                                triangle.vertices[(i + 1) % 3],
+                                Color::BLACK,
+                            );
+                        }
                     }
                 }
             }
         }
 
+        // println!("FPS: {}", rdh.get_fps());
+        
         // crosshair
         rdh.draw_line(
             window_width as i32 / 2 - 10,
