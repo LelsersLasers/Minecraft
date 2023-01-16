@@ -56,12 +56,11 @@ fn main() {
         60.0,                        // fov in degrees
     ));
 
-    // let mut chunk = Chunk::new((0, 0, 0));
-    // chunk.generate_blocks();
-    // chunk.generate_triangles();
+
     let mut world = World::new();
     world.generate_chunks();
     world.update_chunk_triangles();
+    
 
     let mut last_time = instant::now();
     let mut delta_time = 1.0 / 60.0;
@@ -116,7 +115,7 @@ fn main() {
         {
             let mut rm3 = rdh.begin_mode3D(camera_controller.camera);
 
-            let mut tri_count = 0;
+            // let mut tri_count = 0;
 
             for chunk in &world.chunks {
                 // chunk outline
@@ -140,12 +139,13 @@ fn main() {
                 //         }
                 //     }
                 // }
-            
-                tri_count += chunk.triangles.len();
+            }
 
-                // block triangles
+            for tringle_set in &world.triangles {
+                // tri_count += tringle_set.len();
+
                 if faces {
-                    for triangle in &chunk.triangles {
+                    for triangle in tringle_set {
                         rm3.draw_triangle3D(
                             triangle.vertices[0],
                             triangle.vertices[1],
@@ -156,7 +156,7 @@ fn main() {
                 }
                 if wire_frame {
                     // note: doesn't show backface culling
-                    for triangle in &chunk.triangles {
+                    for triangle in tringle_set {
                         for i in 0..3 {
                             rm3.draw_line_3D(
                                 triangle.vertices[i],
@@ -167,11 +167,9 @@ fn main() {
                     }
                 }
             }
-            println!("triangles: {}", tri_count);
+            // println!("triangles: {}", tri_count);
         }
 
-        // println!("FPS: {}", rdh.get_fps());
-        
         // crosshair
         rdh.draw_line(
             window_width as i32 / 2 - 10,

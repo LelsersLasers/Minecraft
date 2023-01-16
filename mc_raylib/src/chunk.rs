@@ -5,6 +5,7 @@ use crate::block::Block;
 use crate::block_type::BlockType;
 use crate::dir::Dir;
 use crate::triangle::Triangle;
+use crate::world::World;
 
 use crate::consts as mn;
 
@@ -12,7 +13,6 @@ pub struct Chunk {
     pub blocks: Vec<Block>,
     pub position: (i32, i32, i32), // offset from origin in chunks
 
-    pub triangles: Vec<Triangle>,
     pub dirty: bool, // if true, the chunk needs to be re-rendered
 }
 impl Chunk {
@@ -20,7 +20,6 @@ impl Chunk {
         Self {
             blocks: Vec::with_capacity(mn::CHUNK_SIZE * mn::CHUNK_SIZE * mn::CHUNK_SIZE),
             position,
-            triangles: Vec::new(),
             dirty: true,
         }
     }
@@ -36,9 +35,9 @@ impl Chunk {
     }
     pub fn generate_blocks(&mut self) {
         println!("Generating blocks: {:?}", self.position);
-        
+
         // let mut rng = rand::thread_rng();
-        
+
         for _x in 0..mn::CHUNK_SIZE {
             for y in 0..mn::CHUNK_SIZE {
                 for _z in 0..mn::CHUNK_SIZE {
@@ -46,23 +45,6 @@ impl Chunk {
                     if y % 2 == 0 {
                         block_type = BlockType::get_random_block_type();
                     }
-                    // if x == 0 || x == mn::CHUNK_SIZE - 1 || z == 0 || z == mn::CHUNK_SIZE - 1 {
-                    // } else if (1..=4).contains(&y) {
-                    //     block_type = BlockType::Dirt;
-                    // } else if y == 5 {
-                    //     block_type = BlockType::Grass;
-                    // }
-
-                    // if x != 0
-                    //     && x != mn::CHUNK_SIZE - 1
-                    //     && y != 0
-                    //     && y != mn::CHUNK_SIZE - 1
-                    //     && z != 0
-                    //     && z != mn::CHUNK_SIZE - 1
-                    // {
-                    //     block_type = BlockType::get_random_block_type()
-                    // }
-                    // let block_type = BlockType::get_random_block_type();
                     let block = Block::new(block_type);
                     self.blocks.push(block);
                 }
@@ -70,9 +52,11 @@ impl Chunk {
         }
         self.dirty = true;
     }
-    pub fn generate_triangles(&mut self) {
+    pub fn generate_triangles(&self, world: &World) -> Vec<Triangle> {
         println!("Generating triangles: {:?}", self.position);
-        self.triangles.clear();
+        // self.triangles.clear();
+
+        let mut triangles = Vec::new();
 
         for x in 0..mn::CHUNK_SIZE {
             for y in 0..mn::CHUNK_SIZE {
@@ -98,7 +82,17 @@ impl Chunk {
                             )
                         } else {
                             // TODO!
-                            Block::new(BlockType::Air)
+                            // Block::new(BlockType::Air)
+                            world.get_block_at(
+                                (
+                                    self.position.0 as i32 + dir_x,
+                                    self.position.1 as i32 + dir_y,
+                                    self.position.2 as i32 + dir_z,
+                                ),
+                                neighbor_idx.0.rem_euclid(mn::CHUNK_SIZE as i32),
+                                neighbor_idx.1.rem_euclid(mn::CHUNK_SIZE as i32),
+                                neighbor_idx.2.rem_euclid(mn::CHUNK_SIZE as i32),
+                            )
                         };
 
                         let neighbor_transparent = neighbor.transparent;
@@ -108,7 +102,13 @@ impl Chunk {
                         }
 
                         for to in triangle_offset {
-                            self.triangles.push(Triangle::new(
+                            // self.triangles.push(Triangle::new(
+                            //     pos + mn::CUBE_VERTICES[to[0]],
+                            //     pos + mn::CUBE_VERTICES[to[1]],
+                            //     pos + mn::CUBE_VERTICES[to[2]],
+                            //     (block.get_color)(),
+                            // ));
+                            triangles.push(Triangle::new(
                                 pos + mn::CUBE_VERTICES[to[0]],
                                 pos + mn::CUBE_VERTICES[to[1]],
                                 pos + mn::CUBE_VERTICES[to[2]],
@@ -119,7 +119,8 @@ impl Chunk {
                 }
             }
         }
-        self.dirty = false;
+        // self.dirty = false;
+        triangles
     }
     pub fn in_bounds(idx: (i32, i32, i32)) -> bool {
         (0..mn::CHUNK_SIZE as i32).contains(&idx.0)
