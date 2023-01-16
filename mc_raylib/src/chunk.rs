@@ -36,7 +36,9 @@ impl Chunk {
     }
     pub fn generate_blocks(&mut self) {
         println!("Generating blocks: {:?}", self.position);
+        
         // let mut rng = rand::thread_rng();
+        
         for _x in 0..mn::CHUNK_SIZE {
             for y in 0..mn::CHUNK_SIZE {
                 for _z in 0..mn::CHUNK_SIZE {

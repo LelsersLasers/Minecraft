@@ -1,4 +1,4 @@
-use rand::prelude::*;
+// use rand::prelude::*;
 use raylib::prelude::*;
 
 mod dir;
@@ -116,6 +116,8 @@ fn main() {
         {
             let mut rm3 = rdh.begin_mode3D(camera_controller.camera);
 
+            let mut tri_count = 0;
+
             for chunk in &world.chunks {
                 // chunk outline
                 rm3.draw_cube_wires(
@@ -138,16 +140,9 @@ fn main() {
                 //         }
                 //     }
                 // }
-            }
-            let mut rng = rand::thread_rng();
-            // let start_i = rng.gen_range(0..world.chunks.len() - 1);
-            for i in 0..world.chunks.len() {
-            // {
-                // if i > 6 {
-                //     break;
-                // }
+            
+                tri_count += chunk.triangles.len();
 
-                let chunk = &world.chunks[i];
                 // block triangles
                 if faces {
                     for triangle in &chunk.triangles {
@@ -172,6 +167,7 @@ fn main() {
                     }
                 }
             }
+            println!("triangles: {}", tri_count);
         }
 
         // println!("FPS: {}", rdh.get_fps());
