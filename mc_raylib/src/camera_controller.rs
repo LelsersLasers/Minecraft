@@ -1,5 +1,7 @@
 use raylib::prelude::*;
 
+use std::f32::consts::PI;
+
 use crate::consts as mn;
 
 pub struct CameraController {
@@ -52,11 +54,11 @@ impl CameraController {
         self.yaw += mouse_delta.x * self.mouse_sensitivity;
         self.pitch += mouse_delta.y * self.mouse_sensitivity;
 
-        if self.pitch >= std::f32::consts::PI / 2.0 {
-            self.pitch = std::f32::consts::PI / 2.0 - 0.001;
+        if self.pitch >= PI / 2.0 {
+            self.pitch = PI / 2.0 - 0.001;
         }
-        if self.pitch <= -std::f32::consts::PI / 2.0 {
-            self.pitch = -std::f32::consts::PI / 2.0 + 0.001;
+        if self.pitch <= -PI / 2.0 {
+            self.pitch = -PI / 2.0 + 0.001;
         }
 
         self.camera.target = self.camera.position + self.calc_forward();
