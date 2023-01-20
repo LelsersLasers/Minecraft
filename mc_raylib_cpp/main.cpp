@@ -30,6 +30,22 @@ int main() {
 	CameraController cameraController; // uses default defined constructor
 
 
+    while (!WindowShouldClose()) {
+        const float delta = GetFrameTime();
+        cameraController.update();
+
+        BeginDrawing();
+        {
+            ClearBackground(RAYWHITE);
+            BeginMode3D(cameraController.camera);
+            {
+                DrawCube((Vector3){ 0.0, 0.0, 0.0 }, 1.0, 1.0, 1.0, RED);
+            }
+        }
+        EndDrawing();
+    }
+
+
 
 
 	return 0;
