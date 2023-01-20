@@ -39,8 +39,9 @@ int main() {
             ClearBackground(RAYWHITE);
             BeginMode3D(cameraController.camera);
             {
-                DrawCube((Vector3){ 0.0, 0.0, 0.0 }, 1.0, 1.0, 1.0, RED);
+                DrawCube((Vector3){ 2.0, 2.0, 2.0 }, 1.0, 1.0, 1.0, RED);
             }
+			EndMode3D();
         }
         EndDrawing();
     }
