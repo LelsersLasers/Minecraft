@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include <vector>
+#include <tuple>
 #include <string>
 
 #include "include/consts.h"
@@ -15,8 +16,10 @@
 #include "include/cameraController.h"
 #include "include/block.h"
 #include "include/blockType.h"
+#include "include/chunk.h"
 
 using std::vector;
+using std::tuple;
 
 
 int main() {
@@ -35,11 +38,8 @@ int main() {
 	CameraController cameraController; // uses default defined constructor
 
 
-    // Block testBlock(getRandomBlockType());
-	vector<Block> blocks;
-	for (int x = 0; x < 10; x++) {
-		blocks.push_back(Block(getRandomBlockType()));
-	}
+    Chunk testChunk(std::make_tuple(0, 0, 0));
+	testChunk.generateBlocks();
 
 
 
@@ -93,8 +93,33 @@ int main() {
 
             BeginMode3D(cameraController.camera);
             {
-				for (size_t x = 0; x < blocks.size(); x++) {
-					DrawCube((Vector3){ (float)x, 0, 0 }, 1.0, 1.0, 1.0, blocks[x].getColor());
+
+				DrawCubeWiresV(
+					testChunk.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
+					Vector3Uniform((float)CHUNK_SIZE),
+					PINK
+				);
+
+				for (size_t x = 0; x < CHUNK_SIZE; x++) {
+					for (size_t y = 0; y < CHUNK_SIZE; y++) {
+						for (size_t z = 0; z < CHUNK_SIZE; z++) {
+
+							Block block = testChunk.getBlockAt(x, y, z);
+							if (!block.transparent) {
+
+								Vector3 pos = { (float)x, (float)y, (float)z };
+								pos += testChunk.getWorldPos();
+
+								if (faces) {
+									DrawCube(pos, 1.0, 1.0, 1.0, block.getColor());
+								}
+								if (wireframe) {
+									DrawCubeWires(pos, 1.0, 1.0, 1.0, BLACK);
+								}
+							}
+
+						}
+					}
 				}
             }
 			EndMode3D();

@@ -63,3 +63,11 @@ Vector3 normalize(const Vector3& vec) {
 Vector3 Vector3Zero() {
 	return (Vector3){ 0.0, 0.0, 0.0 };
 }
+
+Vector3 Vector3FromInts(int x, int y, int z) {
+	return (Vector3){ (float)x, (float)y, (float)z };
+}
+
+Vector3 Vector3Uniform(float x) {
+	return (Vector3){ x, x, x };
+}

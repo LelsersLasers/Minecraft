@@ -11,7 +11,6 @@
 
 
 CameraController::CameraController() {
-
 	this->camera = { 0 };
 	this->camera.position =	(Vector3){ 0.0, 0.0, 0.0 };
 	this->camera.target =	(Vector3){ 1.0, 0.0, 0.0 };
