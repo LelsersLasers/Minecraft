@@ -21,6 +21,7 @@ class Chunk {
 		tuple<int, int, int> position;
 
 		vector<Triangle> triangles;
+		Model model;
 		bool dirty;
 	
 		Chunk(const tuple<int, int, int>& position);
@@ -30,6 +31,8 @@ class Chunk {
 
 		void generateBlocks();
 		void generateTriangles();
+
+		void generateModel();
 
 		static bool inBounds(int x, int y, int z);
 

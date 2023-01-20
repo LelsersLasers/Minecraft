@@ -11,7 +11,7 @@ const int WINDOW_HEIGHT_START = 720;
 
 const float MOUSE_SENSITIVITY = 1.0 / 400.0;
 
-const int CHUNK_SIZE = 8; // blocks per chunk ^3
+const int CHUNK_SIZE = 16; // blocks per chunk ^3
 
 const int WORLD_SIZE = 2; // chunks per world ^3
 

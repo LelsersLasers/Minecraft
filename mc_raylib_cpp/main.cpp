@@ -41,6 +41,7 @@ int main() {
     Chunk testChunk(std::make_tuple(0, 0, 0));
 	testChunk.generateBlocks();
 	testChunk.generateTriangles();
+	testChunk.generateModel();
 
 
 
@@ -101,28 +102,6 @@ int main() {
 					PINK
 				);
 
-				for (size_t x = 0; x < CHUNK_SIZE; x++) {
-					for (size_t y = 0; y < CHUNK_SIZE; y++) {
-						for (size_t z = 0; z < CHUNK_SIZE; z++) {
-
-							Block block = testChunk.getBlockAt(x, y, z);
-							if (!block.transparent) {
-
-								// Vector3 pos = { (float)x, (float)y, (float)z };
-								// pos += testChunk.getWorldPos();
-
-								// if (faces) {
-								// 	DrawCube(pos, 1.0, 1.0, 1.0, block.getColor());
-								// }
-								// if (wireframe) {
-								// 	DrawCubeWires(pos, 1.0, 1.0, 1.0, BLACK);
-								// }
-							}
-
-						}
-					}
-				}
-
 				for (size_t i = 0; i < testChunk.triangles.size(); i++) {
 					
 					if (faces) {
@@ -142,6 +121,14 @@ int main() {
 							);
 						}
 					}
+
+				}
+
+				if (faces) {
+					DrawModel(testChunk.model, testChunk.getWorldPos(), 1.0, WHITE);
+				}
+				if (wireframe) {
+					DrawModelWires(testChunk.model, testChunk.getWorldPos(), 1.0, BLACK);
 				}
 
             }
@@ -170,7 +157,7 @@ int main() {
 			DrawText("Info:", 20, 20, 10, BLACK);
 
 			std::string fpsText = "- FPS: " + std::to_string((int)(1.0 / delta));
-			std::string deltaText = "- Delta: " + std::to_string(delta);
+			std::string deltaText = "- Delta: " + std::to_string(delta * 1000);
 
 			DrawText(fpsText.c_str(), 40, 40, 10, DARKGRAY);
 			DrawText(deltaText.c_str(), 40, 60, 10, DARKGRAY);

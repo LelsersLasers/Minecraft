@@ -24,6 +24,7 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 	this->blocks.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
 
 	this->triangles = vector<Triangle>();
+	this->model = { 0 };
 	this->dirty = true;
 }
 
@@ -108,6 +109,32 @@ void Chunk::generateTriangles() {
 	}
 
 	this->dirty = false;
+}
+
+void Chunk::generateModel() {
+
+	Mesh mesh = { 0 };
+	
+	// 3 vertices per triangle, 3 floats per vertex
+	mesh.vertices = (float *)malloc(this->triangles.size() * 3 * 3 * sizeof(float));
+	mesh.vertexCount = this->triangles.size() * 3;
+	mesh.triangleCount = this->triangles.size();
+
+
+	for (size_t i = 0; i < this->triangles.size(); i++) {
+		Triangle triangle = this->triangles[i];
+		for (size_t j = 0; j < 3; j++) {
+			mesh.vertices[i * 9 + j * 3 + 0] = triangle.vertices[j].x;
+			mesh.vertices[i * 9 + j * 3 + 1] = triangle.vertices[j].y;
+			mesh.vertices[i * 9 + j * 3 + 2] = triangle.vertices[j].z;
+		}
+	}
+
+
+	UploadMesh(&mesh, false);
+
+	this->model = LoadModelFromMesh(mesh);
+
 }
 
 bool Chunk::inBounds(int x, int y, int z) { // static
