@@ -104,7 +104,7 @@ fn main() {
             }
         }
 
-        if rl.is_key_pressed(KeyboardKey::KEY_SPACE) {
+        if rl.is_key_pressed(KeyboardKey::KEY_C) {
             cursor_enabled = !cursor_enabled;
             if cursor_enabled {
                 rl.enable_cursor();

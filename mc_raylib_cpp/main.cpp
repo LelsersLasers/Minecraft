@@ -58,6 +58,23 @@ int main() {
 				cameraController.moveBy(moveVec);
 			}
 		}
+
+		{
+			if (IsKeyPressed(KEY_C)) {
+				cursor = !cursor;
+				if (cursor) {
+					EnableCursor();
+				} else {
+					DisableCursor();
+				}
+			}
+			if (IsKeyPressed(KEY_F)) {
+				wireframe = !wireframe;
+			}
+			if (IsKeyPressed(KEY_G)) {
+				faces = !faces;
+			}
+		}
 		
 
         BeginDrawing();
