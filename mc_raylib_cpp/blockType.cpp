@@ -36,5 +36,6 @@ bool getTransparent(const BlockType& blockType) {
 }
 
 BlockType getRandomBlockType() {
-	return (BlockType)(rand() % (BLOCK_MAX + 1));
+	// return (BlockType)(rand() % (BLOCK_MAX + 1));
+	return GRASS;
 }

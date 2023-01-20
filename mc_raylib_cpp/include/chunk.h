@@ -9,6 +9,7 @@
 #include <tuple>
 
 #include "block.h"
+#include "triangle.h"
 
 using std::vector;
 using std::tuple;
@@ -18,6 +19,9 @@ class Chunk {
 	public:
 		vector<Block> blocks;
 		tuple<int, int, int> position;
+
+		vector<Triangle> triangles;
+		bool dirty;
 	
 		Chunk(const tuple<int, int, int>& position);
 
@@ -26,6 +30,8 @@ class Chunk {
 
 		void generateBlocks();
 		void generateTriangles();
+
+		static bool inBounds(int x, int y, int z);
 
 
 };

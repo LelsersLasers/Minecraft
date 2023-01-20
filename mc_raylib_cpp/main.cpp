@@ -40,6 +40,7 @@ int main() {
 
     Chunk testChunk(std::make_tuple(0, 0, 0));
 	testChunk.generateBlocks();
+	testChunk.generateTriangles();
 
 
 
@@ -107,20 +108,42 @@ int main() {
 							Block block = testChunk.getBlockAt(x, y, z);
 							if (!block.transparent) {
 
-								Vector3 pos = { (float)x, (float)y, (float)z };
-								pos += testChunk.getWorldPos();
+								// Vector3 pos = { (float)x, (float)y, (float)z };
+								// pos += testChunk.getWorldPos();
 
-								if (faces) {
-									DrawCube(pos, 1.0, 1.0, 1.0, block.getColor());
-								}
-								if (wireframe) {
-									DrawCubeWires(pos, 1.0, 1.0, 1.0, BLACK);
-								}
+								// if (faces) {
+								// 	DrawCube(pos, 1.0, 1.0, 1.0, block.getColor());
+								// }
+								// if (wireframe) {
+								// 	DrawCubeWires(pos, 1.0, 1.0, 1.0, BLACK);
+								// }
 							}
 
 						}
 					}
 				}
+
+				for (size_t i = 0; i < testChunk.triangles.size(); i++) {
+					
+					if (faces) {
+						DrawTriangle3D(
+							testChunk.triangles[i].vertices[0],
+							testChunk.triangles[i].vertices[1],
+							testChunk.triangles[i].vertices[2],
+							testChunk.triangles[i].color
+						);
+					}
+					if (wireframe) {
+						for (size_t j = 0; j < 3; j++) {
+							DrawLine3D(
+								testChunk.triangles[i].vertices[j],
+								testChunk.triangles[i].vertices[(j + 1) % 3],
+								BLACK
+							);
+						}
+					}
+				}
+
             }
 			EndMode3D();
 
