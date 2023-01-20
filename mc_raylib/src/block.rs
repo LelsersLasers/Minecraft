@@ -21,10 +21,6 @@ impl Block {
 impl Default for Block {
     fn default() -> Self {
         let default_block_type = BlockType::Air;
-        Self {
-            block_type: default_block_type,
-            get_color: default_block_type.get_color_fn(),
-            transparent: default_block_type.get_transparent(),
-        }
+        Self::new(default_block_type)
     }
 }

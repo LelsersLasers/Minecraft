@@ -1,7 +1,7 @@
 #include "raylib.h"
 
 #include <time.h>
-
+#include <stdlib.h>
 #include <iostream>
 
 #include <vector>
@@ -13,8 +13,10 @@
 // #include "include/Vector2Util.h"
 
 #include "include/cameraController.h"
+#include "include/block.h"
+#include "include/blockType.h"
 
-// using std::vector;
+using std::vector;
 
 
 int main() {
@@ -31,6 +33,14 @@ int main() {
 	DisableCursor();
 
 	CameraController cameraController; // uses default defined constructor
+
+
+    // Block testBlock(getRandomBlockType());
+	vector<Block> blocks;
+	for (int x = 0; x < 10; x++) {
+		blocks.push_back(Block(getRandomBlockType()));
+	}
+
 
 
     while (!WindowShouldClose()) {
@@ -83,7 +93,9 @@ int main() {
 
             BeginMode3D(cameraController.camera);
             {
-                DrawCube((Vector3){ 2.0, 2.0, 2.0 }, 1.0, 1.0, 1.0, RED);
+				for (size_t x = 0; x < blocks.size(); x++) {
+					DrawCube((Vector3){ (float)x, 0, 0 }, 1.0, 1.0, 1.0, blocks[x].getColor());
+				}
             }
 			EndMode3D();
 

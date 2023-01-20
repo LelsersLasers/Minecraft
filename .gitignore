@@ -13,3 +13,4 @@
 # c++ build
 
 */build/
+.vscode/settings.json

@@ -19,7 +19,7 @@ class CameraController {
 
 		CameraController();
 
-		void moveBy(const Vector3 &vec);
+		void moveBy(const Vector3& vec);
 
 		Vector3 calcForward() const;
 		Vector3 calcRight() const;
