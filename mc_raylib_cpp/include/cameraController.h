@@ -1,7 +1,8 @@
-#include "raylib.h"
+#ifndef CAMERA_CONTROLLER_GUARD
+#define CAMERA_CONTROLLER_GUARD
 
-#ifndef CameraController_H
-#define CameraController_H
+
+#include "raylib.h"
 
 
 class CameraController {
@@ -25,5 +26,6 @@ class CameraController {
 
 		void update();
 };
+
 
 #endif

@@ -2,7 +2,7 @@
 # not sure what the args after ':' do
 compile: main.cpp cameraController.cpp
 	mkdir -p build
-	g++ -o build/main main.cpp cameraController.cpp -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+	g++ -o build/main main.cpp cameraController.cpp -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -Wall
 
 run:
 	./build/main

@@ -90,5 +90,6 @@ void CameraController::update() {
 	this->camera.target = (Vector3){
 		this->camera.position.x + forwardVec.x,
 		this->camera.position.y + forwardVec.y,
+		this->camera.position.z + forwardVec.z,
 	};
 }

@@ -1,22 +1,30 @@
+#ifndef CONSTS_GUARD
+#define CONSTS_GUARD
 
-#define PI 3.14159265358979323846f
 
-#define WINDOW_WIDTH_START 	(1280)
-#define WINDOW_HEIGHT_START (720)
+#include "raylib.h"
 
-#define MOUSE_SENSITIVITY (1.0 / 400.0)
+#define PI 3.14159265358979323846f // should this also be 'const float'?
 
-#define CHUNK_SIZE (8) // blocks per chunk ^3
+const int WINDOW_WIDTH_START = 1280;
+const int WINDOW_HEIGHT_START = 720;
 
-#define WORLD_SIZE (2) // chunks per world ^3
+const float MOUSE_SENSITIVITY = 1.0 / 400.0;
 
-#define CUBE_VERTICES ({ \
-	{0.0, 0.0, 0.0}, \
-	{1.0, 0.0, 0.0}, \
-	{1.0, 1.0, 0.0}, \
-	{0.0, 1.0, 0.0}, \
-	{0.0, 0.0, 1.0}, \
-	{1.0, 0.0, 1.0}, \
-	{1.0, 1.0, 1.0}, \
-	{0.0, 1.0, 1.0}  \
-})
+const int CHUNK_SIZE = 8; // blocks per chunk ^3
+
+const int WORLD_SIZE = 2; // chunks per world ^3
+
+const Vector3 CUBE_VERTICES[] = {
+	(Vector3){0.0, 0.0, 0.0},
+	(Vector3){1.0, 0.0, 0.0},
+	(Vector3){1.0, 1.0, 0.0},
+	(Vector3){0.0, 1.0, 0.0},
+	(Vector3){0.0, 0.0, 1.0},
+	(Vector3){1.0, 0.0, 1.0},
+	(Vector3){1.0, 1.0, 1.0},
+	(Vector3){0.0, 1.0, 1.0}, 
+};
+
+
+#endif

@@ -27,7 +27,7 @@ int main() {
 
 	DisableCursor();
 
-	CameraController cameraController;
+	CameraController cameraController; // uses default defined constructor
 
 
 
