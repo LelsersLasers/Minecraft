@@ -1,9 +1,11 @@
-
 #include "raylib.h"
 
 #include <cmath>
 
 #include "include/consts.h"
+
+#include "include/Vector3Util.h"
+#include "include/Vector2Util.h"
 
 #include "include/cameraController.h"
 
@@ -14,7 +16,7 @@ CameraController::CameraController() {
 	this->camera.position =	(Vector3){ 0.0, 0.0, 0.0 };
 	this->camera.target =	(Vector3){ 1.0, 0.0, 0.0 };
 	this->camera.up = 		(Vector3){ 0.0, 0.0, 1.0 };
-	this->camera.fovy =		60.0;
+	this->camera.fovy =		60.0f;
 	this->camera.projection = CAMERA_PERSPECTIVE;
 
 	this->mousePosition = (Vector2){
@@ -28,16 +30,8 @@ CameraController::CameraController() {
 }
 
 void CameraController::moveBy(const Vector3 &vec) {
-	this->camera.position = (Vector3){
-		this->camera.position.x + vec.x,
-		this->camera.position.y + vec.y,
-		this->camera.position.z + vec.z,
-	};
-	this->camera.target = (Vector3){
-		this->camera.target.x + vec.x,
-		this->camera.target.y + vec.y,
-		this->camera.target.z + vec.z,
-	};
+	this->camera.position += vec;
+	this->camera.target += vec;
 }
 
 Vector3 CameraController::calcForward() const {
@@ -70,10 +64,7 @@ Vector3 CameraController::calcRight() const {
 
 void CameraController::update() {
 	Vector2 newMousePosition = GetMousePosition();
-	Vector2 mouseDelta = (Vector2){
-		this->mousePosition.x - newMousePosition.x,
-		this->mousePosition.y - newMousePosition.y,
-	};
+	Vector2 mouseDelta = this->mousePosition - newMousePosition;
 	this->mousePosition = newMousePosition;
 
 	this->yaw += mouseDelta.x * this->mouseSensitivity;
@@ -85,11 +76,6 @@ void CameraController::update() {
 	else if (this->pitch <= -PI / 2.0) {
 		this->pitch = -PI / 2.0 + 0.01;
 	}
-
-	Vector3 forwardVec = this->calcForward();
-	this->camera.target = (Vector3){
-		this->camera.position.x + forwardVec.x,
-		this->camera.position.y + forwardVec.y,
-		this->camera.position.z + forwardVec.z,
-	};
+	
+	this->camera.target = this->camera.position + this->calcForward();
 }
