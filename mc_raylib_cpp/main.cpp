@@ -1,11 +1,11 @@
 #include "raylib.h"
 
-// #include <math.h>
 #include <time.h>
 
 #include <iostream>
 
 #include <vector>
+#include <string>
 
 #include "include/consts.h"
 
@@ -80,22 +80,42 @@ int main() {
         BeginDrawing();
         {
             ClearBackground(RAYWHITE);
+
             BeginMode3D(cameraController.camera);
             {
                 DrawCube((Vector3){ 2.0, 2.0, 2.0 }, 1.0, 1.0, 1.0, RED);
             }
 			EndMode3D();
+
+
+			int windowWidth = GetScreenWidth();
+			int windowHeight = GetScreenHeight();
+			DrawLine(
+				windowWidth / 2 - 10,
+				windowHeight / 2,
+				windowWidth / 2 + 10,
+				windowHeight / 2,
+				BLACK
+			);
+			DrawLine(
+				windowWidth / 2,
+				windowHeight / 2 - 10,
+				windowWidth / 2,
+				windowHeight / 2 + 10,
+				BLACK
+			);
+
+			DrawRectangle(10, 10, 220, 130, SKYBLUE);
+			DrawRectangleLines(10, 10, 220, 130, BLUE);
+			DrawText("Info:", 20, 20, 10, BLACK);
+
+			std::string fpsText = "- FPS: " + std::to_string((int)(1.0 / delta));
+			std::string deltaText = "- Delta: " + std::to_string(delta);
+
+			DrawText(fpsText.c_str(), 40, 40, 10, DARKGRAY);
+			DrawText(deltaText.c_str(), 40, 60, 10, DARKGRAY);
         }
         EndDrawing();
-
-
-		std::cout << "delta: " << delta << std::endl;
-
-		float fps = 1.0 / delta;
-		std::cout << "fps: " << fps << std::endl;
-		
-		Vector3 v = cameraController.calcForward();
-		std::cout << v.x << " " << v.y << "" << v.z << std::endl;
     }
 
 
