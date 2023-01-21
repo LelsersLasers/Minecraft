@@ -87,6 +87,8 @@ int main() {
 				faces = !faces;
 			}
 		}
+
+		testChunk.generateModel();
 		
 
         BeginDrawing();
@@ -102,27 +104,27 @@ int main() {
 					PINK
 				);
 
-				for (size_t i = 0; i < testChunk.triangles.size(); i++) {
+				// for (size_t i = 0; i < testChunk.triangles.size(); i++) {
 					
-					if (faces) {
-						DrawTriangle3D(
-							testChunk.triangles[i].vertices[0],
-							testChunk.triangles[i].vertices[1],
-							testChunk.triangles[i].vertices[2],
-							testChunk.triangles[i].color
-						);
-					}
-					if (wireframe) {
-						for (size_t j = 0; j < 3; j++) {
-							DrawLine3D(
-								testChunk.triangles[i].vertices[j],
-								testChunk.triangles[i].vertices[(j + 1) % 3],
-								BLACK
-							);
-						}
-					}
+				// 	if (faces) {
+				// 		DrawTriangle3D(
+				// 			testChunk.triangles[i].vertices[0],
+				// 			testChunk.triangles[i].vertices[1],
+				// 			testChunk.triangles[i].vertices[2],
+				// 			testChunk.triangles[i].color
+				// 		);
+				// 	}
+				// 	if (wireframe) {
+				// 		for (size_t j = 0; j < 3; j++) {
+				// 			DrawLine3D(
+				// 				testChunk.triangles[i].vertices[j],
+				// 				testChunk.triangles[i].vertices[(j + 1) % 3],
+				// 				BLACK
+				// 			);
+				// 		}
+				// 	}
 
-				}
+				// }
 
 				if (faces) {
 					DrawModel(testChunk.model, testChunk.getWorldPos(), 1.0, WHITE);

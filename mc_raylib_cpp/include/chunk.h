@@ -23,6 +23,8 @@ class Chunk {
 		vector<Triangle> triangles;
 		Model model;
 		bool dirty;
+
+		Mesh oldMesh;
 	
 		Chunk(const tuple<int, int, int>& position);
 
