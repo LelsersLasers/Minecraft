@@ -20,7 +20,7 @@ class World {
 		World();
 		// ~World();
 
-		Chunk getChunkAt(tuple<int, int, int> chunkPos) const;
+		const Chunk* getChunkAt(tuple<int, int, int> chunkPos) const;
 		Block getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) const;
 
 		void generateChunks();

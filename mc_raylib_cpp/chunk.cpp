@@ -26,16 +26,13 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 	this->blocks = vector<Block>();
 	this->blocks.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
 	
-	// this->mesh = { 0 };
-	// UploadMesh(&this->mesh, true);
 	this->model = { 0 };
 	this->dirty = true;
 
 	this->oldMesh = { 0 };
 }
 Chunk::~Chunk() {
-	// TODO
-	// UnloadModel(this->model);
+	UnloadModel(this->model);
 }
 
 Block Chunk::getBlockAt(size_t x, size_t y, size_t z) const {
@@ -104,13 +101,13 @@ void Chunk::generateModel(const World& world) {
 					int ny = y + std::get<1>(dirTuple);
 					int nz = z + std::get<2>(dirTuple);
 
-					Block neighbor(BlockType::AIR); // TODO: use pointer
-
+					Block* neighborPtr;
 					if (Chunk::inBounds(nx, ny, nz)) {
-						neighbor = this->getBlockAt(nx, ny, nz);
+						// neighbor = this->getBlockAt(nx, ny, nz);
+						neighborPtr = &this->getBlockAt(nx, ny, nz);
 					}
 					else {
-						neighbor = world.getBlockAt(
+						neighborPtr = &world.getBlockAt(
 							std::make_tuple(
 								std::get<0>(this->position) + std::get<0>(dirTuple),
 								std::get<1>(this->position) + std::get<1>(dirTuple),
@@ -122,7 +119,7 @@ void Chunk::generateModel(const World& world) {
 						);
 					}
 
-					if (!neighbor.transparent) {
+					if (!neighborPtr->transparent) {
 						continue;
 					}
 
@@ -143,9 +140,7 @@ void Chunk::generateModel(const World& world) {
 							vertexCount++;
 						}
 					}
-
 				}
-
 			}
 		}
 	}
