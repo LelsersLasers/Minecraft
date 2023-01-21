@@ -101,13 +101,12 @@ void Chunk::generateModel(const World& world) {
 					int ny = y + std::get<1>(dirTuple);
 					int nz = z + std::get<2>(dirTuple);
 
-					Block* neighborPtr;
+					Block neighbor(BlockType::AIR);
 					if (Chunk::inBounds(nx, ny, nz)) {
-						// neighbor = this->getBlockAt(nx, ny, nz);
-						neighborPtr = &this->getBlockAt(nx, ny, nz);
+						neighbor = this->getBlockAt(nx, ny, nz);
 					}
 					else {
-						neighborPtr = &world.getBlockAt(
+						neighbor = world.getBlockAt(
 							std::make_tuple(
 								std::get<0>(this->position) + std::get<0>(dirTuple),
 								std::get<1>(this->position) + std::get<1>(dirTuple),
@@ -119,7 +118,7 @@ void Chunk::generateModel(const World& world) {
 						);
 					}
 
-					if (!neighborPtr->transparent) {
+					if (!neighbor.transparent) {
 						continue;
 					}
 
