@@ -1,5 +1,7 @@
 #include "raylib.h"
 
+#include "raymath.h"
+
 #include <time.h>
 #include <stdlib.h>
 #include <iostream>
@@ -108,6 +110,23 @@ int main() {
 					if (wireframe) {
 						DrawModelWires(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, BLACK);
 					}
+
+					if (IsKeyDown(KEY_Q)) {
+						Ray qRay = {
+							cameraController.camera.position,
+							cameraController.calcForward()
+						};
+						Vector3 pos = world.chunks[i].getWorldPos();
+						Matrix qTransform = MatrixTranslate(pos.x, pos.y, pos.z);
+						RayCollision qRayCollision = GetRayCollisionMesh(qRay, world.chunks[i].model.meshes[0], qTransform);
+						if (qRayCollision.hit) {
+							// std::cout << "HIT: X: " << qRayCollision.point.x << " Y: " << qRayCollision.point.y << " Z: " << qRayCollision.point.z << std::endl;
+							DrawSphere(qRayCollision.point, 0.5, RED);
+						} else {
+							// std::cout << "MISS: X: " << qRay.direction.x << " Y: " << qRay.direction.y << " Z: " << qRay.direction.z << std::endl;
+						}
+					}
+
 				}
 
             }
