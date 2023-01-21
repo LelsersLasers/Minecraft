@@ -32,6 +32,9 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 
 	this->oldMesh = { 0 };
 }
+Chunk::~Chunk() {
+	UnloadModel(this->model);
+}
 
 Block Chunk::getBlockAt(size_t x, size_t y, size_t z) const {
 	return this->blocks[x * CHUNK_SIZE * CHUNK_SIZE + y + z * CHUNK_SIZE];
@@ -127,16 +130,26 @@ void Chunk::generateModel() {
 	
 	// 3 vertices per triangle, 3 floats per vertex
 	mesh.vertices = (float *)malloc(this->triangles.size() * 3 * 3 * sizeof(float));
+	
+	// 3 vertices per triangle, 4 unsigned chars per color
+	mesh.colors = (unsigned char *)malloc(this->triangles.size() * 3 * 4 * sizeof(unsigned char));
+	
 	mesh.vertexCount = this->triangles.size() * 3;
 	mesh.triangleCount = this->triangles.size();
 
 
-	for (size_t i = 0; i < this->triangles.size(); i++) {
+	for (size_t i = 0; i < this->triangles.size(); i++) { // for each triangle
 		Triangle triangle = this->triangles[i];
-		for (size_t j = 0; j < 3; j++) {
+		for (size_t j = 0; j < 3; j++) { // for each vertex
+			
 			mesh.vertices[i * 9 + j * 3 + 0] = triangle.vertices[j].x;
 			mesh.vertices[i * 9 + j * 3 + 1] = triangle.vertices[j].y;
 			mesh.vertices[i * 9 + j * 3 + 2] = triangle.vertices[j].z;
+
+			mesh.colors[i * 12 + j * 4 + 0] = triangle.color.r;
+			mesh.colors[i * 12 + j * 4 + 1] = triangle.color.g;
+			mesh.colors[i * 12 + j * 4 + 2] = triangle.color.b;
+			mesh.colors[i * 12 + j * 4 + 3] = triangle.color.a;
 		}
 	}
 

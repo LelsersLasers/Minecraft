@@ -27,6 +27,7 @@ class Chunk {
 		Mesh oldMesh;
 	
 		Chunk(const tuple<int, int, int>& position);
+		~Chunk();
 
 		Block getBlockAt(size_t x, size_t y, size_t z) const;
 		Vector3 getWorldPos() const;
