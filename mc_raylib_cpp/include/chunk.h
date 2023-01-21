@@ -10,7 +10,6 @@
 
 #include "block.h"
 #include "world.h"
-#include "triangle.h"
 
 using std::vector;
 using std::tuple;
@@ -21,7 +20,6 @@ class Chunk {
 		vector<Block> blocks;
 		tuple<int, int, int> position;
 
-		vector<Triangle> triangles;
 		Model model;
 		bool dirty;
 
@@ -34,9 +32,7 @@ class Chunk {
 		Vector3 getWorldPos() const;
 
 		void generateBlocks();
-		void generateTriangles(const World& world);
-
-		void generateModel();
+		void generateModel(const World& world);
 
 		static bool inBounds(int x, int y, int z);
 

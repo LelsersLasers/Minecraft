@@ -15,9 +15,9 @@ Color getColorGrass() {
 
 Color (*getColorFn(const BlockType& blockType))() {
 	switch (blockType) {
-		case AIR:
+		case BlockType::AIR:
 			return getColorAir;
-		case GRASS:
+		case BlockType::GRASS:
 			return getColorGrass;
         default: // should not be reached
             return getColorAir; 
@@ -26,9 +26,9 @@ Color (*getColorFn(const BlockType& blockType))() {
 
 bool getTransparent(const BlockType& blockType) {
 	switch (blockType) {
-		case AIR:
+		case BlockType::AIR:
 			return true;
-		case GRASS:
+		case BlockType::GRASS:
 			return false;
         default: // should not be reached
             return true;
@@ -36,6 +36,6 @@ bool getTransparent(const BlockType& blockType) {
 }
 
 BlockType getRandomBlockType() {
-	// return (BlockType)(rand() % (BLOCK_MAX + 1));
-	return GRASS;
+	return (BlockType)(rand() % (BLOCK_MAX + 1));
+	// return BlockType::GRASS;
 }

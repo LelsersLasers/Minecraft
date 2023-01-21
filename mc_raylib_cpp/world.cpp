@@ -54,8 +54,7 @@ void World::generateChunks() {
 void World::updateChunkModels() {
 	for (size_t i = 0; i < this->chunks.size(); i++) {
 		if (this->chunks[i].dirty) {
-			this->chunks[i].generateTriangles(*this);
-			this->chunks[i].generateModel();
+			this->chunks[i].generateModel(*this);
 		}
 	}
 }

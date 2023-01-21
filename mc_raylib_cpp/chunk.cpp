@@ -1,6 +1,9 @@
 #include "raylib.h"
 
+// #include <iostream>
+
 #include <stdlib.h>
+#include <cstring> // memcpy
 
 #include <vector>
 #include <tuple>
@@ -8,7 +11,6 @@
 #include "include/block.h"
 #include "include/world.h"
 #include "include/blockType.h"
-#include "include/triangle.h"
 #include "include/dir.h"
 #include "include/Vector3Util.h"
 #include "include/consts.h"
@@ -23,8 +25,6 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 
 	this->blocks = vector<Block>();
 	this->blocks.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
-
-	this->triangles = vector<Triangle>();
 	
 	// this->mesh = { 0 };
 	// UploadMesh(&this->mesh, true);
@@ -34,6 +34,7 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 	this->oldMesh = { 0 };
 }
 Chunk::~Chunk() {
+	// TODO
 	// UnloadModel(this->model);
 }
 
@@ -66,8 +67,22 @@ void Chunk::generateBlocks() {
 	this->dirty = true;
 }
 
-void Chunk::generateTriangles(const World& world) {
-	this->triangles.clear();
+void Chunk::generateModel(const World& world) {
+
+	Mesh mesh = { 0 };
+
+	// int posX = std::get<0>(this->position);
+	// int posY = std::get<1>(this->position);
+	// int posZ = std::get<2>(this->position);
+	// mesh.vaoId = posX * CHUNK_SIZE * CHUNK_SIZE + posY + posZ * CHUNK_SIZE;
+
+	// max vertices: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 3 floats per vertex
+	float* vertices = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 3 * sizeof(float));
+
+	// max colors: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 4 floats per vertex (rgba)
+	unsigned char* colors = (unsigned char *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 4 * sizeof(unsigned char));
+
+	int vertexCount = 0;
 
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
@@ -80,7 +95,7 @@ void Chunk::generateTriangles(const World& world) {
 
 				Vector3 pos = Vector3FromInts(x, y, z);
 
-				for (size_t i = 0; i < 6; i++) {
+				for (size_t i = 0; i < 6; i++) { // 6 faces per block
 					// Dir dir = allDirEnums[i];
 					tuple<int, int, int> dirTuple = allDirTuples[i];
 					// size_t triangleOffsets[2][3] = allTriangleOffsets[i];
@@ -89,8 +104,7 @@ void Chunk::generateTriangles(const World& world) {
 					int ny = y + std::get<1>(dirTuple);
 					int nz = z + std::get<2>(dirTuple);
 
-					
-					Block neighbor(AIR); // TODO: use pointer
+					Block neighbor(BlockType::AIR); // TODO: use pointer
 
 					if (Chunk::inBounds(nx, ny, nz)) {
 						neighbor = this->getBlockAt(nx, ny, nz);
@@ -112,15 +126,22 @@ void Chunk::generateTriangles(const World& world) {
 						continue;
 					}
 
-					for (int j = 0; j < 2; j++) {
-						this->triangles.push_back(
-							Triangle(
-								pos + CUBE_VERTICES[allTriangleOffsets[i][j][0]],
-								pos + CUBE_VERTICES[allTriangleOffsets[i][j][1]],
-								pos + CUBE_VERTICES[allTriangleOffsets[i][j][2]],
-								block.getColor()
-							)
-						);
+					for (size_t j = 0; j < 2; j++) { // 2 triangles per face
+						for (size_t k = 0; k < 3; k++) { // 3 vertices per triangle
+							Vector3 vertex = pos + CUBE_VERTICES[allTriangleOffsets[i][j][k]];
+							Color color = block.getColor();
+
+							vertices[vertexCount * 3 + 0] = vertex.x;
+							vertices[vertexCount * 3 + 1] = vertex.y;
+							vertices[vertexCount * 3 + 2] = vertex.z;
+
+							colors[vertexCount * 4 + 0] = color.r;
+							colors[vertexCount * 4 + 1] = color.g;
+							colors[vertexCount * 4 + 2] = color.b;
+							colors[vertexCount * 4 + 3] = color.a;
+
+							vertexCount++;
+						}
 					}
 
 				}
@@ -129,47 +150,26 @@ void Chunk::generateTriangles(const World& world) {
 		}
 	}
 
-	this->dirty = false;
-}
+	mesh.vertexCount = vertexCount;
+	// std::cout << "vertexCount: " << vertexCount << std::endl;
+	mesh.triangleCount = vertexCount / 3;
 
-void Chunk::generateModel() {
+	mesh.vertices = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
+	mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));
 
-	Mesh mesh = { 0 };
+	std::memcpy(mesh.vertices, vertices, mesh.vertexCount * 3 * sizeof(float));
+	std::memcpy(mesh.colors, colors, mesh.vertexCount * 4 * sizeof(unsigned char));
 
-	// int posX = std::get<0>(this->position);
-	// int posY = std::get<1>(this->position);
-	// int posZ = std::get<2>(this->position);
-	// mesh.vaoId = posX * CHUNK_SIZE * CHUNK_SIZE + posY + posZ * CHUNK_SIZE;
-	
-	// 3 vertices per triangle, 3 floats per vertex
-	mesh.vertices = (float *)malloc(this->triangles.size() * 3 * 3 * sizeof(float));
-	
-	// 3 vertices per triangle, 4 unsigned chars per color
-	mesh.colors = (unsigned char *)malloc(this->triangles.size() * 3 * 4 * sizeof(unsigned char));
-	
-	mesh.vertexCount = this->triangles.size() * 3;
-	mesh.triangleCount = this->triangles.size();
-
-
-	for (size_t i = 0; i < this->triangles.size(); i++) { // for each triangle
-		Triangle triangle = this->triangles[i];
-		for (size_t j = 0; j < 3; j++) { // for each vertex
-			mesh.vertices[i * 9 + j * 3 + 0] = triangle.vertices[j].x;
-			mesh.vertices[i * 9 + j * 3 + 1] = triangle.vertices[j].y;
-			mesh.vertices[i * 9 + j * 3 + 2] = triangle.vertices[j].z;
-
-			mesh.colors[i * 12 + j * 4 + 0] = triangle.color.r;
-			mesh.colors[i * 12 + j * 4 + 1] = triangle.color.g;
-			mesh.colors[i * 12 + j * 4 + 2] = triangle.color.b;
-			mesh.colors[i * 12 + j * 4 + 3] = triangle.color.a;
-		}
-	}
+	free(vertices);
+	free(colors);
 
 	UnloadMesh(this->oldMesh);
 	UploadMesh(&mesh, false);
 
 	this->model = LoadModelFromMesh(mesh);
 	this->oldMesh = mesh;
+
+	this->dirty = false;
 }
 
 bool Chunk::inBounds(int x, int y, int z) { // static
