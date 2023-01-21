@@ -4,6 +4,10 @@
 
 #include "raylib.h"
 
+
+#define EUCMOD(a, b)  (a < 0 ? (((a % b) + b) % b) : (a % b))
+
+
 #define PI 3.14159265358979323846f // should this also be 'const float'?
 
 const int WINDOW_WIDTH_START = 1280;

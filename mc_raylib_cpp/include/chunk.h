@@ -9,6 +9,7 @@
 #include <tuple>
 
 #include "block.h"
+#include "world.h"
 #include "triangle.h"
 
 using std::vector;
@@ -33,7 +34,7 @@ class Chunk {
 		Vector3 getWorldPos() const;
 
 		void generateBlocks();
-		void generateTriangles();
+		void generateTriangles(const World& world);
 
 		void generateModel();
 

@@ -6,6 +6,7 @@
 #include <tuple>
 
 #include "include/block.h"
+#include "include/world.h"
 #include "include/blockType.h"
 #include "include/triangle.h"
 #include "include/dir.h"
@@ -33,7 +34,7 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 	this->oldMesh = { 0 };
 }
 Chunk::~Chunk() {
-	UnloadModel(this->model);
+	// UnloadModel(this->model);
 }
 
 Block Chunk::getBlockAt(size_t x, size_t y, size_t z) const {
@@ -65,7 +66,7 @@ void Chunk::generateBlocks() {
 	this->dirty = true;
 }
 
-void Chunk::generateTriangles() {
+void Chunk::generateTriangles(const World& world) {
 	this->triangles.clear();
 
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
@@ -89,10 +90,22 @@ void Chunk::generateTriangles() {
 					int nz = z + std::get<2>(dirTuple);
 
 					
-					Block neighbor(AIR);
+					Block neighbor(AIR); // TODO: use pointer
 
 					if (Chunk::inBounds(nx, ny, nz)) {
 						neighbor = this->getBlockAt(nx, ny, nz);
+					}
+					else {
+						neighbor = world.getBlockAt(
+							std::make_tuple(
+								std::get<0>(this->position) + std::get<0>(dirTuple),
+								std::get<1>(this->position) + std::get<1>(dirTuple),
+								std::get<2>(this->position) + std::get<2>(dirTuple)
+							),
+							EUCMOD(nx, CHUNK_SIZE),
+							EUCMOD(ny, CHUNK_SIZE),
+							EUCMOD(nz, CHUNK_SIZE)
+						);
 					}
 
 					if (!neighbor.transparent) {

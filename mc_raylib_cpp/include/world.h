@@ -7,7 +7,7 @@
 #include <tuple>
 
 #include "block.h"
-#include "chunk.h"
+class Chunk; // forward declaration to avoid circular dependency (effectively: #include "chunk.h")
 
 using std::vector;
 using std::tuple;
