@@ -77,7 +77,7 @@ void Chunk::generateTriangles() {
 					continue;
 				}
 
-				Vector3 pos = this->getWorldPos() + Vector3FromInts(x, y, z);
+				Vector3 pos = Vector3FromInts(x, y, z);
 
 				for (size_t i = 0; i < 6; i++) {
 					// Dir dir = allDirEnums[i];
@@ -141,7 +141,6 @@ void Chunk::generateModel() {
 	for (size_t i = 0; i < this->triangles.size(); i++) { // for each triangle
 		Triangle triangle = this->triangles[i];
 		for (size_t j = 0; j < 3; j++) { // for each vertex
-			
 			mesh.vertices[i * 9 + j * 3 + 0] = triangle.vertices[j].x;
 			mesh.vertices[i * 9 + j * 3 + 1] = triangle.vertices[j].y;
 			mesh.vertices[i * 9 + j * 3 + 2] = triangle.vertices[j].z;

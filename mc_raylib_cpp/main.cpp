@@ -17,6 +17,7 @@
 #include "include/block.h"
 #include "include/blockType.h"
 #include "include/chunk.h"
+#include "include/world.h"
 
 using std::vector;
 using std::tuple;
@@ -38,10 +39,9 @@ int main() {
 	CameraController cameraController; // uses default defined constructor
 
 
-    Chunk testChunk(std::make_tuple(0, 0, 0));
-	testChunk.generateBlocks();
-	testChunk.generateTriangles();
-	testChunk.generateModel();
+	World world; // uses default defined constructor
+	world.generateChunks();
+	world.updateChunkModels();
 
 
 
@@ -87,8 +87,6 @@ int main() {
 				faces = !faces;
 			}
 		}
-
-		testChunk.generateModel();
 		
 
         BeginDrawing();
@@ -97,40 +95,19 @@ int main() {
 
             BeginMode3D(cameraController.camera);
             {
+				for (size_t i = 0; i < world.chunks.size(); i++) {
+					DrawCubeWiresV(
+						world.chunks[i].getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
+						Vector3Uniform((float)CHUNK_SIZE),
+						PINK
+					);
 
-				DrawCubeWiresV(
-					testChunk.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
-					Vector3Uniform((float)CHUNK_SIZE),
-					PINK
-				);
-
-				// for (size_t i = 0; i < testChunk.triangles.size(); i++) {
-					
-				// 	if (faces) {
-				// 		DrawTriangle3D(
-				// 			testChunk.triangles[i].vertices[0],
-				// 			testChunk.triangles[i].vertices[1],
-				// 			testChunk.triangles[i].vertices[2],
-				// 			testChunk.triangles[i].color
-				// 		);
-				// 	}
-				// 	if (wireframe) {
-				// 		for (size_t j = 0; j < 3; j++) {
-				// 			DrawLine3D(
-				// 				testChunk.triangles[i].vertices[j],
-				// 				testChunk.triangles[i].vertices[(j + 1) % 3],
-				// 				BLACK
-				// 			);
-				// 		}
-				// 	}
-
-				// }
-
-				if (faces) {
-					DrawModel(testChunk.model, testChunk.getWorldPos(), 1.0, WHITE);
-				}
-				if (wireframe) {
-					DrawModelWires(testChunk.model, testChunk.getWorldPos(), 1.0, BLACK);
+					if (faces) {
+						DrawModel(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, WHITE);
+					}
+					if (wireframe) {
+						DrawModelWires(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, BLACK);
+					}
 				}
 
             }
