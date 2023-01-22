@@ -4,6 +4,7 @@
 #include "raylib.h"
 
 #include "blockType.h"
+#include "dir.h"
 
 
 class Block {
@@ -11,7 +12,7 @@ class Block {
 	public:
 		BlockType blockType;
 		bool transparent;
-		Color (*getColor)();
+		Color (*getColor)(Dir dir);
 
 
 		Block(const BlockType& blockType);

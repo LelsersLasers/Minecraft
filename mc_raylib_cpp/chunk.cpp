@@ -93,7 +93,7 @@ void Chunk::generateModel(const World& world) {
 				Vector3 pos = Vector3FromInts(x, y, z);
 
 				for (size_t i = 0; i < 6; i++) { // 6 faces per block
-					// Dir dir = allDirEnums[i];
+					Dir dir = allDirEnums[i];
 					tuple<int, int, int> dirTuple = allDirTuples[i];
 					// size_t triangleOffsets[2][3] = allTriangleOffsets[i];
 
@@ -125,7 +125,7 @@ void Chunk::generateModel(const World& world) {
 					for (size_t j = 0; j < 2; j++) { // 2 triangles per face
 						for (size_t k = 0; k < 3; k++) { // 3 vertices per triangle
 							Vector3 vertex = pos + CUBE_VERTICES[allTriangleOffsets[i][j][k]];
-							Color color = block.getColor();
+							Color color = block.getColor(dir);
 
 							vertices[vertexCount * 3 + 0] = vertex.x;
 							vertices[vertexCount * 3 + 1] = vertex.y;

@@ -1,6 +1,8 @@
 #ifndef DIR_GUARD
 #define DIR_GUARD
 
+#include <cstddef>
+
 #include <tuple>
 using std::tuple;
 
@@ -13,9 +15,9 @@ enum Dir {
     Backward = 5,
 };
 
-Dir allDirEnums[6] = {Top, Bottom, Right, Left, Forward, Backward};
+const Dir allDirEnums[6] = {Top, Bottom, Right, Left, Forward, Backward};
 
-tuple<int, int, int> allDirTuples[6] = {
+const tuple<int, int, int> allDirTuples[6] = {
 	{0, 0, 1},
 	{0, 0, -1},
 	{0, 1, 0},
@@ -24,7 +26,7 @@ tuple<int, int, int> allDirTuples[6] = {
 	{-1, 0, 0},
 };
 
-size_t allTriangleOffsets[6][2][3] = {
+const size_t allTriangleOffsets[6][2][3] = {
     {{4, 5, 7}, {5, 6, 7}},
     {{0, 3, 1}, {1, 3, 2}},
     {{3, 7, 2}, {2, 7, 6}},
