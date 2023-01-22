@@ -36,6 +36,8 @@ class Chunk {
 
 		static bool inBounds(int x, int y, int z);
 
+		Vector3 handleRayCollision(RayCollision rayCollision) const;
+
 
 };
 

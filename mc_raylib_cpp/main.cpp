@@ -97,6 +97,10 @@ int main() {
 
             BeginMode3D(cameraController.camera);
             {
+
+				vector<RayCollision> rayCollisions;
+				vector<Chunk*> chunkCollisions;
+
 				for (size_t i = 0; i < world.chunks.size(); i++) {
 					DrawCubeWiresV(
 						world.chunks[i].getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
@@ -111,6 +115,7 @@ int main() {
 						DrawModelWires(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, BLACK);
 					}
 
+
 					if (IsKeyDown(KEY_Q)) {
 						Ray qRay = {
 							cameraController.camera.position,
@@ -120,14 +125,30 @@ int main() {
 						Matrix qTransform = MatrixTranslate(pos.x, pos.y, pos.z);
 						RayCollision qRayCollision = GetRayCollisionMesh(qRay, world.chunks[i].model.meshes[0], qTransform);
 						if (qRayCollision.hit) {
-							// std::cout << "HIT: X: " << qRayCollision.point.x << " Y: " << qRayCollision.point.y << " Z: " << qRayCollision.point.z << std::endl;
-							DrawSphere(qRayCollision.point, 0.5, RED);
-						} else {
-							// std::cout << "MISS: X: " << qRay.direction.x << " Y: " << qRay.direction.y << " Z: " << qRay.direction.z << std::endl;
+							rayCollisions.push_back(qRayCollision);
+							chunkCollisions.push_back(&world.chunks[i]);
 						}
 					}
 
+
 				}
+
+				if (rayCollisions.size() > 0) {
+					RayCollision closestRayCollision = rayCollisions[0];
+					Chunk* closestChunkCollision = chunkCollisions[0];
+
+					for (size_t i = 1; i < rayCollisions.size(); i++) {
+						if (rayCollisions[i].distance < closestRayCollision.distance) {
+							closestRayCollision = rayCollisions[i];
+							closestChunkCollision = chunkCollisions[i];
+						}
+					}
+
+					Vector3 pos = closestChunkCollision->handleRayCollision(closestRayCollision);
+					DrawCubeWiresV(pos + closestChunkCollision->getWorldPos(), Vector3Uniform(1.0), RED);
+					DrawSphere(pos + closestChunkCollision->getWorldPos(), 0.3, RED);
+				}
+
 
             }
 			EndMode3D();

@@ -1,7 +1,7 @@
 #ifndef DIR_GUARD
 #define DIR_GUARD
 
-#include <cstddef>
+#include <cstddef> // size_t
 
 #include <tuple>
 using std::tuple;

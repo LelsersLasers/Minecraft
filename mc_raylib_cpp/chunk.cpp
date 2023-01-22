@@ -169,3 +169,28 @@ void Chunk::generateModel(const World& world) {
 bool Chunk::inBounds(int x, int y, int z) { // static
 	return x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE && z >= 0 && z < CHUNK_SIZE;
 }
+
+Vector3 Chunk::handleRayCollision(RayCollision rayCollision) const {
+	Vector3 point = rayCollision.point - this->getWorldPos();
+	Vector3 closestPoint = Vector3Zero();
+
+	for (size_t x = 0; x < CHUNK_SIZE; x++) {
+		for (size_t y = 0; y < CHUNK_SIZE; y++) {
+			for (size_t z = 0; z < CHUNK_SIZE; z++) {
+
+				Block block = this->getBlockAt(x, y, z);
+
+				if (block.transparent) {
+					continue;
+				}
+
+				Vector3 pos = Vector3FromInts(x, y, z) + Vector3Uniform(0.5);
+				if (length(pos - point) < length(closestPoint - point)) {
+					closestPoint = pos;
+				}
+			}
+		}
+	}
+
+	return closestPoint;
+}
