@@ -7,7 +7,7 @@
 #include <iostream>
 
 #include <vector>
-#include <tuple>
+// #include <tuple>
 #include <string>
 
 #include "include/consts.h"
@@ -22,7 +22,7 @@
 #include "include/world.h"
 
 using std::vector;
-using std::tuple;
+// using std::tuple;
 
 
 int main() {
@@ -130,7 +130,7 @@ int main() {
 					}
 
 
-					if (IsKeyDown(KEY_Q)) {
+					{
 						Ray qRay = {
 							cameraController.camera.position,
 							cameraController.calcForward()
@@ -158,9 +158,8 @@ int main() {
 						}
 					}
 
-					Vector3 pos = closestChunkCollision->handleRayCollision(closestRayCollision);
+					Vector3 pos = closestChunkCollision->handleRayCollision(closestRayCollision); // includes .5 center offset
 					DrawCubeWiresV(pos + closestChunkCollision->getWorldPos(), Vector3Uniform(1.0), RED);
-					DrawSphere(pos + closestChunkCollision->getWorldPos(), 0.3, RED);
 				}
 
 

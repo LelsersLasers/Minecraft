@@ -1,9 +1,10 @@
 #include "raylib.h"
 
-// #include <iostream>
+#include <iostream>
 
 #include <stdlib.h>
 #include <cstring> // memcpy
+#include <cmath> // sqrtf
 
 #include <vector>
 #include <tuple>
@@ -172,12 +173,26 @@ bool Chunk::inBounds(int x, int y, int z) { // static
 
 Vector3 Chunk::handleRayCollision(RayCollision rayCollision) const {
 	Vector3 point = rayCollision.point - this->getWorldPos();
-	Vector3 closestPoint = Vector3Zero();
+	Vector3 closestPoint = Vector3Uniform(-(float)CHUNK_SIZE);
+	float smallestDistance = INFINITY;
 
-	for (size_t x = 0; x < CHUNK_SIZE; x++) {
-		for (size_t y = 0; y < CHUNK_SIZE; y++) {
-			for (size_t z = 0; z < CHUNK_SIZE; z++) {
+	int pointX = (int)roundf(point.x);
+	int pointY = (int)roundf(point.y);
+	int pointZ = (int)roundf(point.z);
 
+	int startX = BRANCHLESS_MAX(pointX - 1, 0);
+	int startY = BRANCHLESS_MAX(pointY - 1, 0);
+	int startZ = BRANCHLESS_MAX(pointZ - 1, 0);
+
+	int endX = BRANCHLESS_MIN(pointX + 2, CHUNK_SIZE);
+	int endY = BRANCHLESS_MIN(pointY + 2, CHUNK_SIZE);
+	int endZ = BRANCHLESS_MIN(pointZ + 2, CHUNK_SIZE);
+
+
+	for (int x = startX; x < endX; x++) {
+		for (int y = startY; y < endY; y++) {
+			for (int z = startZ; z < endZ; z++) {
+				
 				Block block = this->getBlockAt(x, y, z);
 
 				if (block.transparent) {
@@ -185,12 +200,22 @@ Vector3 Chunk::handleRayCollision(RayCollision rayCollision) const {
 				}
 
 				Vector3 pos = Vector3FromInts(x, y, z) + Vector3Uniform(0.5);
-				if (length(pos - point) < length(closestPoint - point)) {
+				float distance = length(pos - point);
+				if (distance < smallestDistance) {
 					closestPoint = pos;
+					smallestDistance = distance;
 				}
 			}
 		}
 	}
-
+	if (smallestDistance == INFINITY) {
+		std::cout << "smallestDistance: \t X: " << point.x << " Y: " << point.y << " Z: " << point.z << std::endl;
+	}
+	// if (startX < 0 || startY < 0 || startZ < 0) {
+	// 	std::cout << "startX: " << startX << " startY: " << startY << " startZ: " << startZ << std::endl;
+	// }
+	// if (endX > CHUNK_SIZE || endY > CHUNK_SIZE || endZ > CHUNK_SIZE) {
+	// 	std::cout << "endX: " << endX << " endY: " << endY << " endZ: " << endZ << std::endl;
+	// }
 	return closestPoint;
 }
