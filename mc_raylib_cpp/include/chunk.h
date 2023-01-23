@@ -29,6 +29,8 @@ class Chunk {
 		~Chunk();
 
 		Block getBlockAt(size_t x, size_t y, size_t z) const;
+		void setBlockAt(size_t x, size_t y, size_t z, Block block);
+
 		Vector3 getWorldPos() const;
 
 		void generateBlocks();
@@ -37,6 +39,8 @@ class Chunk {
 		static bool inBounds(int x, int y, int z);
 
 		tuple<size_t, size_t, size_t> handleRayCollision(RayCollision rayCollision) const;
+
+		void destroyBlockAt(tuple<size_t, size_t, size_t> blockIdx);
 
 
 };

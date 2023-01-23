@@ -33,4 +33,7 @@ const Vector3 CUBE_VERTICES[] = {
 };
 
 
+const int REACH = 5;
+
+
 #endif

@@ -105,6 +105,10 @@ int main() {
 		}
 		
 
+		// iterates over chunks
+		world.updateChunkModels();
+
+
         BeginDrawing();
         {
             ClearBackground(RAYWHITE);
@@ -138,7 +142,7 @@ int main() {
 						Vector3 pos = world.chunks[i].getWorldPos();
 						Matrix qTransform = MatrixTranslate(pos.x, pos.y, pos.z);
 						RayCollision qRayCollision = GetRayCollisionMesh(qRay, world.chunks[i].model.meshes[0], qTransform);
-						if (qRayCollision.hit) {
+						if (qRayCollision.hit && qRayCollision.distance < REACH) {
 							rayCollisions.push_back(qRayCollision);
 							chunkCollisions.push_back(&world.chunks[i]);
 						}
@@ -165,6 +169,10 @@ int main() {
 						(float)std::get<2>(bestBlockTuple)
 					} + Vector3Uniform(0.5);
 					DrawCubeWiresV(bestBlockOutlinePos + closestChunkCollision->getWorldPos(), Vector3Uniform(1.0), RED);
+
+					if (IsKeyPressed(KEY_Q)) {
+						closestChunkCollision->destroyBlockAt(bestBlockTuple);
+					}
 				}
 
 

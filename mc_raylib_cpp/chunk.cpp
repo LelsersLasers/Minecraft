@@ -39,6 +39,11 @@ Chunk::~Chunk() {
 Block Chunk::getBlockAt(size_t x, size_t y, size_t z) const {
 	return this->blocks[x * CHUNK_SIZE * CHUNK_SIZE + y + z * CHUNK_SIZE];
 }
+void Chunk::setBlockAt(size_t x, size_t y, size_t z, Block block) {
+	this->blocks[x * CHUNK_SIZE * CHUNK_SIZE + y + z * CHUNK_SIZE] = block;
+	this->dirty = true;
+}
+
 Vector3 Chunk::getWorldPos() const {
 	return (Vector3) {
 		(float)std::get<0>(this->position) * CHUNK_SIZE,
@@ -226,4 +231,12 @@ tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollisio
 	// 	std::cout << "endX: " << endX << " endY: " << endY << " endZ: " << endZ << std::endl;
 	// }
 	return std::make_tuple(closestX, closestY, closestZ);
+}
+
+void Chunk::destroyBlockAt(tuple<size_t, size_t, size_t> blockIdx) {
+	size_t x = std::get<0>(blockIdx);
+	size_t y = std::get<1>(blockIdx);
+	size_t z = std::get<2>(blockIdx);
+
+	this->setBlockAt(x, y, z, Block(BlockType::AIR));
 }
