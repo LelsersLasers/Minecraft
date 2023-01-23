@@ -45,7 +45,7 @@ void Chunk::setBlockAt(size_t x, size_t y, size_t z, Block block) {
 }
 
 Vector3 Chunk::getWorldPos() const {
-	return (Vector3) {
+	return (Vector3){
 		(float)std::get<0>(this->position) * CHUNK_SIZE,
 		(float)std::get<1>(this->position) * CHUNK_SIZE,
 		(float)std::get<2>(this->position) * CHUNK_SIZE,
@@ -59,9 +59,7 @@ void Chunk::generateBlocks() {
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
 			for (size_t z = 0; z < CHUNK_SIZE; z++) {
 				
-				BlockType blockType = getRandomBlockType();
-				Block block(blockType);
-				this->blocks.push_back(block);
+				this->blocks.push_back(Block(getRandomBlockType()));
 
 			}
 		}
@@ -238,5 +236,5 @@ void Chunk::destroyBlockAt(tuple<size_t, size_t, size_t> blockIdx) {
 	size_t y = std::get<1>(blockIdx);
 	size_t z = std::get<2>(blockIdx);
 
-	this->setBlockAt(x, y, z, Block(BlockType::AIR));
+	this->setBlockAt(x, y, z, AIR_BLOCK);
 }
