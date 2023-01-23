@@ -176,9 +176,10 @@ Vector3 Chunk::handleRayCollision(RayCollision rayCollision) const {
 	Vector3 closestPoint = Vector3Uniform(-(float)CHUNK_SIZE);
 	float smallestDistance = INFINITY;
 
-	int pointX = (int)roundf(point.x);
-	int pointY = (int)roundf(point.y);
-	int pointZ = (int)roundf(point.z);
+	// effectively (int)floor( )
+	int pointX = (int)point.x;
+	int pointY = (int)point.y;
+	int pointZ = (int)point.z;
 
 	int startX = BRANCHLESS_MAX(pointX - 1, 0);
 	int startY = BRANCHLESS_MAX(pointY - 1, 0);
