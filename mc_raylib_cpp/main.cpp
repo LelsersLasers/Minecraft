@@ -50,6 +50,20 @@ int main() {
     while (!WindowShouldClose()) {
         const float delta = GetFrameTime();
 
+		{
+			if (IsKeyDown(KEY_UP)) {
+				cameraController.pitch += delta * PI / 2.0;
+			}
+			if (IsKeyDown(KEY_DOWN)) {
+				cameraController.pitch -= delta * PI / 2.0;
+			}
+			if (IsKeyDown(KEY_LEFT)) {
+				cameraController.yaw += delta * PI / 2.0;
+			}
+			if (IsKeyDown(KEY_RIGHT)) {
+				cameraController.yaw -= delta * PI / 2.0;
+			}
+		}
         cameraController.update();
 		{
 			Vector3 moveVec = Vector3Zero();
