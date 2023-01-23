@@ -171,28 +171,32 @@ bool Chunk::inBounds(int x, int y, int z) { // static
 	return x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE && z >= 0 && z < CHUNK_SIZE;
 }
 
-Vector3 Chunk::handleRayCollision(RayCollision rayCollision) const {
+tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollision) const {
 	Vector3 point = rayCollision.point - this->getWorldPos();
-	Vector3 closestPoint = Vector3Uniform(-(float)CHUNK_SIZE);
+
 	float smallestDistance = INFINITY;
 
-	// effectively (int)floor( )
+	size_t closestX;
+	size_t closestY;
+	size_t closestZ;
+
+	// effectively (int)floor( ) as point.? > 0
 	int pointX = (int)point.x;
 	int pointY = (int)point.y;
 	int pointZ = (int)point.z;
 
-	int startX = BRANCHLESS_MAX(pointX - 1, 0);
-	int startY = BRANCHLESS_MAX(pointY - 1, 0);
-	int startZ = BRANCHLESS_MAX(pointZ - 1, 0);
+	size_t startX = BRANCHLESS_MAX(pointX - 1, 0);
+	size_t startY = BRANCHLESS_MAX(pointY - 1, 0);
+	size_t startZ = BRANCHLESS_MAX(pointZ - 1, 0);
 
-	int endX = BRANCHLESS_MIN(pointX + 2, CHUNK_SIZE);
-	int endY = BRANCHLESS_MIN(pointY + 2, CHUNK_SIZE);
-	int endZ = BRANCHLESS_MIN(pointZ + 2, CHUNK_SIZE);
+	size_t endX = BRANCHLESS_MIN(pointX + 2, CHUNK_SIZE);
+	size_t endY = BRANCHLESS_MIN(pointY + 2, CHUNK_SIZE);
+	size_t endZ = BRANCHLESS_MIN(pointZ + 2, CHUNK_SIZE);
 
 
-	for (int x = startX; x < endX; x++) {
-		for (int y = startY; y < endY; y++) {
-			for (int z = startZ; z < endZ; z++) {
+	for (size_t x = startX; x < endX; x++) {
+		for (size_t y = startY; y < endY; y++) {
+			for (size_t z = startZ; z < endZ; z++) {
 				
 				Block block = this->getBlockAt(x, y, z);
 
@@ -203,8 +207,11 @@ Vector3 Chunk::handleRayCollision(RayCollision rayCollision) const {
 				Vector3 pos = Vector3FromInts(x, y, z) + Vector3Uniform(0.5);
 				float distance = length(pos - point);
 				if (distance < smallestDistance) {
-					closestPoint = pos;
 					smallestDistance = distance;
+
+					closestX = x;
+					closestY = y;
+					closestZ = z;
 				}
 			}
 		}
@@ -218,5 +225,5 @@ Vector3 Chunk::handleRayCollision(RayCollision rayCollision) const {
 	// if (endX > CHUNK_SIZE || endY > CHUNK_SIZE || endZ > CHUNK_SIZE) {
 	// 	std::cout << "endX: " << endX << " endY: " << endY << " endZ: " << endZ << std::endl;
 	// }
-	return closestPoint;
+	return std::make_tuple(closestX, closestY, closestZ);
 }

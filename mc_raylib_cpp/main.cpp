@@ -7,7 +7,7 @@
 #include <iostream>
 
 #include <vector>
-// #include <tuple>
+#include <tuple>
 #include <string>
 
 #include "include/consts.h"
@@ -22,7 +22,7 @@
 #include "include/world.h"
 
 using std::vector;
-// using std::tuple;
+using std::tuple;
 
 
 int main() {
@@ -158,8 +158,13 @@ int main() {
 						}
 					}
 
-					Vector3 pos = closestChunkCollision->handleRayCollision(closestRayCollision); // includes .5 center offset
-					DrawCubeWiresV(pos + closestChunkCollision->getWorldPos(), Vector3Uniform(1.0), RED);
+					tuple<size_t, size_t, size_t> bestBlockTuple = closestChunkCollision->handleRayCollision(closestRayCollision);
+					Vector3 bestBlockOutlinePos = (Vector3){
+						(float)std::get<0>(bestBlockTuple),
+						(float)std::get<1>(bestBlockTuple),
+						(float)std::get<2>(bestBlockTuple)
+					} + Vector3Uniform(0.5);
+					DrawCubeWiresV(bestBlockOutlinePos + closestChunkCollision->getWorldPos(), Vector3Uniform(1.0), RED);
 				}
 
 
