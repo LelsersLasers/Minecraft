@@ -19,7 +19,7 @@ const float MOUSE_SENSITIVITY = 1.0 / 400.0;
 
 const int CHUNK_SIZE = 16; // blocks per chunk ^3
 
-const int WORLD_SIZE = 2; // chunks per world ^3
+const int WORLD_SIZE = 1; // chunks per world ^3
 
 const Vector3 CUBE_VERTICES[] = {
 	(Vector3){0.0, 0.0, 0.0},

@@ -11,3 +11,12 @@ Color operator*(const Color& lhs, const float& rhs) {
 		lhs.a
 	};
 }
+
+Color ColorWithTransparency(const Color& color, const float& transparency) {
+	return (Color){
+		color.r,
+		color.g,
+		color.b,
+		(unsigned char)((float)color.a * transparency)
+	};
+}

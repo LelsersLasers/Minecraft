@@ -27,13 +27,17 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 	this->blocks = vector<Block>();
 	this->blocks.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
 	
-	this->model = { 0 };
 	this->dirty = true;
 
+	this->model = { 0 };
 	this->oldMesh = { 0 };
+
+	this->transparentModel = { 0 };
+	this->transparentOldMesh = { 0 };
 }
 Chunk::~Chunk() {
 	UnloadModel(this->model);
+	UnloadModel(this->transparentModel);
 }
 
 Block Chunk::getBlockAt(size_t x, size_t y, size_t z) const {
@@ -59,7 +63,20 @@ void Chunk::generateBlocks() {
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
 			for (size_t z = 0; z < CHUNK_SIZE; z++) {
 				
-				this->blocks.push_back(Block(getRandomBlockType()));
+				// this->blocks.push_back(Block(getRandomBlockType()));
+				if (y == 0) {
+					this->blocks.push_back(BEDROCK_BLOCK);
+				} else if (y < 4) {
+					this->blocks.push_back(STONE_BLOCK);
+				} else if (y < 7) {
+					this->blocks.push_back(DIRT_BLOCK);
+				} else if (y < 8) {
+					this->blocks.push_back(GRASS_BLOCK);
+				} else if (y < 11) {
+					this->blocks.push_back(WATER_BLOCK);
+				} else {
+					this->blocks.push_back(AIR_BLOCK);
+				}
 
 			}
 		}
@@ -71,6 +88,7 @@ void Chunk::generateBlocks() {
 void Chunk::generateModel(World& world) {
 
 	Mesh mesh = { 0 };
+	Mesh transparentMesh = { 0 };
 
 	// int posX = std::get<0>(this->position);
 	// int posY = std::get<1>(this->position);
@@ -79,18 +97,21 @@ void Chunk::generateModel(World& world) {
 
 	// max vertices: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 3 floats per vertex
 	float* vertices = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 3 * sizeof(float));
+	float* transparentVertices = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 3 * sizeof(float));
 
 	// max colors: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 4 floats per vertex (rgba)
 	unsigned char* colors = (unsigned char *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 4 * sizeof(unsigned char));
+	unsigned char* transparentColors = (unsigned char *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 4 * sizeof(unsigned char));
 
 	int vertexCount = 0;
+	int transparentVertexCount = 0;
 
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
 			for (size_t z = 0; z < CHUNK_SIZE; z++) {
 
 				Block block = this->getBlockAt(x, y, z);
-				if (block.transparent) {
+				if (block.blockType == BlockType::AIR) {
 					continue;
 				}
 
@@ -99,7 +120,6 @@ void Chunk::generateModel(World& world) {
 				for (size_t i = 0; i < 6; i++) { // 6 faces per block
 					Dir dir = allDirEnums[i];
 					tuple<int, int, int> dirTuple = allDirTuples[i];
-					// size_t triangleOffsets[2][3] = allTriangleOffsets[i];
 
 					int nx = x + std::get<0>(dirTuple);
 					int ny = y + std::get<1>(dirTuple);
@@ -122,25 +142,41 @@ void Chunk::generateModel(World& world) {
 						);
 					}
 
-					if (!neighbor.transparent) {
+					if (!neighbor.transparent || (block.blockType == BlockType::WATER && neighbor.blockType == BlockType::WATER)) {
 						continue;
 					}
 
+
 					for (size_t j = 0; j < 2; j++) { // 2 triangles per face
 						for (size_t k = 0; k < 3; k++) { // 3 vertices per triangle
+
 							Vector3 vertex = pos + CUBE_VERTICES[allTriangleOffsets[i][j][k]];
 							Color color = block.getColor(dir);
 
-							vertices[vertexCount * 3 + 0] = vertex.x;
-							vertices[vertexCount * 3 + 1] = vertex.y;
-							vertices[vertexCount * 3 + 2] = vertex.z;
+							if (block.transparent) {
+								transparentVertices[transparentVertexCount * 3 + 0] = vertex.x;
+								transparentVertices[transparentVertexCount * 3 + 1] = vertex.y;
+								transparentVertices[transparentVertexCount * 3 + 2] = vertex.z;
 
-							colors[vertexCount * 4 + 0] = color.r;
-							colors[vertexCount * 4 + 1] = color.g;
-							colors[vertexCount * 4 + 2] = color.b;
-							colors[vertexCount * 4 + 3] = color.a;
+								transparentColors[transparentVertexCount * 4 + 0] = color.r;
+								transparentColors[transparentVertexCount * 4 + 1] = color.g;
+								transparentColors[transparentVertexCount * 4 + 2] = color.b;
+								transparentColors[transparentVertexCount * 4 + 3] = color.a;
 
-							vertexCount++;
+								transparentVertexCount++;
+							}
+							else {
+								vertices[vertexCount * 3 + 0] = vertex.x;
+								vertices[vertexCount * 3 + 1] = vertex.y;
+								vertices[vertexCount * 3 + 2] = vertex.z;
+
+								colors[vertexCount * 4 + 0] = color.r;
+								colors[vertexCount * 4 + 1] = color.g;
+								colors[vertexCount * 4 + 2] = color.b;
+								colors[vertexCount * 4 + 3] = color.a;
+
+								vertexCount++;
+							}
 						}
 					}
 				}
@@ -149,23 +185,45 @@ void Chunk::generateModel(World& world) {
 	}
 
 	mesh.vertexCount = vertexCount;
-	// std::cout << "vertexCount: " << vertexCount << std::endl;
 	mesh.triangleCount = vertexCount / 3;
+
+	transparentMesh.vertexCount = transparentVertexCount;
+	transparentMesh.triangleCount = transparentVertexCount / 3;
+
 
 	mesh.vertices = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
 	mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));
 
+	transparentMesh.vertices = (float *)malloc(transparentMesh.vertexCount * 3 * sizeof(float));
+	transparentMesh.colors = (unsigned char *)malloc(transparentMesh.vertexCount * 4 * sizeof(unsigned char));
+
+
 	std::memcpy(mesh.vertices, vertices, mesh.vertexCount * 3 * sizeof(float));
-	std::memcpy(mesh.colors, colors, mesh.vertexCount * 4 * sizeof(unsigned char));
+	std::memcpy(mesh.colors,   colors,   mesh.vertexCount * 4 * sizeof(unsigned char));
+
+	std::memcpy(transparentMesh.vertices, transparentVertices, transparentMesh.vertexCount * 3 * sizeof(float));
+	std::memcpy(transparentMesh.colors,   transparentColors,   transparentMesh.vertexCount * 4 * sizeof(unsigned char));
+
 
 	free(vertices);
 	free(colors);
 
+	free(transparentVertices);
+	free(transparentColors);
+
+
 	UnloadMesh(this->oldMesh);
 	UploadMesh(&mesh, false);
 
+	UnloadMesh(this->transparentOldMesh);
+	UploadMesh(&transparentMesh, false);
+
+
 	this->model = LoadModelFromMesh(mesh);
 	this->oldMesh = mesh;
+
+	this->transparentModel = LoadModelFromMesh(transparentMesh);
+	this->transparentOldMesh = transparentMesh;
 
 	this->dirty = false;
 }

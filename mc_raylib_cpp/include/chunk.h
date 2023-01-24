@@ -20,10 +20,13 @@ class Chunk {
 		vector<Block> blocks;
 		tuple<int, int, int> position;
 
-		Model model;
 		bool dirty;
-
+	
+		Model model;
 		Mesh oldMesh;
+
+		Model transparentModel;
+		Mesh transparentOldMesh;
 	
 		Chunk(const tuple<int, int, int>& position);
 		~Chunk();

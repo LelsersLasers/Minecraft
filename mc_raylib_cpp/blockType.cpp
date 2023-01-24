@@ -30,6 +30,7 @@ Color getColorGrass(Dir dir) {
 Color getColorDirt(Dir _dir)	{ return BROWN; }
 Color getColorStone(Dir _dir)	{ return GRAY; }
 Color getColorBedrock(Dir _dir)	{ return DARKGRAY; }
+Color getColorWater(Dir _dir)	{ return ColorWithTransparency(BLUE, 0.5); }
 
 Color (*getColorFn(const BlockType& blockType))(Dir dir) {
 	switch (blockType) {
@@ -43,6 +44,8 @@ Color (*getColorFn(const BlockType& blockType))(Dir dir) {
 			return getColorStone;
 		case BlockType::BEDROCK:
 			return getColorBedrock;
+		case BlockType::WATER:
+			return getColorWater;
         default: // should not be reached
             return getColorAir; 
 	}
@@ -52,15 +55,17 @@ bool getTransparent(const BlockType& blockType) {
 	switch (blockType) {
 		case BlockType::AIR:
 			return true;
-		// case BlockType::GRASS:
-		// 	return false;
-		// case BlockType::DIRT:
-		// 	return false;
-		// case BlockType::STONE:
-		// 	return false;
-		// case BlockType::BEDROCK:
-		// 	return false;
-        default: // BlockType::AIR is the only transparent block rn
+		case BlockType::GRASS:
+			return false;
+		case BlockType::DIRT:
+			return false;
+		case BlockType::STONE:
+			return false;
+		case BlockType::BEDROCK:
+			return false;
+		case BlockType::WATER:
+			return true;
+        default: // should not be reached
             return false;
 	}
 }

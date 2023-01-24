@@ -29,6 +29,7 @@ int main() {
 
 	bool cursor = false;
 	bool wireframe = false;
+	bool transparentWireframe = false;
 	bool faces = false;
 
 	srand(time(NULL));
@@ -102,6 +103,9 @@ int main() {
 			if (IsKeyPressed(KEY_G)) {
 				faces = !faces;
 			}
+			if (IsKeyPressed(KEY_H)) {
+				transparentWireframe = !transparentWireframe;
+			}
 		}
 		
 
@@ -128,9 +132,13 @@ int main() {
 
 					if (faces) {
 						DrawModel(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, WHITE);
+						DrawModel(world.chunks[i].transparentModel, world.chunks[i].getWorldPos(), 1.0, WHITE);
 					}
 					if (wireframe) {
 						DrawModelWires(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, BLACK);
+					}
+					if (transparentWireframe) {
+						DrawModelWires(world.chunks[i].transparentModel, world.chunks[i].getWorldPos(), 1.0, BLACK);
 					}
 
 
