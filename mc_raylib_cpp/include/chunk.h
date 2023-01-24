@@ -34,15 +34,14 @@ class Chunk {
 		Vector3 getWorldPos() const;
 
 		void generateBlocks();
-		void generateModel(const World& world);
+		void generateModel(World& world);
 
 		static bool inBounds(int x, int y, int z);
 
 		tuple<size_t, size_t, size_t> handleRayCollision(RayCollision rayCollision) const;
 
 		void destroyBlockAt(tuple<size_t, size_t, size_t> blockIdx);
-
-
+		void placeBlockAt(tuple<size_t, size_t, size_t> blockIdx, Vector3 rayNormal, Block block, World& world);
 };
 
 

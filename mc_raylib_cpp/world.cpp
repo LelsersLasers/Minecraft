@@ -20,17 +20,17 @@ World::World() {
 	this->chunks.reserve(WORLD_SIZE * WORLD_SIZE * WORLD_SIZE);
 }
 
-const Chunk* World::getChunkAt(tuple<int, int, int> chunkPos) const {
+Chunk& World::getChunkAt(tuple<int, int, int> chunkPos) {
 	size_t x = std::get<0>(chunkPos);
 	size_t y = std::get<1>(chunkPos);
 	size_t z = std::get<2>(chunkPos);
-	// const Chunk* chunk = ;
-	return &this->chunks[x * WORLD_SIZE * WORLD_SIZE + y + z * WORLD_SIZE];
+	
+	return this->chunks[x * WORLD_SIZE * WORLD_SIZE + y + z * WORLD_SIZE];
 }
-Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) const {
+Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
 	if (World::inBounds(chunkPos)) {
-		const Chunk* chunk = this->getChunkAt(chunkPos);
-		return chunk->getBlockAt(x, y, z);
+		Chunk& chunk = this->getChunkAt(chunkPos);
+		return chunk.getBlockAt(x, y, z);
 	}
 	else {
 		return Block(BlockType::AIR);

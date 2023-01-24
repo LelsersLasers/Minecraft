@@ -24,7 +24,7 @@ class Block {
 const Block AIR_BLOCK(BlockType::AIR);
 // const Block GRASS_BLOCK(BlockType::GRASS);
 // const Block DIRT_BLOCK(BlockType::DIRT);
-// const Block STONE_BLOCK(BlockType::STONE);
+const Block STONE_BLOCK(BlockType::STONE);
 // const Block BEDROCK_BLOCK(BlockType::BEDROCK);
 
 

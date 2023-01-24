@@ -173,6 +173,9 @@ int main() {
 					if (IsKeyPressed(KEY_Q)) {
 						closestChunkCollision->destroyBlockAt(bestBlockTuple);
 					}
+					if (IsKeyPressed(KEY_E)) {
+						closestChunkCollision->placeBlockAt(bestBlockTuple, closestRayCollision.normal, STONE_BLOCK, world);
+					}
 				}
 
 

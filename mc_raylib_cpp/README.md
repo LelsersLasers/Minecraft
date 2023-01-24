@@ -13,6 +13,7 @@
 	- Placing/destroying blocks
 		- Raycast
 		- `chunk.dirty = true` (rebuild chunk model)
+		- Rebuild neighboring chunks
 	- Water block
 		- semi transparent
 	- World gen

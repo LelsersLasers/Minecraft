@@ -68,7 +68,7 @@ void Chunk::generateBlocks() {
 	this->dirty = true;
 }
 
-void Chunk::generateModel(const World& world) {
+void Chunk::generateModel(World& world) {
 
 	Mesh mesh = { 0 };
 
@@ -222,12 +222,9 @@ tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollisio
 	if (smallestDistance == INFINITY) {
 		std::cout << "smallestDistance: \t X: " << point.x << " Y: " << point.y << " Z: " << point.z << std::endl;
 	}
-	// if (startX < 0 || startY < 0 || startZ < 0) {
-	// 	std::cout << "startX: " << startX << " startY: " << startY << " startZ: " << startZ << std::endl;
-	// }
-	// if (endX > CHUNK_SIZE || endY > CHUNK_SIZE || endZ > CHUNK_SIZE) {
-	// 	std::cout << "endX: " << endX << " endY: " << endY << " endZ: " << endZ << std::endl;
-	// }
+
+	Vector3 normal = rayCollision.normal;
+
 	return std::make_tuple(closestX, closestY, closestZ);
 }
 
@@ -237,4 +234,34 @@ void Chunk::destroyBlockAt(tuple<size_t, size_t, size_t> blockIdx) {
 	size_t z = std::get<2>(blockIdx);
 
 	this->setBlockAt(x, y, z, AIR_BLOCK);
+}
+void Chunk::placeBlockAt(tuple<size_t, size_t, size_t> blockIdx, Vector3 rayNormal, Block block, World& world) {
+	// rayNormal is V{ 0, 0, 0 } but with a 1 or -1
+	int newBlockX = (int)std::get<0>(blockIdx) + (int)rayNormal.x;
+	int newBlockY = (int)std::get<1>(blockIdx) + (int)rayNormal.y;
+	int newBlockZ = (int)std::get<2>(blockIdx) + (int)rayNormal.z;
+
+	if (Chunk::inBounds(newBlockX, newBlockY, newBlockZ)) {
+		this->setBlockAt(newBlockX, newBlockY, newBlockZ, block);
+		this->dirty = true;
+	}
+	else {
+		int newChunkX = std::get<0>(this->position) + (int)rayNormal.x;
+		int newChunkY = std::get<1>(this->position) + (int)rayNormal.y;
+		int newChunkZ = std::get<2>(this->position) + (int)rayNormal.z;
+
+		tuple<int, int, int> newChunkPos = std::make_tuple(newChunkX, newChunkY, newChunkZ);
+
+		if (World::inBounds(newChunkPos)) {
+			Chunk& newChunk = world.getChunkAt(newChunkPos);
+			newChunk.setBlockAt(
+				(size_t)EUCMOD(newBlockX, CHUNK_SIZE),
+				(size_t)EUCMOD(newBlockY, CHUNK_SIZE),
+				(size_t)EUCMOD(newBlockZ, CHUNK_SIZE),
+				block
+			);
+
+			this->dirty = true;
+		}
+	}
 }
