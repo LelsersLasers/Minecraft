@@ -24,4 +24,6 @@ Vector3 Vector3Zero();
 Vector3 Vector3FromInts(int x, int y, int z);
 Vector3 Vector3Uniform(float x);
 
+Vector3 Vector3Negative(const Vector3& vec);
+
 #endif

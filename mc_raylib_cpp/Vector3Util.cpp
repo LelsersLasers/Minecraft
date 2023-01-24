@@ -71,3 +71,7 @@ Vector3 Vector3FromInts(int x, int y, int z) {
 Vector3 Vector3Uniform(float x) {
 	return (Vector3){ x, x, x };
 }
+
+Vector3 Vector3Negative(const Vector3& vec) {
+	return (Vector3){ -vec.x, -vec.y, -vec.z };
+}
