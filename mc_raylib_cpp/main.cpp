@@ -171,7 +171,7 @@ int main() {
 					DrawCubeWiresV(bestBlockOutlinePos + closestChunkCollision->getWorldPos(), Vector3Uniform(1.0), RED);
 
 					if (IsKeyPressed(KEY_Q)) {
-						closestChunkCollision->destroyBlockAt(bestBlockTuple);
+						closestChunkCollision->destroyBlockAt(bestBlockTuple, world);
 					}
 					if (IsKeyPressed(KEY_E)) {
 						closestChunkCollision->placeBlockAt(bestBlockTuple, closestRayCollision.normal, STONE_BLOCK, world);

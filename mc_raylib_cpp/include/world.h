@@ -27,6 +27,8 @@ class World {
 		void updateChunkModels();
 
 		static bool inBounds(tuple<int, int, int> chunkPos);
+
+		void dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> srcBlock);
 };
 
 

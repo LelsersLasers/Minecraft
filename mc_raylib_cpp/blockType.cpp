@@ -66,11 +66,11 @@ bool getTransparent(const BlockType& blockType) {
 }
 
 BlockType getRandomBlockType() {
-	// return (BlockType)(rand() % (BLOCK_MAX + 1));
+	return (BlockType)(rand() % (BLOCK_MAX + 1));
 	// return BlockType::GRASS;
-	if (rand() % 2 == 0) {
-		return BlockType::GRASS;
-	} else {
-		return BlockType::AIR;
-	}
+	// if (rand() % 2 == 0) {
+	// 	return BlockType::GRASS;
+	// } else {
+	// 	return BlockType::AIR;
+	// }
 }
