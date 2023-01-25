@@ -30,7 +30,7 @@ int main() {
 	bool cursor = false;
 	bool wireframe = false;
 	bool transparentWireframe = false;
-	bool faces = false;
+	bool faces = true;
 
 	srand(time(NULL));
 
@@ -85,6 +85,9 @@ int main() {
 			if (moveVec != Vector3Zero()) {
 				moveVec = normalize(moveVec) * delta * 20.0;
 				cameraController.moveBy(moveVec);
+
+				// TODO: only sort in some cases?
+				world.sortChunks(cameraController);
 			}
 		}
 
@@ -107,7 +110,6 @@ int main() {
 				transparentWireframe = !transparentWireframe;
 			}
 		}
-		
 
 		// iterates over chunks
 		world.updateChunkModels();
@@ -131,7 +133,7 @@ int main() {
 					}
 					if (wireframe) {
 						DrawModelWires(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, BLACK);
-						
+
 						DrawCubeWiresV(
 							world.chunks[i].getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
 							Vector3Uniform((float)CHUNK_SIZE),

@@ -15,11 +15,15 @@
 		- If top is air block, water block is less tall
 		- TODO: BUG
 			- Werid looking edges between chunks despite the fact that there are no faces/triangles
+			- Possible fix: sort chunks by distance to camera (farthest first)
 	- World gen
 		- Perlin noise
 		- Trees
 	- Infinite world
 		- World::chunks is an unordered map?
+	- Textures
+		- Texture atlas
+		- Replaces colors
 - Everything 2
 	- Working player
 		- Collision physics
@@ -33,5 +37,7 @@
 			- Live read/write to file
 	- World gen
 		- Biomes
+	- Fog
+		- For far away chunks
 	- Flowing water
 	- Falling sand blocks

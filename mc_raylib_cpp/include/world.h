@@ -32,6 +32,8 @@ class World {
 		void dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> srcBlock);
 
 		bool cameraIsSubmerged(const CameraController& cameraController);
+
+		void sortChunks(const CameraController& cameraController);
 };
 
 

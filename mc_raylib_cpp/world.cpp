@@ -5,6 +5,11 @@
 #include <vector>
 #include <tuple>
 
+#include <algorithm>
+#include <functional>
+
+#include "include/Vector3Util.h"
+
 #include "include/block.h"
 #include "include/chunk.h"
 #include "include/consts.h"
@@ -131,6 +136,69 @@ bool World::cameraIsSubmerged(const CameraController& cameraController) {
 	Block block = chunk.getBlockAt(blockX, blockY, blockZ);
 
 	return block.blockType == BlockType::WATER;
-
-
 }
+
+
+
+// struct ChunkSorter {
+// 	const CameraController& cameraController;
+// 	ChunkSorter(const CameraController& cameraController) : cameraController(cameraController) {}
+// 	bool operator()(const Chunk& chunk1, const Chunk& chunk2) {
+// 		Vector3 chunk1Pos = chunk1.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0);
+// 		Vector3 chunk2Pos = chunk2.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0);
+
+// 		Vector3 chunk1Dif = chunk1Pos - cameraController.camera.position;
+// 		Vector3 chunk2Dif = chunk2Pos - cameraController.camera.position;
+
+// 		return length(chunk1Dif) > length(chunk2Dif);
+// 	}
+// };
+
+struct CS {
+	inline bool operator()(const Chunk& chunk1, const Chunk& chunk2) {
+		return true;
+	}
+};
+
+
+void World::sortChunks(const CameraController& cameraController) {
+	// auto a = this->chunks.begin();
+	// auto b = this->chunks.end();
+	// std::sort(
+	// 	a,
+	// 	b,
+	// 	// CS()
+	// 	[](const auto& chunk1, const auto& chunk2) {return true;}
+	// );
+	
+
+	// Chunk& c0 = this->chunks[0];
+	// Chunk& c1 = this->chunks[1];
+
+
+	// TODO: why do these segfault?
+	Chunk& cTemp = this->chunks[0];
+	this->chunks[0] = this->chunks[1];
+	this->chunks[1] = cTemp;
+
+	std::swap(this->chunks[0], this->chunks[1]);
+
+	// int n = this->chunks.size();
+    // for (int i = 0; i < n - 1; i++) {
+	// 	for (int j = 0; j < n - i - 1; j++) {
+    //         if (this->chunks[j] > this->chunks[j + 1]) {
+    //             swap(arr[j], arr[j + 1]);
+	// 		}
+	// 	}
+	// }
+}
+
+// [&cameraController](const auto& chunk1, const auto& chunk2){
+// 	Vector3 chunk1Pos = chunk1.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0);
+// 	Vector3 chunk2Pos = chunk2.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0);
+
+// 	Vector3 chunk1Dif = chunk1Pos - cameraController.camera.position;
+// 	Vector3 chunk2Dif = chunk2Pos - cameraController.camera.position;
+
+// 	return length(chunk1Dif) > length(chunk2Dif);
+// }
