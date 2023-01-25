@@ -4,6 +4,10 @@
 
 #include "raylib.h"
 
+#include <tuple>
+
+using std::tuple;
+
 
 class CameraController {
 
@@ -25,6 +29,10 @@ class CameraController {
 		Vector3 calcRight() const;
 
 		void update();
+
+		tuple<int, int, int> getChunkPos() const;
+
+
 };
 
 

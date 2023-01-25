@@ -78,3 +78,11 @@ void CameraController::update() {
 	
 	this->camera.target = this->camera.position + this->calcForward();
 }
+
+tuple<int, int, int> CameraController::getChunkPos() const {
+	return (tuple<int, int, int>) {
+		(int)floor(this->camera.position.x / (float)CHUNK_SIZE),
+		(int)floor(this->camera.position.y / (float)CHUNK_SIZE),
+		(int)floor(this->camera.position.z / (float)CHUNK_SIZE),
+	};
+}

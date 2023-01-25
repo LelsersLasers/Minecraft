@@ -75,7 +75,7 @@ void Chunk::generateBlocks() {
 				} else if (y < 11) {
 					this->blocks.push_back(WATER_BLOCK);
 				} else {
-					this->blocks.push_back(AIR_BLOCK);
+					this->blocks.push_back(GRASS_BLOCK);
 				}
 
 			}

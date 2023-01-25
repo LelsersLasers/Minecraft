@@ -124,11 +124,6 @@ int main() {
 				vector<Chunk*> chunkCollisions;
 
 				for (size_t i = 0; i < world.chunks.size(); i++) {
-					DrawCubeWiresV(
-						world.chunks[i].getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
-						Vector3Uniform((float)CHUNK_SIZE),
-						PINK
-					);
 
 					if (faces) {
 						DrawModel(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, WHITE);
@@ -136,6 +131,12 @@ int main() {
 					}
 					if (wireframe) {
 						DrawModelWires(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, BLACK);
+						
+						DrawCubeWiresV(
+							world.chunks[i].getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
+							Vector3Uniform((float)CHUNK_SIZE),
+							PINK
+						);
 					}
 					if (transparentWireframe) {
 						DrawModelWires(world.chunks[i].transparentModel, world.chunks[i].getWorldPos(), 1.0, BLACK);
@@ -193,6 +194,13 @@ int main() {
 
 			int windowWidth = GetScreenWidth();
 			int windowHeight = GetScreenHeight();
+
+
+			if (world.cameraIsSubmerged(cameraController)) {
+				DrawRectangle(0, 0, windowWidth, windowHeight, ColorAlpha(BLUE, 0.4));
+			}
+
+
 			DrawLine(
 				windowWidth / 2 - 10,
 				windowHeight / 2,

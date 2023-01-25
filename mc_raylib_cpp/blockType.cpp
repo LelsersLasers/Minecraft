@@ -30,7 +30,7 @@ Color getColorGrass(Dir dir) {
 Color getColorDirt(Dir _dir)	{ return BROWN; }
 Color getColorStone(Dir _dir)	{ return GRAY; }
 Color getColorBedrock(Dir _dir)	{ return DARKGRAY; }
-Color getColorWater(Dir _dir)	{ return ColorWithTransparency(BLUE, 0.5); }
+Color getColorWater(Dir _dir)	{ return ColorAlpha(BLUE, 0.5); }
 
 Color (*getColorFn(const BlockType& blockType))(Dir dir) {
 	switch (blockType) {

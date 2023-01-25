@@ -12,8 +12,9 @@
 - Everything
 	- Water block
 		- semi transparent
-		- If submerged: blue tint over everything
 		- If top is air block, water block is less tall
+		- TODO: BUG
+			- Werid looking edges between chunks despite the fact that there are no faces/triangles
 	- World gen
 		- Perlin noise
 		- Trees

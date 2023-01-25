@@ -115,3 +115,22 @@ void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> s
 		}
 	}
 }
+
+bool World::cameraIsSubmerged(const CameraController& cameraController) {
+	tuple<int, int, int> chunkPos = cameraController.getChunkPos();
+	if (!World::inBounds(chunkPos)) {
+		return false;
+	}
+
+	Chunk& chunk = this->getChunkAt(chunkPos);
+
+	int blockX = EUCMOD((int)cameraController.camera.position.x, CHUNK_SIZE);
+	int blockY = EUCMOD((int)cameraController.camera.position.y, CHUNK_SIZE);
+	int blockZ = EUCMOD((int)cameraController.camera.position.z, CHUNK_SIZE);
+
+	Block block = chunk.getBlockAt(blockX, blockY, blockZ);
+
+	return block.blockType == BlockType::WATER;
+
+
+}
