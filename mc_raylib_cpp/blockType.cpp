@@ -16,13 +16,11 @@ Color getColorGrass(Dir dir) {
 		case Dir::Bottom:
 			return GREEN;
 		case Dir::Right:
-			return GREEN * 0.9;
 		case Dir::Left:
-			return GREEN * 0.7;
+			return GREEN * 0.9;
 		case Dir::Forward:
-			return GREEN * 0.8;
 		case Dir::Backward:
-			return GREEN * 0.6;
+			return GREEN * 0.8;
 		default: // should not be reached
 			return GREEN;
 	}
@@ -78,4 +76,24 @@ BlockType getRandomBlockType() {
 	// } else {
 	// 	return BlockType::AIR;
 	// }
+}
+
+
+std::string getBlockName(const BlockType& BlockType) {
+	switch (BlockType) {
+		case BlockType::AIR:
+			return "Air";
+		case BlockType::GRASS:
+			return "Grass";
+		case BlockType::DIRT:
+			return "Dirt";
+		case BlockType::STONE:
+			return "Stone";
+		case BlockType::BEDROCK:
+			return "Bedrock";
+		case BlockType::WATER:
+			return "Water";
+		default: // should not be reached
+			return "Air";
+	}
 }

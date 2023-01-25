@@ -3,6 +3,8 @@
 
 #include "raylib.h"
 
+#include <string>
+
 #include "dir.h"
 
 enum BlockType {
@@ -29,6 +31,6 @@ bool getTransparent(const BlockType& blockType);
 
 BlockType getRandomBlockType();
 
-
+std::string getBlockName(const BlockType& blockType);
 
 #endif

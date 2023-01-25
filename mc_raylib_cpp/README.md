@@ -1,5 +1,9 @@
 # Minecraft ig
 
+## BUGS:
+
+- Neighboring chunks not marked as dirty
+
 ## TODO:
 
 - C++ stuff
@@ -11,6 +15,7 @@
 		- Mostly iterating over World::chunks
 		- Enhanced for loops?
 - Replace Vector3/2Util with raymath
+- Block has array[6] of Colors (indexed by Dir) instead of getColorFn()/getColor()
 - Everything
 	- Water block
 		- semi transparent
@@ -23,8 +28,13 @@
 	- World gen
 		- Perlin noise
 		- Trees
+			- Wooden logs
+				- Directional blocks
 	- Infinite world
 		- World::chunks is an unordered map?
+	- Glass blocks
+		- Sort blocks within a chunk?
+			- Or does it work already?
 	- Textures
 		- Texture atlas
 		- Replaces colors

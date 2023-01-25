@@ -39,6 +39,26 @@ int main() {
 
 	DisableCursor();
 
+
+	Block blockTypes[BLOCK_MAX + 1] = {
+		AIR_BLOCK,
+		GRASS_BLOCK,
+		DIRT_BLOCK,
+		STONE_BLOCK,
+		BEDROCK_BLOCK,
+		WATER_BLOCK
+	};
+	KeyboardKey blockKeys[BLOCK_MAX + 1] = {
+		KEY_ONE,
+		KEY_TWO,
+		KEY_THREE,
+		KEY_FOUR,
+		KEY_FIVE,
+		KEY_SIX
+	};
+	Block selectedBlock = blockTypes[BlockType::GRASS];
+
+
 	CameraController cameraController; // uses default defined constructor
 
 
@@ -108,6 +128,15 @@ int main() {
 			}
 			if (IsKeyPressed(KEY_H)) {
 				transparentWireframe = !transparentWireframe;
+			}
+		}
+
+
+		{
+			for (size_t i = 0; i < BLOCK_MAX + 1; i++) {
+				if (IsKeyPressed(blockKeys[i])) {
+					selectedBlock = blockTypes[i];
+				}
 			}
 		}
 
@@ -187,7 +216,7 @@ int main() {
 						closestChunkCollision->destroyBlockAt(bestBlockTuple, world);
 					}
 					if (IsKeyPressed(KEY_E)) {
-						closestChunkCollision->placeBlockAt(bestBlockTuple, closestRayCollision.normal, STONE_BLOCK, world);
+						closestChunkCollision->placeBlockAt(bestBlockTuple, closestRayCollision.normal, selectedBlock, world);
 					}
 				}
 
@@ -200,7 +229,7 @@ int main() {
 			int windowHeight = GetScreenHeight();
 
 
-			if (world.cameraIsSubmerged(cameraController)) {
+			if (world.cameraIsSubmerged(cameraController) && faces) {
 				DrawRectangle(0, 0, windowWidth, windowHeight, ColorAlpha(BLUE, 0.4));
 			}
 
@@ -227,8 +256,11 @@ int main() {
 			std::string fpsText = "- FPS: " + std::to_string((int)(1.0 / delta));
 			std::string deltaText = "- Delta: " + std::to_string(delta * 1000);
 
+			std::string selectedBlockText = "- Selected: " + getBlockName(selectedBlock.blockType);
+
 			DrawText(fpsText.c_str(), 40, 40, 10, DARKGRAY);
 			DrawText(deltaText.c_str(), 40, 60, 10, DARKGRAY);
+			DrawText(selectedBlockText.c_str(), 40, 80, 10, DARKGRAY);
         }
         EndDrawing();
     }
