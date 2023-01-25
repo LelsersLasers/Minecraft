@@ -125,7 +125,9 @@ int main() {
 				vector<RayCollision> rayCollisions;
 				vector<Chunk*> chunkCollisions;
 
-				for (size_t i = 0; i < world.chunks.size(); i++) {
+				for (size_t idx = 0; idx < world.chunkOrder.size(); idx++) {
+
+					size_t i = world.chunkOrder[idx]; // draw back to front
 
 					if (faces) {
 						DrawModel(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, WHITE);

@@ -7,12 +7,16 @@
 	- Better usage of pointers
 		- Avoid creating object and then reassinging it
 		- Can create some objects as `Type* var = new Type(args)`
-	- Enhanced for loops?
+	- Improve iterating
+		- Mostly iterating over World::chunks
+		- Enhanced for loops?
 - Replace Vector3/2Util with raymath
 - Everything
 	- Water block
 		- semi transparent
 		- If top is air block, water block is less tall
+		- Improve chunk sorting/ordering
+			- When to sort
 		- TODO: BUG
 			- Werid looking edges between chunks despite the fact that there are no faces/triangles
 			- Possible fix: sort chunks by distance to camera (farthest first)

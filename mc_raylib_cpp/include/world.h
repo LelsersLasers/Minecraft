@@ -18,6 +18,8 @@ class World {
 	public:
 		vector<Chunk> chunks;
 
+		vector<size_t> chunkOrder;
+
 		World();
 		// ~World();
 
