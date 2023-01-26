@@ -158,18 +158,18 @@ int main() {
 
 					size_t i = world.chunkOrder[idx]; // draw back to front
 
+					DrawCubeWiresV(
+						world.chunks[i].getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
+						Vector3Uniform((float)CHUNK_SIZE),
+						PINK
+					);
+
 					if (faces) {
 						DrawModel(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, WHITE);
 						DrawModel(world.chunks[i].transparentModel, world.chunks[i].getWorldPos(), 1.0, WHITE);
 					}
 					if (wireframe) {
 						DrawModelWires(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, BLACK);
-
-						DrawCubeWiresV(
-							world.chunks[i].getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
-							Vector3Uniform((float)CHUNK_SIZE),
-							PINK
-						);
 					}
 					if (transparentWireframe) {
 						DrawModelWires(world.chunks[i].transparentModel, world.chunks[i].getWorldPos(), 1.0, BLACK);

@@ -44,7 +44,7 @@ Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
 		return chunk.getBlockAt(x, y, z);
 	}
 	else {
-		return Block(BlockType::AIR);
+		return AIR_BLOCK;
 	}
 }
 
@@ -55,7 +55,7 @@ void World::generateChunks() {
 		for (size_t y = 0; y < WORLD_SIZE; y++) {
 			for (size_t z = 0; z < WORLD_SIZE; z++) {
 
-				Chunk chunk = Chunk({ x, y, z });
+				Chunk chunk = Chunk(std::make_tuple(x, y, z));
 				chunk.generateBlocks();
 				this->chunks.push_back(chunk);
 

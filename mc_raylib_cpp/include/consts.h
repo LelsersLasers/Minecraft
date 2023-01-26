@@ -5,7 +5,9 @@
 #include "raylib.h"
 
 
-#define EUCMOD(a, b)  ((a < 0) * (((a % b) + b) % b) + (a >= 0) * (a % b))
+// #define BRANCHLESS_EUCMOD(a, b)  (((a) < 0) * ((((a) % (b)) + (b)) % (b)) + ((a) >= 0) * ((a) % (b)))
+
+#define EUCMOD(a,b) ((a) < 0 ? ((((a) % (b)) + (b)) % (b)) : ((a) % (b)))
 #define BRANCHLESS_MAX(a, b) (((a) > (b)) * (a) + ((a) <= (b)) * (b))
 #define BRANCHLESS_MIN(a, b) (((a) < (b)) * (a) + ((a) >= (b)) * (b))
 

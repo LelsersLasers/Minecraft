@@ -125,7 +125,7 @@ void Chunk::generateModel(World& world) {
 					int ny = y + std::get<1>(dirTuple);
 					int nz = z + std::get<2>(dirTuple);
 
-					Block neighbor(BlockType::AIR);
+					Block neighbor = AIR_BLOCK;
 					if (Chunk::inBounds(nx, ny, nz)) {
 						neighbor = this->getBlockAt(nx, ny, nz);
 					}
@@ -293,7 +293,7 @@ void Chunk::destroyBlockAt(tuple<size_t, size_t, size_t> blockIdx, World& world)
 	world.dirtyNeighbors(this->position, blockIdx);
 }
 void Chunk::placeBlockAt(tuple<size_t, size_t, size_t> blockIdx, Vector3 rayNormal, Block block, World& world) {
-	// rayNormal is V{ 0, 0, 0 } but with a 1 or -1
+	// rayNormal is V{ 0, 0, 0 } but with a single 1 or -1
 	int newBlockX = (int)std::get<0>(blockIdx) + (int)rayNormal.x;
 	int newBlockY = (int)std::get<1>(blockIdx) + (int)rayNormal.y;
 	int newBlockZ = (int)std::get<2>(blockIdx) + (int)rayNormal.z;
