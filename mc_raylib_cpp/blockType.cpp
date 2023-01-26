@@ -25,8 +25,38 @@ Color getColorGrass(Dir dir) {
 			return GREEN;
 	}
 }
-Color getColorDirt(Dir _dir)	{ return BROWN; }
-Color getColorStone(Dir _dir)	{ return GRAY; }
+Color getColorDirt(Dir dir) {
+	// return BROWN;
+	switch (dir) {
+		case Dir::Top:
+		case Dir::Bottom:
+			return BROWN;
+		case Dir::Right:
+		case Dir::Left:
+			return BROWN * 0.9;
+		case Dir::Forward:
+		case Dir::Backward:
+			return BROWN * 0.8;
+		default: // should not be reached
+			return BROWN;
+	}
+}
+Color getColorStone(Dir dir) {
+	// return GRAY;
+	switch (dir) {
+		case Dir::Top:
+		case Dir::Bottom:
+			return GRAY;
+		case Dir::Right:
+		case Dir::Left:
+			return GRAY * 0.9;
+		case Dir::Forward:
+		case Dir::Backward:
+			return GRAY * 0.8;
+		default: // should not be reached
+			return GRAY;
+	}
+}
 Color getColorBedrock(Dir _dir)	{ return DARKGRAY; }
 Color getColorWater(Dir _dir)	{ return ColorAlpha(BLUE, 0.5); }
 
