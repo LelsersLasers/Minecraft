@@ -12,9 +12,9 @@
 
 CameraController::CameraController() {
 	this->camera = { 0 };
-	this->camera.position =	(Vector3){ 0.0, 0.0, 0.0 };
+	this->camera.position =	(Vector3){ -1.0, -1.0, -1.0 };
 	this->camera.target =	(Vector3){ 1.0, 0.0, 0.0 };
-	this->camera.up = 		(Vector3){ 0.0, 0.0, 1.0 };
+	this->camera.up = 		(Vector3){ 0.0, 0.0, 1.0 }; // Z is up here
 	this->camera.fovy =		60.0f;
 	this->camera.projection = CAMERA_PERSPECTIVE;
 
