@@ -59,24 +59,20 @@ Vector3 Chunk::getWorldPos() const {
 void Chunk::generateBlocks() {
 	this->blocks.clear();
 
+	// int worldChunkX = std::get<0>(this->position);
+	// int worldChunkY = std::get<1>(this->position);
+	// int worldChunkZ = std::get<2>(this->position);
+
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
 			for (size_t z = 0; z < CHUNK_SIZE; z++) {
-				
+
+				// int worldX = worldChunkX + (int)x;
+				// int worldY = worldChunkY + (int)y;
+				// int worldZ = worldChunkZ + (int)z;
+
+				this->blocks.push_back(GRASS_BLOCK);
 				// this->blocks.push_back(Block(getRandomBlockType()));
-				if (y == 0) {
-					this->blocks.push_back(BEDROCK_BLOCK);
-				} else if (y < 4) {
-					this->blocks.push_back(STONE_BLOCK);
-				} else if (y < 7) {
-					this->blocks.push_back(DIRT_BLOCK);
-				} else if (y < 8) {
-					this->blocks.push_back(GRASS_BLOCK);
-				} else if (y < 11) {
-					this->blocks.push_back(WATER_BLOCK);
-				} else {
-					this->blocks.push_back(GRASS_BLOCK);
-				}
 
 			}
 		}
@@ -130,16 +126,23 @@ void Chunk::generateModel(World& world) {
 						neighbor = this->getBlockAt(nx, ny, nz);
 					}
 					else {
+						int neighborChunkX = std::get<0>(this->position) + std::get<0>(dirTuple);
+						int neighborChunkY = std::get<1>(this->position) + std::get<1>(dirTuple);
+						int neighborChunkZ = std::get<2>(this->position) + std::get<2>(dirTuple);
+						tuple<int, int, int> neighborChunkIdx = std::make_tuple(neighborChunkX, neighborChunkY, neighborChunkZ);
+
 						neighbor = world.getBlockAt(
-							std::make_tuple(
-								std::get<0>(this->position) + std::get<0>(dirTuple),
-								std::get<1>(this->position) + std::get<1>(dirTuple),
-								std::get<2>(this->position) + std::get<2>(dirTuple)
-							),
+							neighborChunkIdx,
+							// (nx + CHUNK_SIZE) % CHUNK_SIZE,
+							// (ny + CHUNK_SIZE) % CHUNK_SIZE,
+							// (nz + CHUNK_SIZE) % CHUNK_SIZE
 							EUCMOD(nx, CHUNK_SIZE),
 							EUCMOD(ny, CHUNK_SIZE),
 							EUCMOD(nz, CHUNK_SIZE)
 						);
+						if (neighbor.blockType == BlockType::AIR && World::inBounds(neighborChunkIdx)) {
+							std::cout << "\nAAAAAAAAAAAAAAAAAAAA\n" << std::endl;
+						}
 					}
 
 					if (!neighbor.transparent || (block.blockType == BlockType::WATER && neighbor.blockType == BlockType::WATER)) {
@@ -290,6 +293,9 @@ void Chunk::destroyBlockAt(tuple<size_t, size_t, size_t> blockIdx, World& world)
 	size_t z = std::get<2>(blockIdx);
 
 	this->setBlockAt(x, y, z, AIR_BLOCK);
+
+	std::cout << " destroyed block at " << x << ", " << y << ", " << z << "\t " << getBlockName(this->getBlockAt(x, y, z).blockType) << std::endl;
+	
 	world.dirtyNeighbors(this->position, blockIdx);
 }
 void Chunk::placeBlockAt(tuple<size_t, size_t, size_t> blockIdx, Vector3 rayNormal, Block block, World& world) {

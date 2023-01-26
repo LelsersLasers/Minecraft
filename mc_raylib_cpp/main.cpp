@@ -27,6 +27,8 @@ using std::tuple;
 
 int main() {
 
+	// std::cout << "\n\t" << EUCMOD(-1, 16) << std::endl;
+
 	bool cursor = false;
 	bool wireframe = false;
 	bool transparentWireframe = false;
