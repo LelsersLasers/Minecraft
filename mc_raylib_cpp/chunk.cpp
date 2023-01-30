@@ -1,7 +1,5 @@
 #include "raylib.h"
 
-#include <iostream>
-
 #include <stdlib.h>
 #include <cstring> // memcpy
 #include <cmath> // sqrtf
@@ -300,8 +298,6 @@ void Chunk::destroyBlockAt(tuple<size_t, size_t, size_t> blockIdx, World& world)
 	size_t z = std::get<2>(blockIdx);
 
 	this->setBlockAt(x, y, z, AIR_BLOCK);
-
-	std::cout << " destroyed block at " << x << ", " << y << ", " << z << "\t " << getBlockName(this->getBlockAt(x, y, z).blockType) << std::endl;
 	
 	world.dirtyNeighbors(this->position, blockIdx);
 }

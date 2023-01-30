@@ -4,7 +4,7 @@
 
 #include <time.h>
 #include <stdlib.h>
-#include <iostream>
+// #include <iostream>
 
 #include <vector>
 #include <tuple>
@@ -27,8 +27,6 @@ using std::tuple;
 
 int main() {
 
-	// std::cout << "\n\t" << EUCMOD(-1, 16) << std::endl;
-
 	bool cursor = false;
 	bool wireframe = false;
 	bool transparentWireframe = false;
@@ -42,6 +40,7 @@ int main() {
 	DisableCursor();
 
 
+	// index = enum of block type
 	Block blockTypes[BLOCK_MAX + 1] = {
 		AIR_BLOCK,
 		GRASS_BLOCK,
@@ -50,6 +49,7 @@ int main() {
 		BEDROCK_BLOCK,
 		WATER_BLOCK
 	};
+	// parrallel array to blockTypes
 	KeyboardKey blockKeys[BLOCK_MAX + 1] = {
 		KEY_ONE,
 		KEY_TWO,
@@ -58,7 +58,7 @@ int main() {
 		KEY_FIVE,
 		KEY_SIX
 	};
-	Block selectedBlock = blockTypes[BlockType::GRASS];
+	Block selectedBlock = blockTypes[BlockType::GRASS]; // uses enum as int to index array
 
 
 	CameraController cameraController; // uses default defined constructor

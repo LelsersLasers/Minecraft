@@ -1,7 +1,6 @@
 #include "raylib.h"
 
 #include <stdlib.h>
-#include <iostream>
 
 #include <vector>
 #include <tuple>
@@ -68,7 +67,6 @@ void World::updateChunkModels() {
 	for (size_t i = 0; i < this->chunks.size(); i++) {
 		if (this->chunks[i].dirty) {
 			this->chunks[i].generateModel(*this);
-			std::cout << " Model for " << std::get<0>(this->chunks[i].position) << " " << std::get<1>(this->chunks[i].position) << " " << std::get<2>(this->chunks[i].position) << " regenerated." << std::endl;
 		}
 	}
 }
@@ -90,9 +88,6 @@ void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> s
 	int blockX = std::get<0>(srcBlock);
 	int blockY = std::get<1>(srcBlock);
 	int blockZ = std::get<2>(srcBlock);
-
-	std::cout << "\n " << chunkX << " " << chunkY << " " << chunkZ << std::endl;
-	std::cout << " " << blockX << " " << blockY << " " << blockZ << std::endl << std::endl;
 
 	// blockX == 0: 				(-1, 0, 0)
 	// blockX == CHUNK_SIZE - 1:	(1, 0, 0)
@@ -123,21 +118,12 @@ void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> s
 		neighborChunks.push_back(std::make_tuple(chunkX, chunkY, chunkZ + 1));
 	}
 
-	std::cout << "neighborChunks: " << neighborChunks.size() << std::endl;
-
 	for (size_t i = 0; i < neighborChunks.size(); i++) {
 		tuple<int, int, int> neighborChunk = neighborChunks[i];
-
-		int a = std::get<0>(neighborChunk);
-		int b = std::get<1>(neighborChunk);
-		int c = std::get<2>(neighborChunk);
-
-		std::cout << "\t " << a << " " << b << " " << c << std::endl;
 
 		if (World::inBounds(neighborChunk)) {
 			Chunk& chunk = this->getChunkAt(neighborChunk);
 			chunk.dirty = true;
-			std::cout << "\tin bounds: " << a << " " << b << " " << c << std::endl;
 		}
 	}
 }
