@@ -117,6 +117,9 @@ void Chunk::generateModel(World& world) {
 
 				Vector3 pos = Vector3FromInts(x, y, z);
 
+							EUCMOD_SIMPLE(nx, CHUNK_SIZE),
+							EUCMOD_SIMPLE(ny, CHUNK_SIZE),
+							EUCMOD_SIMPLE(nz, CHUNK_SIZE)
 				for (size_t i = 0; i < 6; i++) { // 6 faces per block
 					Dir dir = allDirEnums[i];
 					tuple<int, int, int> dirTuple = allDirTuples[i];
@@ -141,12 +144,9 @@ void Chunk::generateModel(World& world) {
 
 						neighbor = world.getBlockAt(
 							neighborChunkIdx,
-							// (nx + CHUNK_SIZE) % CHUNK_SIZE,
-							// (ny + CHUNK_SIZE) % CHUNK_SIZE,
-							// (nz + CHUNK_SIZE) % CHUNK_SIZE
-							EUCMOD(nx, CHUNK_SIZE),
-							EUCMOD(ny, CHUNK_SIZE),
-							EUCMOD(nz, CHUNK_SIZE)
+							EUCMOD_SIMPLE(nx, CHUNK_SIZE),
+							EUCMOD_SIMPLE(ny, CHUNK_SIZE),
+							EUCMOD_SIMPLE(nz, CHUNK_SIZE)
 						);
 					}
 
@@ -321,9 +321,9 @@ void Chunk::placeBlockAt(tuple<size_t, size_t, size_t> blockIdx, Vector3 rayNorm
 		if (World::inBounds(newChunkPos)) {
 			Chunk& newChunk = world.getChunkAt(newChunkPos);
 
-			size_t chunkBlockX = (size_t)EUCMOD(newBlockX, CHUNK_SIZE);
-			size_t chunkBlockY = (size_t)EUCMOD(newBlockY, CHUNK_SIZE);
-			size_t chunkBlockZ = (size_t)EUCMOD(newBlockZ, CHUNK_SIZE);
+			size_t chunkBlockX = (size_t)EUCMOD_SIMPLE(newBlockX, CHUNK_SIZE);
+			size_t chunkBlockY = (size_t)EUCMOD_SIMPLE(newBlockY, CHUNK_SIZE);
+			size_t chunkBlockZ = (size_t)EUCMOD_SIMPLE(newBlockZ, CHUNK_SIZE);
 
 			newChunk.setBlockAt(chunkBlockX, chunkBlockY, chunkBlockZ, block);
 			world.dirtyNeighbors(newChunk.position, std::make_tuple(chunkBlockX, chunkBlockY, chunkBlockZ));

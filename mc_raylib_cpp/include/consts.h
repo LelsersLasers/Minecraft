@@ -7,7 +7,9 @@
 
 // #define BRANCHLESS_EUCMOD(a, b)  (((a) < 0) * ((((a) % (b)) + (b)) % (b)) + ((a) >= 0) * ((a) % (b)))
 
-#define EUCMOD(a,b) ((a) < 0 ? ((((a) % (b)) + (b)) % (b)) : ((a) % (b)))
+#define EUCMOD(a,b) ((a) < 0 ? ((((a) % (b)) + (b)) % (b)) : ((a) % (b))) // range of a is (-inf, inf)
+#define EUCMOD_SIMPLE(a,b) (((a) + (b)) % (b)) // range of a is [-b, inf)
+
 #define BRANCHLESS_MAX(a, b) (((a) > (b)) * (a) + ((a) <= (b)) * (b))
 #define BRANCHLESS_MIN(a, b) (((a) < (b)) * (a) + ((a) >= (b)) * (b))
 
