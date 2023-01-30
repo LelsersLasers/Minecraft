@@ -1,7 +1,5 @@
 #include "raylib.h"
 
-#include <iostream>
-
 #include <stdlib.h>
 #include <cstring> // memcpy
 #include <cmath> // sqrtf
@@ -41,10 +39,10 @@ Chunk::~Chunk() {
 }
 
 Block Chunk::getBlockAt(size_t x, size_t y, size_t z) const {
-	return this->blocks[x * CHUNK_SIZE * CHUNK_SIZE + y + z * CHUNK_SIZE];
+	return this->blocks[x * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + z];
 }
 void Chunk::setBlockAt(size_t x, size_t y, size_t z, Block block) {
-	this->blocks[x * CHUNK_SIZE * CHUNK_SIZE + y + z * CHUNK_SIZE] = block;
+	this->blocks[x * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + z] = block;
 	this->dirty = true;
 }
 
@@ -59,24 +57,26 @@ Vector3 Chunk::getWorldPos() const {
 void Chunk::generateBlocks() {
 	this->blocks.clear();
 
+	// int worldChunkX = std::get<0>(this->position) * CHUNK_SIZE;
+	// int worldChunkY = std::get<1>(this->position) * CHUNK_SIZE;
+	// int worldChunkZ = std::get<2>(this->position) * CHUNK_SIZE;
+
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
 			for (size_t z = 0; z < CHUNK_SIZE; z++) {
-				
+
+				// int worldX = worldChunkX + (int)x;
+				// int worldY = worldChunkY + (int)y;
+				// int worldZ = worldChunkZ + (int)z;
+
+				// if (z % 2 == 0) {
+				// 	this->blocks.push_back(STONE_BLOCK);
+				// } else {
+				// 	this->blocks.push_back(GRASS_BLOCK);
+				// }
+
+				this->blocks.push_back(GRASS_BLOCK);
 				// this->blocks.push_back(Block(getRandomBlockType()));
-				if (y == 0) {
-					this->blocks.push_back(BEDROCK_BLOCK);
-				} else if (y < 4) {
-					this->blocks.push_back(STONE_BLOCK);
-				} else if (y < 7) {
-					this->blocks.push_back(DIRT_BLOCK);
-				} else if (y < 8) {
-					this->blocks.push_back(GRASS_BLOCK);
-				} else if (y < 11) {
-					this->blocks.push_back(WATER_BLOCK);
-				} else {
-					this->blocks.push_back(GRASS_BLOCK);
-				}
 
 			}
 		}
@@ -121,21 +121,29 @@ void Chunk::generateModel(World& world) {
 					Dir dir = allDirEnums[i];
 					tuple<int, int, int> dirTuple = allDirTuples[i];
 
-					int nx = x + std::get<0>(dirTuple);
-					int ny = y + std::get<1>(dirTuple);
-					int nz = z + std::get<2>(dirTuple);
+					int dirX = std::get<0>(dirTuple);
+					int dirY = std::get<1>(dirTuple);
+					int dirZ = std::get<2>(dirTuple);
+
+					int nx = x + dirX;
+					int ny = y + dirY;
+					int nz = z + dirZ;
 
 					Block neighbor = AIR_BLOCK;
 					if (Chunk::inBounds(nx, ny, nz)) {
 						neighbor = this->getBlockAt(nx, ny, nz);
 					}
 					else {
+						int neighborChunkX = std::get<0>(this->position) + dirX;
+						int neighborChunkY = std::get<1>(this->position) + dirY;
+						int neighborChunkZ = std::get<2>(this->position) + dirZ;
+						tuple<int, int, int> neighborChunkIdx = std::make_tuple(neighborChunkX, neighborChunkY, neighborChunkZ);
+
 						neighbor = world.getBlockAt(
-							std::make_tuple(
-								std::get<0>(this->position) + std::get<0>(dirTuple),
-								std::get<1>(this->position) + std::get<1>(dirTuple),
-								std::get<2>(this->position) + std::get<2>(dirTuple)
-							),
+							neighborChunkIdx,
+							// (nx + CHUNK_SIZE) % CHUNK_SIZE,
+							// (ny + CHUNK_SIZE) % CHUNK_SIZE,
+							// (nz + CHUNK_SIZE) % CHUNK_SIZE
 							EUCMOD(nx, CHUNK_SIZE),
 							EUCMOD(ny, CHUNK_SIZE),
 							EUCMOD(nz, CHUNK_SIZE)
@@ -290,6 +298,7 @@ void Chunk::destroyBlockAt(tuple<size_t, size_t, size_t> blockIdx, World& world)
 	size_t z = std::get<2>(blockIdx);
 
 	this->setBlockAt(x, y, z, AIR_BLOCK);
+	
 	world.dirtyNeighbors(this->position, blockIdx);
 }
 void Chunk::placeBlockAt(tuple<size_t, size_t, size_t> blockIdx, Vector3 rayNormal, Block block, World& world) {
@@ -300,8 +309,6 @@ void Chunk::placeBlockAt(tuple<size_t, size_t, size_t> blockIdx, Vector3 rayNorm
 
 	if (Chunk::inBounds(newBlockX, newBlockY, newBlockZ)) {
 		this->setBlockAt(newBlockX, newBlockY, newBlockZ, block);
-
-		this->dirty = true;
 		world.dirtyNeighbors(this->position, std::make_tuple(newBlockX, newBlockY, newBlockZ));
 	}
 	else {
@@ -319,8 +326,6 @@ void Chunk::placeBlockAt(tuple<size_t, size_t, size_t> blockIdx, Vector3 rayNorm
 			size_t chunkBlockZ = (size_t)EUCMOD(newBlockZ, CHUNK_SIZE);
 
 			newChunk.setBlockAt(chunkBlockX, chunkBlockY, chunkBlockZ, block);
-
-			this->dirty = true;
 			world.dirtyNeighbors(newChunk.position, std::make_tuple(chunkBlockX, chunkBlockY, chunkBlockZ));
 		}
 	}

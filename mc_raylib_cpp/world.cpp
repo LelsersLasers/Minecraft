@@ -36,7 +36,7 @@ Chunk& World::getChunkAt(tuple<int, int, int> chunkPos) {
 	size_t y = std::get<1>(chunkPos);
 	size_t z = std::get<2>(chunkPos);
 	
-	return this->chunks[x * WORLD_SIZE * WORLD_SIZE + y + z * WORLD_SIZE];
+	return this->chunks[x * WORLD_SIZE * WORLD_SIZE + y * WORLD_SIZE + z];
 }
 Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
 	if (World::inBounds(chunkPos)) {
@@ -120,6 +120,7 @@ void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> s
 
 	for (size_t i = 0; i < neighborChunks.size(); i++) {
 		tuple<int, int, int> neighborChunk = neighborChunks[i];
+
 		if (World::inBounds(neighborChunk)) {
 			Chunk& chunk = this->getChunkAt(neighborChunk);
 			chunk.dirty = true;

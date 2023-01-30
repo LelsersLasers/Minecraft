@@ -2,11 +2,8 @@
 
 ## BUGS:
 
-- Neighboring chunks not marked as dirty
-
 ## TODO:
 
-- Is Y or Z up?????????????????
 - C++ stuff
 	- When to return/take a reference?
 	- Better usage of pointers
