@@ -30,6 +30,7 @@ int main() {
 	bool cursor = false;
 	bool wireframe = false;
 	bool transparentWireframe = false;
+	bool chunkOutlines = false;
 	bool faces = true;
 
 	srand(time(NULL));
@@ -131,6 +132,9 @@ int main() {
 			if (IsKeyPressed(KEY_H)) {
 				transparentWireframe = !transparentWireframe;
 			}
+			if (IsKeyPressed(KEY_J)) {
+				chunkOutlines = !chunkOutlines;
+			}
 		}
 
 
@@ -160,12 +164,13 @@ int main() {
 
 					size_t i = world.chunkOrder[idx]; // draw back to front
 
-					DrawCubeWiresV(
-						world.chunks[i].getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
-						Vector3Uniform((float)CHUNK_SIZE),
-						PINK
-					);
-
+					if (chunkOutlines) {
+						DrawCubeWiresV(
+							world.chunks[i].getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
+							Vector3Uniform((float)CHUNK_SIZE),
+							PINK
+						);
+					}
 					if (faces) {
 						DrawModel(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, WHITE);
 						DrawModel(world.chunks[i].transparentModel, world.chunks[i].getWorldPos(), 1.0, WHITE);
