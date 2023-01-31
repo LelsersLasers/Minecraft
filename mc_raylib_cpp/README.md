@@ -32,6 +32,8 @@
 	- Textures
 		- Texture atlas
 		- Replaces colors
+	- Preformance
+		- View distance
 - Everything 2
 	- Glass blocks
 		- Sort blocks within a chunk?
