@@ -25,15 +25,17 @@
 	- Trees
 		- Wooden logs
 			- Directional blocks
+		- Leaves
+			- Semi transparent
 	- Infinite world
 		- World::chunks is an unordered map?
-	- Glass blocks
-		- Sort blocks within a chunk?
-			- Or does it work already?
 	- Textures
 		- Texture atlas
 		- Replaces colors
 - Everything 2
+	- Glass blocks
+		- Sort blocks within a chunk?
+			- Or does it work already?
 	- Working player
 		- Collision physics
 		- Player::IsSubmerged()

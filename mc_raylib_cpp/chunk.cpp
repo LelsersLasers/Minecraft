@@ -95,6 +95,35 @@ void Chunk::generateBlocks() {
 	this->dirty = true;
 }
 
+Block Chunk::getBlockInDirection(size_t x, size_t y, size_t z, tuple<int, int, int> dirTuple, World& world) {
+	int dirX = std::get<0>(dirTuple);
+	int dirY = std::get<1>(dirTuple);
+	int dirZ = std::get<2>(dirTuple);
+
+	int nx = x + dirX;
+	int ny = y + dirY;
+	int nz = z + dirZ;
+
+	Block neighbor = AIR_BLOCK;
+	if (Chunk::inBounds(nx, ny, nz)) {
+		neighbor = this->getBlockAt(nx, ny, nz);
+	} else {
+		int neighborChunkX = std::get<0>(this->position) + dirX;
+		int neighborChunkY = std::get<1>(this->position) + dirY;
+		int neighborChunkZ = std::get<2>(this->position) + dirZ;
+		tuple<int, int, int> neighborChunkIdx = std::make_tuple(neighborChunkX, neighborChunkY, neighborChunkZ);
+
+		neighbor = world.getBlockAt(
+			neighborChunkIdx,
+			EUCMOD_SIMPLE(nx, CHUNK_SIZE),
+			EUCMOD_SIMPLE(ny, CHUNK_SIZE),
+			EUCMOD_SIMPLE(nz, CHUNK_SIZE)
+		);
+	}
+	
+	return neighbor;
+}
+
 void Chunk::generateModel(World& world) {
 
 	Mesh mesh = { 0 };
@@ -129,33 +158,8 @@ void Chunk::generateModel(World& world) {
 
 				bool shortenZ = false;
 				if (block.blockType == BlockType::WATER) {
-					tuple<int, int, int> upTuple = allDirTuples[Dir::Top];
-
-					int upX = std::get<0>(upTuple);
-					int upY = std::get<1>(upTuple);
-					int upZ = std::get<2>(upTuple);
-
-					int nx = x + upX;
-					int ny = y + upY;
-					int nz = z + upZ;
-
-					Block neighbor = AIR_BLOCK;
-					if (Chunk::inBounds(nx, ny, nz)) {
-						neighbor = this->getBlockAt(nx, ny, nz);
-					} else {
-						int neighborChunkX = std::get<0>(this->position) + upX;
-						int neighborChunkY = std::get<1>(this->position) + upY;
-						int neighborChunkZ = std::get<2>(this->position) + upZ;
-						tuple<int, int, int> neighborChunkIdx = std::make_tuple(neighborChunkX, neighborChunkY, neighborChunkZ);
-
-						neighbor = world.getBlockAt(
-							neighborChunkIdx,
-							EUCMOD_SIMPLE(nx, CHUNK_SIZE),
-							EUCMOD_SIMPLE(ny, CHUNK_SIZE),
-							EUCMOD_SIMPLE(nz, CHUNK_SIZE)
-						);
-					}
-					if (neighbor.blockType != BlockType::WATER) {
+					Block upNeighbor = this->getBlockInDirection(x, y, z, allDirTuples[Dir::Top], world);
+					if (upNeighbor.blockType != BlockType::WATER) {
 						shortenZ = true;
 					}
 				}
@@ -164,35 +168,10 @@ void Chunk::generateModel(World& world) {
 					Dir dir = allDirEnums[i];
 					tuple<int, int, int> dirTuple = allDirTuples[i];
 
-					int dirX = std::get<0>(dirTuple);
-					int dirY = std::get<1>(dirTuple);
-					int dirZ = std::get<2>(dirTuple);
-
-					int nx = x + dirX;
-					int ny = y + dirY;
-					int nz = z + dirZ;
-
-					Block neighbor = AIR_BLOCK;
-					if (Chunk::inBounds(nx, ny, nz)) {
-						neighbor = this->getBlockAt(nx, ny, nz);
-					} else {
-						int neighborChunkX = std::get<0>(this->position) + dirX;
-						int neighborChunkY = std::get<1>(this->position) + dirY;
-						int neighborChunkZ = std::get<2>(this->position) + dirZ;
-						tuple<int, int, int> neighborChunkIdx = std::make_tuple(neighborChunkX, neighborChunkY, neighborChunkZ);
-
-						neighbor = world.getBlockAt(
-							neighborChunkIdx,
-							EUCMOD_SIMPLE(nx, CHUNK_SIZE),
-							EUCMOD_SIMPLE(ny, CHUNK_SIZE),
-							EUCMOD_SIMPLE(nz, CHUNK_SIZE)
-						);
-					}
-
+					Block neighbor = this->getBlockInDirection(x, y, z, dirTuple, world);
 					if (!neighbor.transparent || (block.blockType == BlockType::WATER && neighbor.blockType == BlockType::WATER)) {
 						continue;
 					}
-
 
 					for (size_t j = 0; j < 2; j++) { // 2 triangles per face
 						for (size_t k = 0; k < 3; k++) { // 3 vertices per triangle
@@ -204,7 +183,7 @@ void Chunk::generateModel(World& world) {
 								transparentVertices[transparentVertexCount * 3 + 0] = vertex.x;
 								transparentVertices[transparentVertexCount * 3 + 1] = vertex.y;
 								// transparentVertices[transparentVertexCount * 3 + 2] = vertex.z;
-								transparentVertices[transparentVertexCount * 3 + 2] = pos.z + CUBE_VERTICES[allTriangleOffsets[i][j][k]].z * (shortenZ ? 0.9f : 1.0f);
+								transparentVertices[transparentVertexCount * 3 + 2] = pos.z + CUBE_VERTICES[allTriangleOffsets[i][j][k]].z * (shortenZ ? 0.8f : 1.0f);
 
 								transparentColors[transparentVertexCount * 4 + 0] = color.r;
 								transparentColors[transparentVertexCount * 4 + 1] = color.g;

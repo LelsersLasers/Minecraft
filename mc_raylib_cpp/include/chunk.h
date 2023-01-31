@@ -37,6 +37,8 @@ class Chunk {
 		Vector3 getWorldPos() const;
 
 		void generateBlocks();
+
+		Block getBlockInDirection(size_t x, size_t y, size_t z, tuple<int, int, int> dirTuple, World& world);
 		void generateModel(World& world);
 
 		static bool inBounds(int x, int y, int z);
