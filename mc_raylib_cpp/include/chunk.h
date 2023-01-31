@@ -11,6 +11,8 @@
 #include "block.h"
 #include "world.h"
 
+#include "PerlinNoise.h"
+
 using std::vector;
 using std::tuple;
 
@@ -36,7 +38,7 @@ class Chunk {
 
 		Vector3 getWorldPos() const;
 
-		void generateBlocks();
+		void generateBlocks(PerlinNoise& perlinNoise);
 
 		Block getBlockInDirection(size_t x, size_t y, size_t z, tuple<int, int, int> dirTuple, World& world);
 		void generateModel(World& world);

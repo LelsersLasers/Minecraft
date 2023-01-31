@@ -65,8 +65,11 @@ int main() {
 	CameraController cameraController; // uses default defined constructor
 
 
+	PerlinNoise pn(time(NULL));
+	// PerlinNoise pn;
+
 	World world; // uses default defined constructor
-	world.generateChunks();
+	world.generateChunks(pn);
 	world.updateChunkModels();
 
 

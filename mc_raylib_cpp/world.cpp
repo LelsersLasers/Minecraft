@@ -48,7 +48,7 @@ Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
 	}
 }
 
-void World::generateChunks() {
+void World::generateChunks(PerlinNoise& pn) {
 	this->chunks.clear();
 
 	for (size_t x = 0; x < WORLD_SIZE; x++) {
@@ -56,7 +56,7 @@ void World::generateChunks() {
 			for (size_t z = 0; z < WORLD_SIZE; z++) {
 
 				Chunk chunk = Chunk(std::make_tuple(x, y, z));
-				chunk.generateBlocks();
+				chunk.generateBlocks(pn);
 				this->chunks.push_back(chunk);
 
 			}

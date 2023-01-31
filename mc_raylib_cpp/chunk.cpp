@@ -14,6 +14,8 @@
 #include "include/Vector3Util.h"
 #include "include/consts.h"
 
+#include "include/PerlinNoise.h"
+
 using std::vector;
 using std::tuple;
 
@@ -54,7 +56,7 @@ Vector3 Chunk::getWorldPos() const {
 	};
 }
 
-void Chunk::generateBlocks() {
+void Chunk::generateBlocks(PerlinNoise& pn) {
 	this->blocks.clear();
 
 	int worldChunkX = std::get<0>(this->position) * CHUNK_SIZE;
@@ -62,28 +64,50 @@ void Chunk::generateBlocks() {
 	int worldChunkZ = std::get<2>(this->position) * CHUNK_SIZE;
 
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
+		int worldX = worldChunkX + (int)x;
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
-			for (size_t z = 0; z < CHUNK_SIZE; z++) {
+			int worldY = worldChunkY + (int)y;
 
-				int worldX = worldChunkX + (int)x;
-				int worldY = worldChunkY + (int)y;
+			double height = pn.noise(
+				(double)worldX / PERLIN_NOISE_DIVISOR,
+				(double)worldY / PERLIN_NOISE_DIVISOR,
+				1.0
+			);
+			int scaledHeight = (int)((double)(CHUNK_SIZE * WORLD_SIZE - 5) * height) + 5;
+
+			for (size_t z = 0; z < CHUNK_SIZE; z++) {
 				int worldZ = worldChunkZ + (int)z;
+
 
 				if (worldZ == 0) {
 					this->blocks.push_back(BEDROCK_BLOCK);
-				} else if (worldZ <= CHUNK_SIZE + 2) {
+				} else if (worldZ <= scaledHeight - 4) {
 					this->blocks.push_back(STONE_BLOCK);
-				} else if (worldZ <= CHUNK_SIZE + 5) {
+				} else if (worldZ <= scaledHeight - 1) {
 					this->blocks.push_back(DIRT_BLOCK);
-				} else if (worldZ == CHUNK_SIZE + 6) {
+				} else if (worldZ == scaledHeight) {
 					this->blocks.push_back(GRASS_BLOCK);
-				} else if (worldX == 0 || worldY == CHUNK_SIZE - 1) {
-					this->blocks.push_back(DIRT_BLOCK);
-				} else if (worldZ <= CHUNK_SIZE + 9) {
+				} else if (worldZ <= WATER_LEVEL) {
 					this->blocks.push_back(WATER_BLOCK);
 				} else {
 					this->blocks.push_back(AIR_BLOCK);
 				}
+
+				// if (worldZ == 0) {
+				// 	this->blocks.push_back(BEDROCK_BLOCK);
+				// } else if (worldZ <= CHUNK_SIZE + 2) {
+				// 	this->blocks.push_back(STONE_BLOCK);
+				// } else if (worldZ <= CHUNK_SIZE + 5) {
+				// 	this->blocks.push_back(DIRT_BLOCK);
+				// } else if (worldZ == CHUNK_SIZE + 6) {
+				// 	this->blocks.push_back(GRASS_BLOCK);
+				// } else if (worldX == 0 || worldY == CHUNK_SIZE - 1) {
+				// 	this->blocks.push_back(DIRT_BLOCK);
+				// } else if (worldZ <= CHUNK_SIZE + 9) {
+				// 	this->blocks.push_back(WATER_BLOCK);
+				// } else {
+				// 	this->blocks.push_back(AIR_BLOCK);
+				// }
 
 				// this->blocks.push_back(GRASS_BLOCK);
 				// this->blocks.push_back(Block(getRandomBlockType()));

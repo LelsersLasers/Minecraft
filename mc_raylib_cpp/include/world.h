@@ -8,6 +8,9 @@
 
 #include "block.h"
 #include "cameraController.h"
+
+#include "PerlinNoise.h"
+
 class Chunk; // forward declaration to avoid circular dependency (effectively: #include "chunk.h")
 
 using std::vector;
@@ -26,7 +29,7 @@ class World {
 		Chunk& getChunkAt(tuple<int, int, int> chunkPos);
 		Block getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z);
 
-		void generateChunks();
+		void generateChunks(PerlinNoise& pn);
 		void updateChunkModels();
 
 		static bool inBounds(tuple<int, int, int> chunkPos);
