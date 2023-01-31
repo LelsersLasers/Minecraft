@@ -20,14 +20,11 @@
 		- If top is air block, water block is less tall
 		- Improve chunk sorting/ordering
 			- When to sort
-		- TODO: BUG
-			- Werid looking edges between chunks despite the fact that there are no faces/triangles
-			- Possible fix: sort chunks by distance to camera (farthest first)
 	- World gen
 		- Perlin noise
-		- Trees
-			- Wooden logs
-				- Directional blocks
+	- Trees
+		- Wooden logs
+			- Directional blocks
 	- Infinite world
 		- World::chunks is an unordered map?
 	- Glass blocks

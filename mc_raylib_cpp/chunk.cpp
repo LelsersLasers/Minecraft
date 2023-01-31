@@ -57,25 +57,35 @@ Vector3 Chunk::getWorldPos() const {
 void Chunk::generateBlocks() {
 	this->blocks.clear();
 
-	// int worldChunkX = std::get<0>(this->position) * CHUNK_SIZE;
-	// int worldChunkY = std::get<1>(this->position) * CHUNK_SIZE;
-	// int worldChunkZ = std::get<2>(this->position) * CHUNK_SIZE;
+	int worldChunkX = std::get<0>(this->position) * CHUNK_SIZE;
+	int worldChunkY = std::get<1>(this->position) * CHUNK_SIZE;
+	int worldChunkZ = std::get<2>(this->position) * CHUNK_SIZE;
 
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
 			for (size_t z = 0; z < CHUNK_SIZE; z++) {
 
-				// int worldX = worldChunkX + (int)x;
-				// int worldY = worldChunkY + (int)y;
-				// int worldZ = worldChunkZ + (int)z;
+				int worldX = worldChunkX + (int)x;
+				int worldY = worldChunkY + (int)y;
+				int worldZ = worldChunkZ + (int)z;
 
-				// if (z % 2 == 0) {
-				// 	this->blocks.push_back(STONE_BLOCK);
-				// } else {
-				// 	this->blocks.push_back(GRASS_BLOCK);
-				// }
+				if (worldZ == 0) {
+					this->blocks.push_back(BEDROCK_BLOCK);
+				} else if (worldZ <= CHUNK_SIZE + 2) {
+					this->blocks.push_back(STONE_BLOCK);
+				} else if (worldZ <= CHUNK_SIZE + 5) {
+					this->blocks.push_back(DIRT_BLOCK);
+				} else if (worldZ == CHUNK_SIZE + 6) {
+					this->blocks.push_back(GRASS_BLOCK);
+				} else if (worldX == 0 || worldY == CHUNK_SIZE - 1) {
+					this->blocks.push_back(DIRT_BLOCK);
+				} else if (worldZ <= CHUNK_SIZE + 9) {
+					this->blocks.push_back(WATER_BLOCK);
+				} else {
+					this->blocks.push_back(AIR_BLOCK);
+				}
 
-				this->blocks.push_back(GRASS_BLOCK);
+				// this->blocks.push_back(GRASS_BLOCK);
 				// this->blocks.push_back(Block(getRandomBlockType()));
 
 			}
@@ -117,9 +127,39 @@ void Chunk::generateModel(World& world) {
 
 				Vector3 pos = Vector3FromInts(x, y, z);
 
+				bool shortenZ = false;
+				if (block.blockType == BlockType::WATER) {
+					tuple<int, int, int> upTuple = allDirTuples[Dir::Top];
+
+					int upX = std::get<0>(upTuple);
+					int upY = std::get<1>(upTuple);
+					int upZ = std::get<2>(upTuple);
+
+					int nx = x + upX;
+					int ny = y + upY;
+					int nz = z + upZ;
+
+					Block neighbor = AIR_BLOCK;
+					if (Chunk::inBounds(nx, ny, nz)) {
+						neighbor = this->getBlockAt(nx, ny, nz);
+					} else {
+						int neighborChunkX = std::get<0>(this->position) + upX;
+						int neighborChunkY = std::get<1>(this->position) + upY;
+						int neighborChunkZ = std::get<2>(this->position) + upZ;
+						tuple<int, int, int> neighborChunkIdx = std::make_tuple(neighborChunkX, neighborChunkY, neighborChunkZ);
+
+						neighbor = world.getBlockAt(
+							neighborChunkIdx,
 							EUCMOD_SIMPLE(nx, CHUNK_SIZE),
 							EUCMOD_SIMPLE(ny, CHUNK_SIZE),
 							EUCMOD_SIMPLE(nz, CHUNK_SIZE)
+						);
+					}
+					if (neighbor.blockType != BlockType::WATER) {
+						shortenZ = true;
+					}
+				}
+
 				for (size_t i = 0; i < 6; i++) { // 6 faces per block
 					Dir dir = allDirEnums[i];
 					tuple<int, int, int> dirTuple = allDirTuples[i];
@@ -135,8 +175,7 @@ void Chunk::generateModel(World& world) {
 					Block neighbor = AIR_BLOCK;
 					if (Chunk::inBounds(nx, ny, nz)) {
 						neighbor = this->getBlockAt(nx, ny, nz);
-					}
-					else {
+					} else {
 						int neighborChunkX = std::get<0>(this->position) + dirX;
 						int neighborChunkY = std::get<1>(this->position) + dirY;
 						int neighborChunkZ = std::get<2>(this->position) + dirZ;
@@ -164,7 +203,8 @@ void Chunk::generateModel(World& world) {
 							if (block.transparent) {
 								transparentVertices[transparentVertexCount * 3 + 0] = vertex.x;
 								transparentVertices[transparentVertexCount * 3 + 1] = vertex.y;
-								transparentVertices[transparentVertexCount * 3 + 2] = vertex.z;
+								// transparentVertices[transparentVertexCount * 3 + 2] = vertex.z;
+								transparentVertices[transparentVertexCount * 3 + 2] = pos.z + CUBE_VERTICES[allTriangleOffsets[i][j][k]].z * (shortenZ ? 0.9f : 1.0f);
 
 								transparentColors[transparentVertexCount * 4 + 0] = color.r;
 								transparentColors[transparentVertexCount * 4 + 1] = color.g;
