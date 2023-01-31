@@ -4,7 +4,7 @@
 
 #include "raylib.h"
 
-// #include <stdlib.h>
+#include <stdlib.h>
 
 
 // #define BRANCHLESS_EUCMOD(a, b)  (((a) < 0) * ((((a) % (b)) + (b)) % (b)) + ((a) >= 0) * ((a) % (b)))
@@ -15,7 +15,8 @@
 #define BRANCHLESS_MAX(a, b) (((a) > (b)) * (a) + ((a) <= (b)) * (b))
 #define BRANCHLESS_MIN(a, b) (((a) < (b)) * (a) + ((a) >= (b)) * (b))
 
-// #define RAND(a, b) (rand() % ((b) - (a)) + (a))
+// range: [min, max)
+#define RAND(min, max) (rand() % ((max) - (min)) + (min))
 
 
 #define PI 3.14159265358979323846f // should this also be 'const float'?

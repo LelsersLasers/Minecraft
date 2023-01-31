@@ -15,13 +15,10 @@
 - Replace Vector3/2Util with raymath
 - Block has array[6] of Colors (indexed by Dir) instead of getColorFn()/getColor()
 - Everything
-	- Water block
-		- semi transparent
-		- If top is air block, water block is less tall
-		- Improve chunk sorting/ordering
-			- When to sort
 	- World gen
 		- Perlin noise
+		- "Instead of sampling the Perlin noise in two dimensions try sampling it in three and placing a cube wherever it’s greater than some threshold. It’s not as simple as a basic mesh but it lets you create complex features like caves and overhangs."
+		- Octaves?
 	- Trees
 		- Wooden logs
 			- Directional blocks

@@ -81,7 +81,7 @@ void Chunk::generateBlocks(PerlinNoise& pn) {
 
 				if (worldZ == 0) {
 					this->blocks.push_back(BEDROCK_BLOCK);
-				} else if (worldZ <= scaledHeight - 4) {
+				} else if (worldZ <= scaledHeight - RAND(3, 6)) {
 					this->blocks.push_back(STONE_BLOCK);
 				} else if (worldZ <= scaledHeight - 1) {
 					this->blocks.push_back(DIRT_BLOCK);
