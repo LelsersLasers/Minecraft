@@ -18,7 +18,8 @@
 	- World gen
 		- Perlin noise
 		- "Instead of sampling the Perlin noise in two dimensions try sampling it in three and placing a cube wherever it’s greater than some threshold. It’s not as simple as a basic mesh but it lets you create complex features like caves and overhangs."
-		- Octaves?
+		- Octaves
+		- More than just grass???
 	- Trees
 		- Wooden logs
 			- Directional blocks
