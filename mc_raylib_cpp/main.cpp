@@ -48,7 +48,8 @@ int main() {
 		DIRT_BLOCK,
 		STONE_BLOCK,
 		BEDROCK_BLOCK,
-		WATER_BLOCK
+		WATER_BLOCK,
+		SAND_BLOCK
 	};
 	// parrallel array to blockTypes
 	KeyboardKey blockKeys[BLOCK_MAX + 1] = {
@@ -57,7 +58,8 @@ int main() {
 		KEY_THREE,
 		KEY_FOUR,
 		KEY_FIVE,
-		KEY_SIX
+		KEY_SIX,
+		KEY_SEVEN
 	};
 	Block selectedBlock = blockTypes[BlockType::GRASS]; // uses enum as int to index array
 

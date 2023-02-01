@@ -59,6 +59,22 @@ Color getColorStone(Dir dir) {
 }
 Color getColorBedrock(Dir _dir)	{ return DARKGRAY; }
 Color getColorWater(Dir _dir)	{ return ColorAlpha(BLUE, 0.8); }
+Color getColorSand(Dir dir) {
+	// return YELLOW;
+	switch (dir) {
+		case Dir::Top:
+		case Dir::Bottom:
+			return YELLOW;
+		case Dir::Right:
+		case Dir::Left:
+			return YELLOW * 0.9;
+		case Dir::Forward:
+		case Dir::Backward:
+			return YELLOW * 0.8;
+		default: // should not be reached
+			return YELLOW;
+	}
+}
 
 Color (*getColorFn(const BlockType& blockType))(Dir dir) {
 	switch (blockType) {
@@ -93,6 +109,8 @@ bool getTransparent(const BlockType& blockType) {
 			return false;
 		case BlockType::WATER:
 			return true;
+		case BlockType::SAND:
+			return false;
         default: // should not be reached
             return false;
 	}
@@ -123,6 +141,8 @@ std::string getBlockName(const BlockType& BlockType) {
 			return "Bedrock";
 		case BlockType::WATER:
 			return "Water";
+		case BlockType::SAND:
+			return "Sand";
 		default: // should not be reached
 			return "Air";
 	}
