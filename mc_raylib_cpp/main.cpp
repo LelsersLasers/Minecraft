@@ -241,7 +241,7 @@ int main() {
 
 
 			if (world.cameraIsSubmerged(cameraController) && faces) {
-				DrawRectangle(0, 0, windowWidth, windowHeight, ColorAlpha(BLUE, 0.4));
+				DrawRectangle(0, 0, windowWidth, windowHeight, ColorAlpha(BLUE, 0.6));
 			}
 
 

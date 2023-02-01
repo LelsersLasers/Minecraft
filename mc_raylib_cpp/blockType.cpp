@@ -58,7 +58,7 @@ Color getColorStone(Dir dir) {
 	}
 }
 Color getColorBedrock(Dir _dir)	{ return DARKGRAY; }
-Color getColorWater(Dir _dir)	{ return ColorAlpha(BLUE, 0.5); }
+Color getColorWater(Dir _dir)	{ return ColorAlpha(BLUE, 0.8); }
 
 Color (*getColorFn(const BlockType& blockType))(Dir dir) {
 	switch (blockType) {
