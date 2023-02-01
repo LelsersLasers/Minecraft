@@ -13,6 +13,7 @@
 #include "include/dir.h"
 #include "include/Vector3Util.h"
 #include "include/consts.h"
+#include "include/PerlinNoiseUtil.h"
 
 #include "include/PerlinNoise.h"
 
@@ -68,25 +69,15 @@ void Chunk::generateBlocks(PerlinNoise& pn) {
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
 			int worldY = worldChunkY + (int)y;
 
-			double height = 0.0;
-			for (int i = 0; i < OCTAVES; i++) {
-				double divisor = pow(2.0, (double)i);
-
-				double noise = pn.noise(
-					(double)worldX / (PERLIN_NOISE_DIVISOR / divisor),
-					(double)worldY / (PERLIN_NOISE_DIVISOR / divisor),
-					1.0
-				);
-				// shift from (0, 1) to (-1, 1)
-				double shiftedNoise = 2.0 * (noise - 0.5);
-				double scaledNoise = shiftedNoise / divisor;
-				height += scaledNoise;
-			}
-
-			// shift from (-1, 1) to (0, 1)
-			double clampedNoise = 0.5 * (height + 1.0);
+			double height = PerlinNoise3DWithOctaves(
+				pn,
+				(double)worldX / PERLIN_NOISE_DIVISOR,
+				(double)worldY / PERLIN_NOISE_DIVISOR,
+				1.0,
+				OCTAVES
+			);
 			int maxHeight = CHUNK_SIZE * WORLD_SIZE - 5;
-			int scaledHeight = (int)((double)(maxHeight - 5) * clampedNoise) + 5;
+			int scaledHeight = (int)((double)maxHeight * height) + 5;
 
 			for (size_t z = 0; z < CHUNK_SIZE; z++) {
 				int worldZ = worldChunkZ + (int)z;
