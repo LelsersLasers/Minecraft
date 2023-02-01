@@ -71,6 +71,7 @@ int main() {
 	World world; // uses default defined constructor
 	world.generateChunks(pn);
 	world.updateChunkModels();
+	world.sortChunks(cameraController);
 
 
 
