@@ -30,8 +30,8 @@ const int CHUNK_SIZE = 16; // blocks per chunk ^3
 const int WORLD_SIZE = 16; // chunks per world ^3
 
 
-const int OCTAVES = 3;
-const double PERLIN_NOISE_DIVISOR = CHUNK_SIZE  * 10.0;
+const int OCTAVES = 8;
+const double PERLIN_NOISE_DIVISOR = CHUNK_SIZE * 8.0;
 
 // const int VIEW_DIST = 6; // in chunks
 
