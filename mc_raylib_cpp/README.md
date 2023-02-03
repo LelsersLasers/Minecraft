@@ -32,6 +32,8 @@
 		- Replaces colors
 	- Preformance
 		- View distance
+		- Skip "blank" chunks
+		- Only raycast neighboring chunks
 - Everything 2
 	- Glass blocks
 		- Sort blocks within a chunk?
