@@ -90,6 +90,8 @@ Color (*getColorFn(const BlockType& blockType))(Dir dir) {
 			return getColorBedrock;
 		case BlockType::WATER:
 			return getColorWater;
+		case BlockType::SAND:
+			return getColorSand;
         default: // should not be reached
             return getColorAir; 
 	}
