@@ -19,7 +19,7 @@
 		- Perlin noise
 		- "Instead of sampling the Perlin noise in two dimensions try sampling it in three and placing a cube wherever it’s greater than some threshold. It’s not as simple as a basic mesh but it lets you create complex features like caves and overhangs."
 		- Octaves
-		- More than just grass???
+		- Basic biomes
 	- Trees
 		- Wooden logs
 			- Directional blocks
@@ -35,6 +35,7 @@
 		- Skip "blank" chunks
 		- Only raycast neighboring chunks
 - Everything 2
+    - When under water, show the "top" of the water
 	- Glass blocks
 		- Sort blocks within a chunk?
 			- Or does it work already?
@@ -49,7 +50,11 @@
 		- Hold only some chunks in memory
 			- Live read/write to file
 	- World gen
-		- Biomes
+		- More biomes
+        - 3d perlin noise
+        - Made from 5 diiferent noise setups
+            - +spline interpolation (or something like that)
+        - Caves
 	- Fog
 		- For far away chunks
 	- Flowing water
