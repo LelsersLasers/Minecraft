@@ -116,8 +116,7 @@ int main() {
 				moveVec = normalize(moveVec) * delta * 20.0;
 				cameraController.moveBy(moveVec);
 
-				// TODO: only sort in some cases?
-				world.sortChunks(cameraController);
+				world.cameraMoved(cameraController);
 			}
 		}
 

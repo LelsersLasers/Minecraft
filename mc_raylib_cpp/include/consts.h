@@ -34,7 +34,7 @@ const int WORLD_SIZE = 16; // chunks per world ^3
 const int OCTAVES = 8;
 const double PERLIN_NOISE_DIVISOR = CHUNK_SIZE * 10.0;
 
-// const int VIEW_DIST = 6; // in chunks
+const int VIEW_DIST = 8; // in chunks
 
 const int WATER_LEVEL = CHUNK_SIZE * WORLD_SIZE / 2;
 

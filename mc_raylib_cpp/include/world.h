@@ -43,6 +43,8 @@ class World {
 		bool cameraIsSubmerged(const CameraController& cameraController);
 
 		void sortChunks(const CameraController& cameraController);
+
+		void cameraMoved(const CameraController& cameraController);
 };
 
 

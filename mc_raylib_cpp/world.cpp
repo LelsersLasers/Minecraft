@@ -1,6 +1,7 @@
 #include "raylib.h"
 
 #include <stdlib.h>
+#include <cmath>
 
 #include <vector>
 #include <tuple>
@@ -169,4 +170,48 @@ void World::sortChunks(const CameraController& cameraController) {
 			return length(chunk1Dif) > length(chunk2Dif);
 		}
 	);
+}
+
+void World::cameraMoved(const CameraController& cameraController) {
+	// TODO: only do in some cases?
+	// TODO: faster way to do this?
+
+	this->chunkOrder.clear();
+
+
+	tuple<int, int, int> cameraChunk = cameraController.getChunkPos();
+	int cameraChunkX = std::get<0>(cameraChunk);
+	int cameraChunkY = std::get<1>(cameraChunk);
+	int cameraChunkZ = std::get<2>(cameraChunk);
+
+	int startX = cameraChunkX - VIEW_DIST;
+	int startY = cameraChunkY - VIEW_DIST;
+	int startZ = cameraChunkZ - VIEW_DIST;
+
+	int endX = cameraChunkX + VIEW_DIST;
+	int endY = cameraChunkY + VIEW_DIST;
+	int endZ = cameraChunkZ + VIEW_DIST;
+
+	for (int x = startX; x < endX; x++) {
+		for (int y = startY; y < endY; y++) {
+			for (int z = startZ; z < endZ; z++) {
+
+				int diffX = x - cameraChunkX;
+				int diffY = y - cameraChunkY;
+				int diffZ = z - cameraChunkZ;
+
+				float dist = sqrtf(diffX * diffX + diffY * diffY + diffZ * diffZ);
+
+				tuple<int, int, int> idx = std::make_tuple(x, y, z);
+
+				if (dist <= VIEW_DIST && this->inBounds(idx)) {
+					this->chunkOrder.push_back(idx);
+				}
+
+
+			}
+		}
+	}
+
+	this->sortChunks(cameraController);
 }
