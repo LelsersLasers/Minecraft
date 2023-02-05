@@ -23,7 +23,9 @@ class Chunk {
 		tuple<int, int, int> position;
 
 		bool dirty;
+
 		bool blank;
+		bool transparentBlank;
 	
 		Model model;
 		Mesh oldMesh;

@@ -199,9 +199,11 @@ void World::cameraMoved(const CameraController& cameraController) {
 					int diffZ = z - cameraChunkZ;
 
 					float dist = sqrtf(diffX * diffX + diffY * diffY + diffZ * diffZ);
-					this->getChunkAt(idx).distanceFromCamera = dist;
 
-					if (dist <= VIEW_DIST && !this->getChunkAt(idx).blank) {
+					Chunk& chunk = this->getChunkAt(idx);
+					chunk.distanceFromCamera = dist;
+
+					if (dist <= VIEW_DIST && !(chunk.blank && chunk.transparentBlank)) {
 						this->chunkOrder.push_back(idx);
 					}
 				}

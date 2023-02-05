@@ -33,7 +33,7 @@
 	- Preformance
 		- Throttle chunk loading and mesh generation
 		- chunkOrder is a vector of string instead of tuples?
-		- Use int/size_t instead of string for unordered_map key
+		- Use int/size_t instead of string for unordered_map key??
 			- Something like key = x ^ y ^ z
 		- Use unordered_map instead of map
 		- Custom sorted map vs unordered_map??
