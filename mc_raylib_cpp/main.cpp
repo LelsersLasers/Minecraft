@@ -5,6 +5,7 @@
 #include <time.h>
 #include <stdlib.h>
 // #include <iostream>
+#include <climits>
 
 #include <vector>
 #include <tuple>
@@ -67,7 +68,7 @@ int main() {
 	CameraController cameraController; // uses default defined constructor
 
 
-	PerlinNoise pn(time(NULL));
+	PerlinNoise pn(rand() % UINT_MAX);
 	// PerlinNoise pn;
 
 	World world; // uses default defined constructor
