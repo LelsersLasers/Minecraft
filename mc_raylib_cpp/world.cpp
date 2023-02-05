@@ -204,7 +204,7 @@ void World::cameraMoved(const CameraController& cameraController) {
 
 				tuple<int, int, int> idx = std::make_tuple(x, y, z);
 
-				if (dist <= VIEW_DIST && this->inBounds(idx)) {
+				if (dist <= VIEW_DIST && this->inBounds(idx) && !this->getChunkAt(idx).blank) {
 					this->chunkOrder.push_back(idx);
 				}
 

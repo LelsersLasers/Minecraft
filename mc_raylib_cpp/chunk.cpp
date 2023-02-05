@@ -29,6 +29,7 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 	this->blocks.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
 	
 	this->dirty = true;
+	this->blank = true;
 
 	this->model = { 0 };
 	this->oldMesh = { 0 };
@@ -245,6 +246,7 @@ void Chunk::generateModel(World& world) {
 	transparentMesh.vertexCount = transparentVertexCount;
 	transparentMesh.triangleCount = transparentVertexCount / 3;
 
+	this->blank = (vertexCount == 0 && transparentVertexCount == 0);
 
 	mesh.vertices = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
 	mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));

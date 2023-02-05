@@ -23,6 +23,7 @@ class Chunk {
 		tuple<int, int, int> position;
 
 		bool dirty;
+		bool blank;
 	
 		Model model;
 		Mesh oldMesh;
