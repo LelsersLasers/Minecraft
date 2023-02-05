@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <tuple>
+#include <utility>
 #include <unordered_map>
 #include <string>
 #include <optional>
@@ -19,6 +20,7 @@ class Chunk; // forward declaration to avoid circular dependency (effectively: #
 
 using std::vector;
 using std::tuple;
+using std::pair;
 using std::unordered_map;
 using std::string;
 using std::optional;
@@ -29,6 +31,8 @@ class World {
 		unordered_map<string, Chunk> chunks;
 
 		vector<tuple<int, int, int>> chunkOrder;
+
+		vector<pair<tuple<int, int, int>, float>> chunksToGenerate;
 
 		World();
 		// ~World();
@@ -47,7 +51,7 @@ class World {
 
 		void sortChunks(const CameraController& cameraController);
 
-		void cameraMoved(const CameraController& cameraController);
+		void cameraMoved(const CameraController& cameraController, PerlinNoise& pn);
 
 		optional<Vector3> handleRaycastRequest(const CameraController& cameraController, RaycastRequest& raycastRequest, Block selectedBlock);
 };

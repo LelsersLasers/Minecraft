@@ -75,9 +75,9 @@ int main() {
 	// PerlinNoise pn;
 
 	World world; // uses default defined constructor
-	world.generateChunks(pn);
+	world.cameraMoved(cameraController, pn);
+	// world.generateChunks(pn);
 	world.updateChunkModels();
-	world.cameraMoved(cameraController);
 
 
 
@@ -119,7 +119,7 @@ int main() {
 				moveVec = normalize(moveVec) * delta * 20.0;
 				cameraController.moveBy(moveVec);
 
-				world.cameraMoved(cameraController);
+				world.cameraMoved(cameraController, pn);
 			}
 		}
 
@@ -143,6 +143,9 @@ int main() {
 			}
 			if (IsKeyPressed(KEY_J)) {
 				chunkOutlines = !chunkOutlines;
+			}
+			if (IsKeyPressed(KEY_ZERO)) {
+				autoMove = !autoMove;
 			}
 		}
 
@@ -197,7 +200,7 @@ int main() {
 				} else if (IsKeyPressed(KEY_E)) {
 					raycastRequest = RaycastRequest::PLACE_BLOCK;
 				}
-				
+
 				optional<Vector3> outlinedBlock = world.handleRaycastRequest(cameraController, raycastRequest, selectedBlock);
 				if (outlinedBlock.has_value()) {
 					DrawCubeWiresV(outlinedBlock.value(), Vector3Uniform(1.0), RED);

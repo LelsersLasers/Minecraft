@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <tuple>
+#include <utility>
 #include <optional>
 
 #include <algorithm>
@@ -22,6 +23,7 @@
 
 using std::vector;
 using std::tuple;
+using std::pair;
 using std::optional;
 
 
@@ -29,6 +31,8 @@ World::World() {
 	this->chunks = unordered_map<string, Chunk>();
 
 	this->chunkOrder = vector<tuple<int, int, int>>();
+
+	this->chunksToGenerate = vector<pair<tuple<int, int, int>, float>>();
 }
 
 Chunk& World::getChunkAt(tuple<int, int, int> chunkPos) {
@@ -46,25 +50,36 @@ Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
 }
 
 void World::generateChunks(PerlinNoise& pn) {
-	this->chunks.clear();
-	this->chunkOrder.clear();
+	// this->chunks.clear();
+	// this->chunkOrder.clear();
 
-	for (size_t x = 0; x < WORLD_SIZE; x++) {
-		for (size_t y = 0; y < WORLD_SIZE; y++) {
-			for (size_t z = 0; z < WORLD_SIZE; z++) {
+	// for (size_t x = 0; x < WORLD_SIZE; x++) {
+	// 	for (size_t y = 0; y < WORLD_SIZE; y++) {
+	// 		for (size_t z = 0; z < WORLD_SIZE; z++) {
 
-				tuple<int, int, int> chunkTup = std::make_tuple(x, y, z);
-				string key = TUP_TO_STR(chunkTup);
+	// 			tuple<int, int, int> chunkTup = std::make_tuple(x, y, z);
+	// 			string key = TUP_TO_STR(chunkTup);
 
-				Chunk chunk = Chunk(chunkTup);
-				chunk.generateBlocks(pn);
+	// 			Chunk chunk = Chunk(chunkTup);
+	// 			chunk.generateBlocks(pn);
 				
-				this->chunks.insert(std::make_pair(key, chunk));
-				this->chunkOrder.push_back(chunkTup);
+	// 			this->chunks.insert(std::make_pair(key, chunk));
+	// 			this->chunkOrder.push_back(chunkTup);
 
-			}
-		}
+	// 		}
+	// 	}
+	// }
+	for (size_t i = 0; i < this->chunksToGenerate.size(); i++) {
+		tuple<int, int, int> chunkTup = this->chunksToGenerate[i].first;
+		string key = TUP_TO_STR(chunkTup);
+
+		Chunk chunk = Chunk(chunkTup);
+		chunk.generateBlocks(pn);
+		chunk.distanceFromCamera = this->chunksToGenerate[i].second;
+		
+		this->chunks.insert(std::make_pair(key, chunk));
 	}
+	this->chunksToGenerate.clear();
 }
 void World::updateChunkModels() {
 	// reverse loop with unsigned type: https://stackoverflow.com/questions/3623263/reverse-iteration-with-an-unsigned-loop-variable
@@ -167,11 +182,13 @@ void World::sortChunks(const CameraController& cameraController) {
 	);
 }
 
-void World::cameraMoved(const CameraController& cameraController) {
+void World::cameraMoved(const CameraController& cameraController, PerlinNoise& pn) {
 	// TODO: only do in some cases?
 	// TODO: faster way to do this?
 
 	this->chunkOrder.clear();
+
+	this->chunksToGenerate.clear();
 
 
 	tuple<int, int, int> cameraChunk = cameraController.getChunkPos();
@@ -193,18 +210,24 @@ void World::cameraMoved(const CameraController& cameraController) {
 
 				tuple<int, int, int> idx = std::make_tuple(x, y, z);
 
-				if (this->inBounds(idx)) {
-					int diffX = x - cameraChunkX;
-					int diffY = y - cameraChunkY;
-					int diffZ = z - cameraChunkZ;
+				int diffX = x - cameraChunkX;
+				int diffY = y - cameraChunkY;
+				int diffZ = z - cameraChunkZ;
 
-					float dist = sqrtf(diffX * diffX + diffY * diffY + diffZ * diffZ);
+				float dist = sqrtf(diffX * diffX + diffY * diffY + diffZ * diffZ);
 
-					Chunk& chunk = this->getChunkAt(idx);
-					chunk.distanceFromCamera = dist;
-
-					if (dist <= VIEW_DIST && !(chunk.blank && chunk.transparentBlank)) {
+				if (dist <= VIEW_DIST) {
+					if (!this->inBounds(idx)) {
+						this->chunksToGenerate.push_back(std::make_pair(idx, dist));
 						this->chunkOrder.push_back(idx);
+						
+					} else {
+						Chunk& chunk = this->getChunkAt(idx);
+						chunk.distanceFromCamera = dist;
+
+						if (!chunk.blank || !chunk.transparentBlank) {
+							this->chunkOrder.push_back(idx);	
+						}
 					}
 				}
 
@@ -212,6 +235,7 @@ void World::cameraMoved(const CameraController& cameraController) {
 		}
 	}
 
+	this->generateChunks(pn); // must happen before sorting
 	this->sortChunks(cameraController);
 }
 
