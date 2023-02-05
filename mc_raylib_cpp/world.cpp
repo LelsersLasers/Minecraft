@@ -31,7 +31,7 @@ Chunk& World::getChunkAt(tuple<int, int, int> chunkPos) {
 	return chunk;
 }
 Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
-	if (World::inBounds(chunkPos)) {
+	if (this->inBounds(chunkPos)) {
 		Chunk& chunk = this->getChunkAt(chunkPos);
 		return chunk.getBlockAt(x, y, z);
 	}
@@ -79,10 +79,8 @@ void World::updateChunkModels() {
 
 
 bool World::inBounds(tuple<int, int, int> chunkPos) {
-	int x = std::get<0>(chunkPos);
-	int y = std::get<1>(chunkPos);
-	int z = std::get<2>(chunkPos);
-	return x >= 0 && x < WORLD_SIZE && y >= 0 && y < WORLD_SIZE && z >= 0 && z < WORLD_SIZE;
+	string key = TUP_TO_STR(chunkPos);
+	return this->chunks.find(key) != this->chunks.end();
 }
 
 void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> srcBlock) {
@@ -126,7 +124,7 @@ void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> s
 	for (size_t i = 0; i < neighborChunks.size(); i++) {
 		tuple<int, int, int> neighborChunk = neighborChunks[i];
 
-		if (World::inBounds(neighborChunk)) {
+		if (this->inBounds(neighborChunk)) {
 			Chunk& chunk = this->getChunkAt(neighborChunk);
 			chunk.dirty = true;
 		}
@@ -135,7 +133,7 @@ void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> s
 
 bool World::cameraIsSubmerged(const CameraController& cameraController) {
 	tuple<int, int, int> chunkPos = cameraController.getChunkPos();
-	if (!World::inBounds(chunkPos)) {
+	if (!this->inBounds(chunkPos)) {
 		return false;
 	}
 

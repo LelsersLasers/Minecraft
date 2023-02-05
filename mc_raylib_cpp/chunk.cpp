@@ -365,7 +365,7 @@ void Chunk::placeBlockAt(tuple<size_t, size_t, size_t> blockIdx, Vector3 rayNorm
 
 		tuple<int, int, int> newChunkPos = std::make_tuple(newChunkX, newChunkY, newChunkZ);
 
-		if (World::inBounds(newChunkPos)) {
+		if (world.inBounds(newChunkPos)) {
 			Chunk& newChunk = world.getChunkAt(newChunkPos);
 
 			size_t chunkBlockX = (size_t)EUCMOD_SIMPLE(newBlockX, CHUNK_SIZE);

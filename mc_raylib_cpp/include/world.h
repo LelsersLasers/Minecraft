@@ -36,7 +36,7 @@ class World {
 		void generateChunks(PerlinNoise& pn);
 		void updateChunkModels();
 
-		static bool inBounds(tuple<int, int, int> chunkPos);
+		bool inBounds(tuple<int, int, int> chunkPos);
 
 		void dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> srcBlock);
 
