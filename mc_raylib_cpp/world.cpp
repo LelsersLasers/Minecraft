@@ -161,13 +161,7 @@ void World::sortChunks(const CameraController& cameraController) {
 			Chunk& chunk1 = this->chunks.at(key1);
 			Chunk& chunk2 = this->chunks.at(key2);
 
-			Vector3 chunk1Pos = chunk1.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0);
-			Vector3 chunk2Pos = chunk2.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0);
-
-			Vector3 chunk1Dif = chunk1Pos - cameraController.camera.position;
-			Vector3 chunk2Dif = chunk2Pos - cameraController.camera.position;
-
-			return length(chunk1Dif) > length(chunk2Dif);
+			return chunk1.distanceFromCamera > chunk2.distanceFromCamera;
 		}
 	);
 }
@@ -192,22 +186,24 @@ void World::cameraMoved(const CameraController& cameraController) {
 	int endY = cameraChunkY + VIEW_DIST;
 	int endZ = cameraChunkZ + VIEW_DIST;
 
-	for (int x = startX; x < endX; x++) {
-		for (int y = startY; y < endY; y++) {
-			for (int z = startZ; z < endZ; z++) {
-
-				int diffX = x - cameraChunkX;
-				int diffY = y - cameraChunkY;
-				int diffZ = z - cameraChunkZ;
-
-				float dist = sqrtf(diffX * diffX + diffY * diffY + diffZ * diffZ);
+	for (int x = startX; x <= endX; x++) {
+		for (int y = startY; y <= endY; y++) {
+			for (int z = startZ; z <= endZ; z++) {
 
 				tuple<int, int, int> idx = std::make_tuple(x, y, z);
 
-				if (dist <= VIEW_DIST && this->inBounds(idx) && !this->getChunkAt(idx).blank) {
-					this->chunkOrder.push_back(idx);
-				}
+				if (this->inBounds(idx)) {
+					int diffX = x - cameraChunkX;
+					int diffY = y - cameraChunkY;
+					int diffZ = z - cameraChunkZ;
 
+					float dist = sqrtf(diffX * diffX + diffY * diffY + diffZ * diffZ);
+					this->getChunkAt(idx).distanceFromCamera = dist;
+
+					if (dist <= VIEW_DIST && !this->getChunkAt(idx).blank) {
+						this->chunkOrder.push_back(idx);
+					}
+				}
 
 			}
 		}

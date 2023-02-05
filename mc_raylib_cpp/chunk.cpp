@@ -36,6 +36,8 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 
 	this->transparentModel = { 0 };
 	this->transparentOldMesh = { 0 };
+
+	this->distanceFromCamera = 0.0f;
 }
 Chunk::~Chunk() {
 	UnloadModel(this->model);

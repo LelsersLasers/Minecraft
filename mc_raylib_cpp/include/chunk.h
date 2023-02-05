@@ -30,6 +30,8 @@ class Chunk {
 
 		Model transparentModel;
 		Mesh transparentOldMesh;
+
+		float distanceFromCamera;
 	
 		Chunk(const tuple<int, int, int>& position);
 		~Chunk();
