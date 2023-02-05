@@ -295,9 +295,9 @@ tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollisio
 
 	float smallestDistance = INFINITY;
 
-	size_t closestX;
-	size_t closestY;
-	size_t closestZ;
+	size_t closestX = 0;
+	size_t closestY = 0;
+	size_t closestZ = 0;
 
 	// effectively (int)floor( ) as point.? > 0
 	int pointX = (int)point.x;
