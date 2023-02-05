@@ -1,7 +1,5 @@
 #include "raylib.h"
 
-#include "raymath.h"
-
 #include <time.h>
 #include <stdlib.h>
 // #include <iostream>
@@ -10,6 +8,7 @@
 #include <vector>
 #include <tuple>
 #include <string>
+#include <optional>
 
 #include "include/consts.h"
 
@@ -21,9 +20,11 @@
 #include "include/blockType.h"
 #include "include/chunk.h"
 #include "include/world.h"
+#include "include/raycastRequest.h"
 
 using std::vector;
 using std::tuple;
+using std::optional;
 
 
 int main() {
@@ -162,10 +163,6 @@ int main() {
 
             BeginMode3D(cameraController.camera);
             {
-
-				vector<RayCollision> rayCollisions;
-				vector<Chunk*> chunkCollisions;
-
 				for (size_t idx = 0; idx < world.chunkOrder.size(); idx++) {
 
 					tuple<int, int, int> i = world.chunkOrder[idx]; // draw back to front
@@ -190,50 +187,18 @@ int main() {
 					if (transparentWireframe) {
 						DrawModelWires(chunk.transparentModel, chunk.getWorldPos(), 1.0, BLACK);
 					}
-
-
-					{
-						Ray qRay = {
-							cameraController.camera.position,
-							cameraController.calcForward()
-						};
-						Vector3 pos = chunk.getWorldPos();
-						Matrix qTransform = MatrixTranslate(pos.x, pos.y, pos.z);
-						RayCollision qRayCollision = GetRayCollisionMesh(qRay, chunk.model.meshes[0], qTransform);
-						if (qRayCollision.hit && qRayCollision.distance < REACH) {
-							rayCollisions.push_back(qRayCollision);
-							chunkCollisions.push_back(&chunk);
-						}
-					}
-
-
 				}
 
-				if (rayCollisions.size() > 0) {
-					RayCollision closestRayCollision = rayCollisions[0];
-					Chunk* closestChunkCollision = chunkCollisions[0];
-
-					for (size_t i = 1; i < rayCollisions.size(); i++) {
-						if (rayCollisions[i].distance < closestRayCollision.distance) {
-							closestRayCollision = rayCollisions[i];
-							closestChunkCollision = chunkCollisions[i];
-						}
-					}
-
-					tuple<size_t, size_t, size_t> bestBlockTuple = closestChunkCollision->handleRayCollision(closestRayCollision);
-					Vector3 bestBlockOutlinePos = (Vector3){
-						(float)std::get<0>(bestBlockTuple),
-						(float)std::get<1>(bestBlockTuple),
-						(float)std::get<2>(bestBlockTuple)
-					} + Vector3Uniform(0.5);
-					DrawCubeWiresV(bestBlockOutlinePos + closestChunkCollision->getWorldPos(), Vector3Uniform(1.0), RED);
-
-					if (IsKeyPressed(KEY_Q)) {
-						closestChunkCollision->destroyBlockAt(bestBlockTuple, world);
-					}
-					if (IsKeyPressed(KEY_E)) {
-						closestChunkCollision->placeBlockAt(bestBlockTuple, closestRayCollision.normal, selectedBlock, world);
-					}
+				RaycastRequest raycastRequest = RaycastRequest::NONE;
+				if (IsKeyPressed(KEY_Q)) {
+					raycastRequest = RaycastRequest::DESTROY_BLOCK;
+				} else if (IsKeyPressed(KEY_E)) {
+					raycastRequest = RaycastRequest::PLACE_BLOCK;
+				}
+				
+				optional<Vector3> outlinedBlock = world.handleRaycastRequest(cameraController, raycastRequest, selectedBlock);
+				if (outlinedBlock.has_value()) {
+					DrawCubeWiresV(outlinedBlock.value(), Vector3Uniform(1.0), RED);
 				}
 
 

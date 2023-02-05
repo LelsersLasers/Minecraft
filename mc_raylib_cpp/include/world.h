@@ -7,9 +7,11 @@
 #include <tuple>
 #include <unordered_map>
 #include <string>
+#include <optional>
 
 #include "block.h"
 #include "cameraController.h"
+#include "raycastRequest.h"
 
 #include "PerlinNoise.h"
 
@@ -19,6 +21,7 @@ using std::vector;
 using std::tuple;
 using std::unordered_map;
 using std::string;
+using std::optional;
 
 
 class World {
@@ -45,6 +48,8 @@ class World {
 		void sortChunks(const CameraController& cameraController);
 
 		void cameraMoved(const CameraController& cameraController);
+
+		optional<Vector3> handleRaycastRequest(const CameraController& cameraController, RaycastRequest& raycastRequest, Block selectedBlock);
 };
 
 
