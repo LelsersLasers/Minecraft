@@ -35,6 +35,8 @@ int main() {
 	bool chunkOutlines = false;
 	bool faces = true;
 
+	bool autoMove = false;
+
 	srand(time(NULL));
 
     InitWindow(WINDOW_WIDTH_START, WINDOW_HEIGHT_START, "Minecraft ig");
@@ -100,7 +102,7 @@ int main() {
 		{
 			Vector3 moveVec = Vector3Zero();
 
-			if (IsKeyDown(KEY_W)) {
+			if (IsKeyDown(KEY_W) || autoMove) {
 				moveVec += cameraController.calcForward();
 			}
 			if (IsKeyDown(KEY_S)) {
