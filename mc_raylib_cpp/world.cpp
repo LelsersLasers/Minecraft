@@ -21,22 +21,14 @@ using std::tuple;
 
 
 World::World() {
-	this->chunks = vector<Chunk>();
-	this->chunks.reserve(WORLD_SIZE * WORLD_SIZE * WORLD_SIZE);
+	this->chunks = unordered_map<string, Chunk>();
 
-	this->chunkOrder = vector<size_t>();
-	this->chunkOrder.reserve(WORLD_SIZE * WORLD_SIZE * WORLD_SIZE);
-	for (size_t i = 0; i < WORLD_SIZE * WORLD_SIZE * WORLD_SIZE; i++) {
-		this->chunkOrder.push_back(i);
-	}
+	this->chunkOrder = vector<tuple<int, int, int>>();
 }
 
 Chunk& World::getChunkAt(tuple<int, int, int> chunkPos) {
-	size_t x = std::get<0>(chunkPos);
-	size_t y = std::get<1>(chunkPos);
-	size_t z = std::get<2>(chunkPos);
-	
-	return this->chunks[x * WORLD_SIZE * WORLD_SIZE + y * WORLD_SIZE + z];
+	Chunk& chunk = this->chunks.at(TUP_TO_STR(chunkPos));
+	return chunk;
 }
 Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
 	if (World::inBounds(chunkPos)) {
@@ -50,23 +42,36 @@ Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
 
 void World::generateChunks(PerlinNoise& pn) {
 	this->chunks.clear();
+	this->chunkOrder.clear();
 
 	for (size_t x = 0; x < WORLD_SIZE; x++) {
 		for (size_t y = 0; y < WORLD_SIZE; y++) {
 			for (size_t z = 0; z < WORLD_SIZE; z++) {
 
-				Chunk chunk = Chunk(std::make_tuple(x, y, z));
+				tuple<int, int, int> chunkTup = std::make_tuple(x, y, z);
+				string key = TUP_TO_STR(chunkTup);
+
+				Chunk chunk = Chunk(chunkTup);
 				chunk.generateBlocks(pn);
-				this->chunks.push_back(chunk);
+				
+				this->chunks.insert(std::make_pair(key, chunk));
+				this->chunkOrder.push_back(chunkTup);
 
 			}
 		}
 	}
 }
 void World::updateChunkModels() {
-	for (size_t i = 0; i < this->chunks.size(); i++) {
-		if (this->chunks[i].dirty) {
-			this->chunks[i].generateModel(*this);
+	// for (size_t i = 0; i < this->chunks.size(); i++) {
+	// 	if (this->chunks[i].dirty) {
+	// 		this->chunks[i].generateModel(*this);
+	// 	}
+	// }
+	for (size_t i = 0; i < this->chunkOrder.size(); i++) {
+		tuple<int, int, int> chunkTup = this->chunkOrder[i];
+		Chunk& chunk = this->getChunkAt(chunkTup);
+		if (chunk.dirty) {
+			chunk.generateModel(*this);
 		}
 	}
 }
@@ -150,9 +155,12 @@ void World::sortChunks(const CameraController& cameraController) {
 	std::sort(
 		this->chunkOrder.begin(),
 		this->chunkOrder.end(),
-		[&cameraController, this](const size_t& idx1, const size_t& idx2){
-			Chunk& chunk1 = this->chunks[idx1];
-			Chunk& chunk2 = this->chunks[idx2];
+		[&cameraController, this](const tuple<int, int, int>& idx1, const tuple<int, int, int>& idx2){
+			string key1 = TUP_TO_STR(idx1);
+			string key2 = TUP_TO_STR(idx2);
+
+			Chunk& chunk1 = this->chunks.at(key1);
+			Chunk& chunk2 = this->chunks.at(key2);
 
 			Vector3 chunk1Pos = chunk1.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0);
 			Vector3 chunk2Pos = chunk2.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0);

@@ -15,8 +15,9 @@
 #define BRANCHLESS_MAX(a, b) (((a) > (b)) * (a) + ((a) <= (b)) * (b))
 #define BRANCHLESS_MIN(a, b) (((a) < (b)) * (a) + ((a) >= (b)) * (b))
 
-// range: [min, max)
-#define RAND(min, max) (rand() % ((max) - (min)) + (min))
+#define RAND(min, max) (rand() % ((max) - (min)) + (min)) // range is [min, max)
+
+#define TUP_TO_STR(tup) std::to_string(std::get<0>(tup)) + "," + std::to_string(std::get<1>(tup)) + "," + std::to_string(std::get<2>(tup))
 
 
 #define PI 3.14159265358979323846f // should this also be 'const float'?
@@ -31,7 +32,7 @@ const int WORLD_SIZE = 16; // chunks per world ^3
 
 
 const int OCTAVES = 8;
-const double PERLIN_NOISE_DIVISOR = CHUNK_SIZE * 8.0;
+const double PERLIN_NOISE_DIVISOR = CHUNK_SIZE * 10.0;
 
 // const int VIEW_DIST = 6; // in chunks
 

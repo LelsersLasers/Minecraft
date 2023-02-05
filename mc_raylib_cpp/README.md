@@ -34,6 +34,7 @@
 		- View distance
 		- Skip "blank" chunks
 		- Only raycast neighboring chunks
+		- Throttle chunk loading and mesh generation
 - Everything 2
     - When under water, show the "top" of the water
 	- Glass blocks

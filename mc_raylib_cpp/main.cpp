@@ -168,24 +168,27 @@ int main() {
 
 				for (size_t idx = 0; idx < world.chunkOrder.size(); idx++) {
 
-					size_t i = world.chunkOrder[idx]; // draw back to front
+					tuple<int, int, int> i = world.chunkOrder[idx]; // draw back to front
+					string key = TUP_TO_STR(i);
+
+					Chunk& chunk = world.chunks.at(key);
 
 					if (chunkOutlines) {
 						DrawCubeWiresV(
-							world.chunks[i].getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
+							chunk.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
 							Vector3Uniform((float)CHUNK_SIZE),
 							PINK
 						);
 					}
 					if (faces) {
-						DrawModel(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, WHITE);
-						DrawModel(world.chunks[i].transparentModel, world.chunks[i].getWorldPos(), 1.0, WHITE);
+						DrawModel(chunk.model, chunk.getWorldPos(), 1.0, WHITE);
+						DrawModel(chunk.transparentModel, chunk.getWorldPos(), 1.0, WHITE);
 					}
 					if (wireframe) {
-						DrawModelWires(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, BLACK);
+						DrawModelWires(chunk.model, chunk.getWorldPos(), 1.0, BLACK);
 					}
 					if (transparentWireframe) {
-						DrawModelWires(world.chunks[i].transparentModel, world.chunks[i].getWorldPos(), 1.0, BLACK);
+						DrawModelWires(chunk.transparentModel, chunk.getWorldPos(), 1.0, BLACK);
 					}
 
 
@@ -194,12 +197,12 @@ int main() {
 							cameraController.camera.position,
 							cameraController.calcForward()
 						};
-						Vector3 pos = world.chunks[i].getWorldPos();
+						Vector3 pos = chunk.getWorldPos();
 						Matrix qTransform = MatrixTranslate(pos.x, pos.y, pos.z);
-						RayCollision qRayCollision = GetRayCollisionMesh(qRay, world.chunks[i].model.meshes[0], qTransform);
+						RayCollision qRayCollision = GetRayCollisionMesh(qRay, chunk.model.meshes[0], qTransform);
 						if (qRayCollision.hit && qRayCollision.distance < REACH) {
 							rayCollisions.push_back(qRayCollision);
-							chunkCollisions.push_back(&world.chunks[i]);
+							chunkCollisions.push_back(&chunk);
 						}
 					}
 

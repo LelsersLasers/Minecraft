@@ -5,6 +5,8 @@
 
 #include <vector>
 #include <tuple>
+#include <unordered_map>
+#include <string>
 
 #include "block.h"
 #include "cameraController.h"
@@ -15,13 +17,15 @@ class Chunk; // forward declaration to avoid circular dependency (effectively: #
 
 using std::vector;
 using std::tuple;
+using std::unordered_map;
+using std::string;
 
 
 class World {
 	public:
-		vector<Chunk> chunks;
+		unordered_map<string, Chunk> chunks;
 
-		vector<size_t> chunkOrder;
+		vector<tuple<int, int, int>> chunkOrder;
 
 		World();
 		// ~World();
