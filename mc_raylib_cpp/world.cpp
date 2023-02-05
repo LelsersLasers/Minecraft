@@ -15,6 +15,7 @@
 
 #include "include/block.h"
 #include "include/chunk.h"
+#include "include/raycastRequest.h"
 #include "include/consts.h"
 
 #include "include/world.h"
@@ -66,16 +67,13 @@ void World::generateChunks(PerlinNoise& pn) {
 	}
 }
 void World::updateChunkModels() {
-	// for (size_t i = 0; i < this->chunks.size(); i++) {
-	// 	if (this->chunks[i].dirty) {
-	// 		this->chunks[i].generateModel(*this);
-	// 	}
-	// }
-	for (size_t i = 0; i < this->chunkOrder.size(); i++) {
+	// reverse loop with unsigned type: https://stackoverflow.com/questions/3623263/reverse-iteration-with-an-unsigned-loop-variable
+	for (size_t i = this->chunkOrder.size(); i-- > 0;) {
 		tuple<int, int, int> chunkTup = this->chunkOrder[i];
 		Chunk& chunk = this->getChunkAt(chunkTup);
 		if (chunk.dirty) {
 			chunk.generateModel(*this);
+			// return; // only update one chunk per frame
 		}
 	}
 }
