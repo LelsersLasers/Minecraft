@@ -18,12 +18,18 @@ enum Dir {
 const Dir allDirEnums[6] = {Top, Bottom, Right, Left, Forward, Backward};
 
 const tuple<int, int, int> allDirTuples[6] = {
-	{0, 0, 1},
-	{0, 0, -1},
-	{0, 1, 0},
-	{0, -1, 0},
-	{1, 0, 0},
-	{-1, 0, 0},
+	// {0, 0, 1},
+	// {0, 0, -1},
+	// {0, 1, 0},
+	// {0, -1, 0},
+	// {1, 0, 0},
+	// {-1, 0, 0},
+    std::make_tuple(0, 0, 1),
+    std::make_tuple(0, 0, -1),
+    std::make_tuple(0, 1, 0),
+    std::make_tuple(0, -1, 0),
+    std::make_tuple(1, 0, 0),
+    std::make_tuple(-1, 0, 0),
 };
 
 const size_t allTriangleOffsets[6][2][3] = {

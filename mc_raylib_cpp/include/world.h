@@ -15,6 +15,7 @@
 #include "raycastRequest.h"
 
 #include "PerlinNoise.h"
+#include "noCopy.h"
 
 class Chunk; // forward declaration to avoid circular dependency (effectively: #include "chunk.h")
 
@@ -26,7 +27,7 @@ using std::string;
 using std::optional;
 
 
-class World {
+class World : public NoCopy {
 	public:
 		unordered_map<string, Chunk> chunks;
 
