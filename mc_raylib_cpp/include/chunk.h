@@ -12,12 +12,13 @@
 #include "world.h"
 
 #include "PerlinNoise.h"
+#include "noCopy.h"
 
 using std::vector;
 using std::tuple;
 
 
-class Chunk {
+class Chunk { // : public NoCopy {
 	public:
 		vector<Block> blocks;
 		tuple<int, int, int> position;

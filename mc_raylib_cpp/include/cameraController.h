@@ -4,12 +4,14 @@
 
 #include "raylib.h"
 
+#include "noCopy.h"
+
 #include <tuple>
 
 using std::tuple;
 
 
-class CameraController {
+class CameraController : public NoCopy {
 
 	public:
 		Camera3D camera;
