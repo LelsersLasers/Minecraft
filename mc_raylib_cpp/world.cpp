@@ -78,6 +78,16 @@ void World::generateChunks(PerlinNoise& pn) {
 			}
 		}
 	}
+	for (size_t i = 0; i < this->chunksToGenerate.size(); i++) {
+		tuple<int, int, int> chunkTup = this->chunksToGenerate[i].first;
+		string key = TUP_TO_STR(chunkTup);
+		Chunk& chunk = this->chunks.at(key);
+
+		chunk.generateModel(*this);
+		if (!chunk.blank || !chunk.transparentBlank) {
+			this->chunkOrder.push_back(key);	
+		}
+	}
 	this->chunksToGenerate.clear();
 }
 void World::updateChunkModels() {
@@ -179,7 +189,6 @@ void World::sortChunks(const CameraController& cameraController) {
 }
 
 void World::cameraMoved(const CameraController& cameraController, PerlinNoise& pn) {
-	// TODO: only do in some cases?
 	// TODO: faster way to do this?
 
 	this->chunkOrder.clear();
@@ -216,7 +225,6 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 				if (dist <= VIEW_DIST) {
 					if (!this->inBounds(idx)) {
 						this->chunksToGenerate.push_back(std::make_pair(idx, dist));
-						this->chunkOrder.push_back(key);
 					} else {
 						Chunk& chunk = this->getChunkAt(idx);
 						chunk.distanceFromCamera = dist;
