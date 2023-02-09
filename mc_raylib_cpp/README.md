@@ -10,8 +10,8 @@
 		- Avoid creating object and then reassinging it
 		- Can create some objects as `Type* var = new Type(args)`
 	- Improve iterating
-		- Mostly iterating over World::chunks
 		- Enhanced for loops?
+		- RN: Loop through chunkOrder multiple times
 	- World::chunks.at() vs World::getChunkAt()
 - Replace Vector3/2Util with raymath
 - Block has array[6] of Colors (indexed by Dir) instead of getColorFn()/getColor()

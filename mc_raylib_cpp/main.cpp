@@ -70,7 +70,6 @@ int main() {
 
 	CameraController cameraController; // uses default defined constructor
 
-
 	PerlinNoise pn(rand() % UINT_MAX);
 
 	World world; // uses default defined constructor
@@ -116,9 +115,14 @@ int main() {
 
 			if (moveVec != Vector3Zero()) {
 				moveVec = normalize(moveVec) * delta * 20.0;
-				cameraController.moveBy(moveVec);
 
-				world.cameraMoved(cameraController, pn);
+				tuple<int, int, int> oldCameraChunk = cameraController.getChunkPos();
+				cameraController.moveBy(moveVec);
+				tuple<int, int, int> newCameraChunk = cameraController.getChunkPos();
+
+				if (oldCameraChunk != newCameraChunk) {
+					world.cameraMoved(cameraController, pn);
+				}
 			}
 		}
 
