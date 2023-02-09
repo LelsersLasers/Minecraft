@@ -72,7 +72,6 @@ int main() {
 
 
 	PerlinNoise pn(rand() % UINT_MAX);
-	// PerlinNoise pn;
 
 	World world; // uses default defined constructor
 	world.cameraMoved(cameraController, pn);
@@ -169,9 +168,7 @@ int main() {
             BeginMode3D(cameraController.camera);
             {
 				for (size_t idx = 0; idx < world.chunkOrder.size(); idx++) {
-
-					tuple<int, int, int> i = world.chunkOrder[idx]; // draw back to front
-					string key = TUP_TO_STR(i);
+					string key = world.chunkOrder[idx]; // draw front to back
 
 					Chunk& chunk = world.chunks.at(key);
 

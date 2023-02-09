@@ -29,13 +29,12 @@ using std::optional;
 
 World::World() {
 	this->chunks = unordered_map<string, Chunk>();
-
-	this->chunkOrder = vector<tuple<int, int, int>>();
-
+	this->chunkOrder = vector<string>();
 	this->chunksToGenerate = vector<pair<tuple<int, int, int>, float>>();
 }
 
 Chunk& World::getChunkAt(tuple<int, int, int> chunkPos) {
+	// assumes key exists
 	Chunk& chunk = this->chunks.at(TUP_TO_STR(chunkPos));
 	return chunk;
 }
@@ -84,8 +83,8 @@ void World::generateChunks(PerlinNoise& pn) {
 void World::updateChunkModels() {
 	// reverse loop with unsigned type: https://stackoverflow.com/questions/3623263/reverse-iteration-with-an-unsigned-loop-variable
 	for (size_t i = this->chunkOrder.size(); i-- > 0; ) {
-		tuple<int, int, int> chunkTup = this->chunkOrder[i];
-		Chunk& chunk = this->getChunkAt(chunkTup);
+		string chunkKey = this->chunkOrder[i];
+		Chunk& chunk = this->chunks.at(chunkKey);
 		if (chunk.dirty) {
 			chunk.generateModel(*this);
 			// return; // only update one chunk per frame
@@ -170,10 +169,7 @@ void World::sortChunks(const CameraController& cameraController) {
 	std::sort(
 		this->chunkOrder.begin(),
 		this->chunkOrder.end(),
-		[&cameraController, this](const tuple<int, int, int>& idx1, const tuple<int, int, int>& idx2){
-			string key1 = TUP_TO_STR(idx1);
-			string key2 = TUP_TO_STR(idx2);
-
+		[&cameraController, this](const string& key1, const string& key2){
 			Chunk& chunk1 = this->chunks.at(key1);
 			Chunk& chunk2 = this->chunks.at(key2);
 
@@ -209,6 +205,7 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 			for (int z = startZ; z <= endZ; z++) {
 
 				tuple<int, int, int> idx = std::make_tuple(x, y, z);
+				string key = TUP_TO_STR(idx);
 
 				int diffX = x - cameraChunkX;
 				int diffY = y - cameraChunkY;
@@ -219,13 +216,13 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 				if (dist <= VIEW_DIST) {
 					if (!this->inBounds(idx)) {
 						this->chunksToGenerate.push_back(std::make_pair(idx, dist));
-						this->chunkOrder.push_back(idx);
+						this->chunkOrder.push_back(key);
 					} else {
 						Chunk& chunk = this->getChunkAt(idx);
 						chunk.distanceFromCamera = dist;
 
 						if (!chunk.blank || !chunk.transparentBlank) {
-							this->chunkOrder.push_back(idx);	
+							this->chunkOrder.push_back(key);	
 						}
 					}
 				}

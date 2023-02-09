@@ -12,6 +12,7 @@
 	- Improve iterating
 		- Mostly iterating over World::chunks
 		- Enhanced for loops?
+	- World::chunks.at() vs World::getChunkAt()
 - Replace Vector3/2Util with raymath
 - Block has array[6] of Colors (indexed by Dir) instead of getColorFn()/getColor()
 - Everything
@@ -32,7 +33,6 @@
 		- Replaces colors
 	- Preformance
 		- Throttle chunk loading and mesh generation
-		- chunkOrder is a vector of string instead of tuples?
 		- Custom sorted map vs unordered_map??
 		- Double find with World::inBounds() then World::getChunk()
 			- Use optional instead?

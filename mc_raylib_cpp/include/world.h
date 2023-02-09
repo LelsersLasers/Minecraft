@@ -30,9 +30,7 @@ using std::optional;
 class World : public NoCopy {
 	public:
 		unordered_map<string, Chunk> chunks;
-
-		vector<tuple<int, int, int>> chunkOrder;
-
+		vector<string> chunkOrder;
 		vector<pair<tuple<int, int, int>, float>> chunksToGenerate;
 
 		World();
