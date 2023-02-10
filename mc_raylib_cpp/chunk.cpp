@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <tuple>
+#include <optional>
 
 #include "include/block.h"
 #include "include/world.h"
@@ -19,6 +20,7 @@
 
 using std::vector;
 using std::tuple;
+using std::optional;
 
 #include "include/chunk.h"
 
@@ -372,8 +374,9 @@ void Chunk::placeBlockAt(tuple<size_t, size_t, size_t> blockIdx, Vector3 rayNorm
 
 		tuple<int, int, int> newChunkPos = std::make_tuple(newChunkX, newChunkY, newChunkZ);
 
-		if (world.inBounds(newChunkPos)) {
-			Chunk& newChunk = world.getChunkAt(newChunkPos);
+		optional<reference_wrapper<Chunk>> possibleChunk = world.getChunkAt(newChunkPos);
+		if (possibleChunk.has_value()) {
+			Chunk& newChunk = possibleChunk.value();
 
 			size_t chunkBlockX = (size_t)EUCMOD_SIMPLE(newBlockX, CHUNK_SIZE);
 			size_t chunkBlockY = (size_t)EUCMOD_SIMPLE(newBlockY, CHUNK_SIZE);
