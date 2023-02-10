@@ -2,6 +2,8 @@
 
 ## BUGS:
 
+- Breaking blocks doesn't change chunkOrder, so it never has to be rebuilt
+
 ## TODO:
 
 - C++ stuff
@@ -26,11 +28,11 @@
 			- Directional blocks
 		- Leaves
 			- Semi transparent
-	- Infinite world
-		- World::chunks is an unordered map?
 	- Textures
 		- Texture atlas
 		- Replaces colors
+	- World lower cap
+		- Bedrock layer
 	- Preformance
 		- Throttle chunk loading and mesh generation
 		- Custom sorted map vs unordered_map??

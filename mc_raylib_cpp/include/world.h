@@ -42,7 +42,7 @@ class World : public NoCopy {
 		optional<reference_wrapper<Chunk>> getChunkAt(tuple<int, int, int> chunkPos);
 		Block getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z);
 
-		void generateChunks(PerlinNoise& pn);
+		void generateChunk(PerlinNoise& pn);
 		void updateChunkModels();
 
 		// bool inBounds(tuple<int, int, int> chunkPos);
@@ -51,7 +51,7 @@ class World : public NoCopy {
 
 		bool cameraIsSubmerged(const CameraController& cameraController);
 
-		void sortChunks(const CameraController& cameraController);
+		void sortChunks();
 
 		void cameraMoved(const CameraController& cameraController, PerlinNoise& pn);
 

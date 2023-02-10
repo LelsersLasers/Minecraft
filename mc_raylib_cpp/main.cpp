@@ -74,7 +74,6 @@ int main() {
 
 	World world; // uses default defined constructor
 	world.cameraMoved(cameraController, pn);
-	// world.generateChunks(pn);
 	world.updateChunkModels();
 
 
@@ -160,6 +159,8 @@ int main() {
 				}
 			}
 		}
+
+		world.generateChunk(pn);
 
 		// iterates over chunks
 		world.updateChunkModels();

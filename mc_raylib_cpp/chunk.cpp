@@ -255,6 +255,7 @@ void Chunk::generateModel(World& world) {
 	this->blank = vertexCount == 0;
 	this->transparentBlank = transparentVertexCount == 0;
 
+	// 3 floats per vertex, 4 colors per vertex
 	mesh.vertices = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
 	mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));
 

@@ -35,7 +35,7 @@ World::World() {
 }
 
 optional<reference_wrapper<Chunk>> World::getChunkAt(tuple<int, int, int> chunkPos) {
-	// Does this copy
+	// Does this copy??
 	string key = TUP_TO_STR(chunkPos);
 	auto iter = this->chunks.find(key);
 	if (iter != this->chunks.end()) {
@@ -55,51 +55,53 @@ Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
 	}
 }
 
-void World::generateChunks(PerlinNoise& pn) {
-	for (size_t i = 0; i < this->chunksToGenerate.size(); i++) {
-		tuple<int, int, int> chunkTup = this->chunksToGenerate[i].first;
-		string key = TUP_TO_STR(chunkTup);
+void World::generateChunk(PerlinNoise& pn) {
 
-		Chunk chunk = Chunk(chunkTup);
-		chunk.generateBlocks(pn);
-		chunk.distanceFromCamera = this->chunksToGenerate[i].second;
+	if (this->chunksToGenerate.size() == 0) {
+		return;
+	}
 
-		// this->chunks.insert(std::make_pair(key, chunk));
+	pair<tuple<int, int, int>, float> chunkToGenerate = this->chunksToGenerate.back();
+	this->chunksToGenerate.pop_back();
 
-		// TODO: copies chunk!!!!!!
-		pair<string, Chunk> pair = std::make_pair(key, chunk);
-		this->chunks.insert(pair);
+	tuple<int, int, int> chunkTup = chunkToGenerate.first;
+	string key = TUP_TO_STR(chunkTup);
 
-		for (size_t j = 0; j < 6; j++) {
-			tuple<int, int, int> dirTuple = allDirTuples[j];
+	Chunk chunk = Chunk(chunkTup);
+	chunk.generateBlocks(pn);
+	chunk.distanceFromCamera = chunkToGenerate.second;
 
-			tuple<int, int, int> neighborTup = std::make_tuple(
-				std::get<0>(chunkTup) + std::get<0>(dirTuple),
-				std::get<1>(chunkTup) + std::get<1>(dirTuple),
-				std::get<2>(chunkTup) + std::get<2>(dirTuple)
-			);
+	// TODO: copies chunk!!!!!!
+	// this->chunks.insert(std::make_pair(key, chunk));
+	pair<string, Chunk> pair = std::make_pair(key, chunk);
+	this->chunks.insert(pair);
 
-			optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(neighborTup);
-			if (possibleChunk.has_value()) {
-				Chunk& neighbor = possibleChunk.value();
-				neighbor.dirty = true;
-			}
+	for (size_t j = 0; j < 6; j++) {
+		tuple<int, int, int> dirTuple = allDirTuples[j];
+
+		tuple<int, int, int> neighborTup = std::make_tuple(
+			std::get<0>(chunkTup) + std::get<0>(dirTuple),
+			std::get<1>(chunkTup) + std::get<1>(dirTuple),
+			std::get<2>(chunkTup) + std::get<2>(dirTuple)
+		);
+
+		optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(neighborTup);
+		if (possibleChunk.has_value()) {
+			Chunk& neighbor = possibleChunk.value();
+			neighbor.dirty = true;
 		}
 	}
-	for (size_t i = 0; i < this->chunksToGenerate.size(); i++) {
-		tuple<int, int, int> chunkTup = this->chunksToGenerate[i].first;
-		string key = TUP_TO_STR(chunkTup);
-		Chunk& chunk = this->chunks.at(key);
 
-		chunk.generateModel(*this);
-		if (!chunk.blank || !chunk.transparentBlank) {
-			this->chunkOrder.push_back(key);	
-		}
+
+	// TODO: better way to do this?
+	Chunk& chunkRef = this->chunks.at(key);
+
+	chunkRef.generateModel(*this);
+	if (!chunkRef.blank || !chunkRef.transparentBlank) {
+		this->chunkOrder.push_back(key);	
 	}
-	this->chunksToGenerate.clear();
 }
 void World::updateChunkModels() {
-	// reverse loop with unsigned type: https://stackoverflow.com/questions/3623263/reverse-iteration-with-an-unsigned-loop-variable
 	for (size_t i = this->chunkOrder.size(); i-- > 0; ) {
 		string chunkKey = this->chunkOrder[i];
 		Chunk& chunk = this->chunks.at(chunkKey);
@@ -185,16 +187,25 @@ bool World::cameraIsSubmerged(const CameraController& cameraController) {
 	}
 }
 
-void World::sortChunks(const CameraController& cameraController) {
+void World::sortChunks() {
 	// sorted order (farthest to closest) saved in World::chunkOrder
 	std::sort(
 		this->chunkOrder.begin(),
 		this->chunkOrder.end(),
-		[&cameraController, this](const string& key1, const string& key2){
+		[this](const string& key1, const string& key2){
 			Chunk& chunk1 = this->chunks.at(key1);
 			Chunk& chunk2 = this->chunks.at(key2);
 
 			return chunk1.distanceFromCamera > chunk2.distanceFromCamera;
+		}
+	);
+
+	std::sort(
+		this->chunksToGenerate.begin(),
+		this->chunksToGenerate.end(),
+		[this](const pair<tuple<int, int, int>, float>& a, const pair<tuple<int, int, int>, float>& b){
+
+			return a.second > b.second;
 		}
 	);
 }
@@ -251,8 +262,7 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 		}
 	}
 
-	this->generateChunks(pn); // must happen before sorting
-	this->sortChunks(cameraController);
+	this->sortChunks();
 }
 
 optional<Vector3> World::handleRaycastRequest(const CameraController& cameraController, RaycastRequest& raycastRequest, Block selectedBlock) {
