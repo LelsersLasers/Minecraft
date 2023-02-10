@@ -33,17 +33,24 @@ World::World() {
 	this->chunksToGenerate = vector<pair<tuple<int, int, int>, float>>();
 }
 
-Chunk& World::getChunkAt(tuple<int, int, int> chunkPos) {
-	// assumes key exists
-	Chunk& chunk = this->chunks.at(TUP_TO_STR(chunkPos));
-	return chunk;
+optional<Chunk&> World::getChunkAt(tuple<int, int, int> chunkPos) {
+	// Does this copy
+	string key = TUP_TO_STR(chunkPos);
+	auto iter = this->chunks.find(key);
+	if (iter != this->chunks.end()) {
+		auto iter2 = *iter;
+		Chunk& chunk = iter2.second;
+		return chunk;
+	} else {
+		return {};
+	}
 }
 Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
-	if (this->inBounds(chunkPos)) {
-		Chunk& chunk = this->getChunkAt(chunkPos);
+	optional<Chunk&> possibleChunk = this->getChunkAt(chunkPos);
+	if (possibleChunk.has_value()) {
+		Chunk& chunk = possibleChunk.value();
 		return chunk.getBlockAt(x, y, z);
-	}
-	else {
+	} else {
 		return BEDROCK_BLOCK;
 	}
 }
@@ -72,8 +79,9 @@ void World::generateChunks(PerlinNoise& pn) {
 				std::get<2>(chunkTup) + std::get<2>(dirTuple)
 			);
 
-			if (this->inBounds(neighborTup)) {
-				Chunk& neighbor = this->getChunkAt(neighborTup);
+			optional<Chunk&> possibleChunk = this->getChunkAt(neighborTup);
+			if (possibleChunk.has_value()) {
+				Chunk& neighbor = possibleChunk.value();
 				neighbor.dirty = true;
 			}
 		}
@@ -104,10 +112,10 @@ void World::updateChunkModels() {
 
 
 
-bool World::inBounds(tuple<int, int, int> chunkPos) {
-	string key = TUP_TO_STR(chunkPos);
-	return this->chunks.find(key) != this->chunks.end();
-}
+// bool World::inBounds(tuple<int, int, int> chunkPos) {
+// 	string key = TUP_TO_STR(chunkPos);
+// 	return this->chunks.find(key) != this->chunks.end();
+// }
 
 void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> srcBlock) {
 	int chunkX = std::get<0>(srcChunk);
@@ -150,8 +158,9 @@ void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> s
 	for (size_t i = 0; i < neighborChunks.size(); i++) {
 		tuple<int, int, int> neighborChunk = neighborChunks[i];
 
-		if (this->inBounds(neighborChunk)) {
-			Chunk& chunk = this->getChunkAt(neighborChunk);
+		optional<Chunk&> possibleChunk = this->getChunkAt(neighborChunk);
+		if (possibleChunk.has_value()) {
+			Chunk& chunk = possibleChunk.value();
 			chunk.dirty = true;
 		}
 	}
@@ -159,19 +168,21 @@ void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> s
 
 bool World::cameraIsSubmerged(const CameraController& cameraController) {
 	tuple<int, int, int> chunkPos = cameraController.getChunkPos();
-	if (!this->inBounds(chunkPos)) {
+
+	optional<Chunk&> possibleChunk = this->getChunkAt(chunkPos);
+	if (possibleChunk.has_value()) {
+		Chunk& chunk = possibleChunk.value();
+
+		int blockX = EUCMOD((int)cameraController.camera.position.x, CHUNK_SIZE);
+		int blockY = EUCMOD((int)cameraController.camera.position.y, CHUNK_SIZE);
+		int blockZ = EUCMOD((int)cameraController.camera.position.z, CHUNK_SIZE);
+
+		Block block = chunk.getBlockAt(blockX, blockY, blockZ);
+
+		return block.blockType == BlockType::WATER;
+	} else {
 		return false;
 	}
-
-	Chunk& chunk = this->getChunkAt(chunkPos);
-
-	int blockX = EUCMOD((int)cameraController.camera.position.x, CHUNK_SIZE);
-	int blockY = EUCMOD((int)cameraController.camera.position.y, CHUNK_SIZE);
-	int blockZ = EUCMOD((int)cameraController.camera.position.z, CHUNK_SIZE);
-
-	Block block = chunk.getBlockAt(blockX, blockY, blockZ);
-
-	return block.blockType == BlockType::WATER;
 }
 
 void World::sortChunks(const CameraController& cameraController) {
@@ -223,15 +234,16 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 				float dist = sqrtf(diffX * diffX + diffY * diffY + diffZ * diffZ);
 
 				if (dist <= VIEW_DIST) {
-					if (!this->inBounds(idx)) {
-						this->chunksToGenerate.push_back(std::make_pair(idx, dist));
-					} else {
-						Chunk& chunk = this->getChunkAt(idx);
+					optional<Chunk&> possibleChunk = this->getChunkAt(idx);
+					if (possibleChunk.has_value()) {
+						Chunk& chunk = possibleChunk.value();
 						chunk.distanceFromCamera = dist;
 
 						if (!chunk.blank || !chunk.transparentBlank) {
 							this->chunkOrder.push_back(key);	
 						}
+					} else {
+						this->chunksToGenerate.push_back(std::make_pair(idx, dist));
 					}
 				}
 
@@ -264,8 +276,9 @@ optional<Vector3> World::handleRaycastRequest(const CameraController& cameraCont
 
 				tuple<int, int, int> idx = std::make_tuple(x, y, z);
 
-				if (this->inBounds(idx)) {
-					Chunk& chunk = this->getChunkAt(idx);
+				optional<Chunk&> possibleChunk = this->getChunkAt(idx);
+				if (possibleChunk.has_value()) {
+					Chunk& chunk = possibleChunk.value();
 
 					if (chunk.blank) {
 						continue;
