@@ -34,8 +34,6 @@
 	- Preformance
 		- Throttle chunk loading and mesh generation
 		- Custom sorted map vs unordered_map??
-		- Double find with World::inBounds() then World::getChunk()
-			- Use optional instead?
 		- Unload models from GPU when not in view
 - Everything 2
     - When under water, show the "top" of the water

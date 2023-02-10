@@ -25,6 +25,7 @@ using std::vector;
 using std::tuple;
 using std::pair;
 using std::optional;
+using std::reference_wrapper;
 
 
 World::World() {
@@ -33,20 +34,19 @@ World::World() {
 	this->chunksToGenerate = vector<pair<tuple<int, int, int>, float>>();
 }
 
-optional<Chunk&> World::getChunkAt(tuple<int, int, int> chunkPos) {
+optional<reference_wrapper<Chunk>> World::getChunkAt(tuple<int, int, int> chunkPos) {
 	// Does this copy
 	string key = TUP_TO_STR(chunkPos);
 	auto iter = this->chunks.find(key);
 	if (iter != this->chunks.end()) {
-		auto iter2 = *iter;
-		Chunk& chunk = iter2.second;
+		Chunk& chunk = iter->second;
 		return chunk;
 	} else {
 		return {};
 	}
 }
 Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
-	optional<Chunk&> possibleChunk = this->getChunkAt(chunkPos);
+	optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(chunkPos);
 	if (possibleChunk.has_value()) {
 		Chunk& chunk = possibleChunk.value();
 		return chunk.getBlockAt(x, y, z);
@@ -79,7 +79,7 @@ void World::generateChunks(PerlinNoise& pn) {
 				std::get<2>(chunkTup) + std::get<2>(dirTuple)
 			);
 
-			optional<Chunk&> possibleChunk = this->getChunkAt(neighborTup);
+			optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(neighborTup);
 			if (possibleChunk.has_value()) {
 				Chunk& neighbor = possibleChunk.value();
 				neighbor.dirty = true;
@@ -158,7 +158,7 @@ void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> s
 	for (size_t i = 0; i < neighborChunks.size(); i++) {
 		tuple<int, int, int> neighborChunk = neighborChunks[i];
 
-		optional<Chunk&> possibleChunk = this->getChunkAt(neighborChunk);
+		optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(neighborChunk);
 		if (possibleChunk.has_value()) {
 			Chunk& chunk = possibleChunk.value();
 			chunk.dirty = true;
@@ -169,7 +169,7 @@ void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> s
 bool World::cameraIsSubmerged(const CameraController& cameraController) {
 	tuple<int, int, int> chunkPos = cameraController.getChunkPos();
 
-	optional<Chunk&> possibleChunk = this->getChunkAt(chunkPos);
+	optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(chunkPos);
 	if (possibleChunk.has_value()) {
 		Chunk& chunk = possibleChunk.value();
 
@@ -234,7 +234,7 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 				float dist = sqrtf(diffX * diffX + diffY * diffY + diffZ * diffZ);
 
 				if (dist <= VIEW_DIST) {
-					optional<Chunk&> possibleChunk = this->getChunkAt(idx);
+					optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(idx);
 					if (possibleChunk.has_value()) {
 						Chunk& chunk = possibleChunk.value();
 						chunk.distanceFromCamera = dist;
@@ -276,7 +276,7 @@ optional<Vector3> World::handleRaycastRequest(const CameraController& cameraCont
 
 				tuple<int, int, int> idx = std::make_tuple(x, y, z);
 
-				optional<Chunk&> possibleChunk = this->getChunkAt(idx);
+				optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(idx);
 				if (possibleChunk.has_value()) {
 					Chunk& chunk = possibleChunk.value();
 

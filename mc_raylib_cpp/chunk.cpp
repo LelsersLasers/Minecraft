@@ -374,7 +374,7 @@ void Chunk::placeBlockAt(tuple<size_t, size_t, size_t> blockIdx, Vector3 rayNorm
 
 		tuple<int, int, int> newChunkPos = std::make_tuple(newChunkX, newChunkY, newChunkZ);
 
-		optional<Chunk&> possibleChunk = world.getChunkAt(newChunkPos);
+		optional<reference_wrapper<Chunk>> possibleChunk = world.getChunkAt(newChunkPos);
 		if (possibleChunk.has_value()) {
 			Chunk& newChunk = possibleChunk.value();
 

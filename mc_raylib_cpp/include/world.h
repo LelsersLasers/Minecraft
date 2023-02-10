@@ -10,6 +10,8 @@
 #include <string>
 #include <optional>
 
+#include <functional>
+
 #include "block.h"
 #include "cameraController.h"
 #include "raycastRequest.h"
@@ -25,6 +27,7 @@ using std::pair;
 using std::unordered_map;
 using std::string;
 using std::optional;
+using std::reference_wrapper;
 
 
 class World : public NoCopy {
@@ -36,7 +39,7 @@ class World : public NoCopy {
 		World();
 		// ~World();
 
-		optional<Chunk&> getChunkAt(tuple<int, int, int> chunkPos);
+		optional<reference_wrapper<Chunk>> getChunkAt(tuple<int, int, int> chunkPos);
 		Block getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z);
 
 		void generateChunks(PerlinNoise& pn);
