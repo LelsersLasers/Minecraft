@@ -30,7 +30,10 @@ using std::reference_wrapper;
 
 World::World() {
 	this->chunks = unordered_map<string, Chunk>();
-	this->chunkOrder = vector<string>();
+
+	this->nearbyKeys = vector<string>();
+	this->keysToRender = vector<string>();
+
 	this->chunksToGenerate = vector<pair<tuple<int, int, int>, float>>();
 }
 
@@ -97,17 +100,19 @@ void World::generateChunk(PerlinNoise& pn) {
 	Chunk& chunkRef = this->chunks.at(key);
 
 	chunkRef.generateModel(*this);
+	this->nearbyKeys.push_back(key);
 	if (!chunkRef.blank || !chunkRef.transparentBlank) {
-		this->chunkOrder.push_back(key);	
+		// TODO: would need to be sorted in?
+		this->keysToRender.push_back(key);	
 	}
 }
 void World::updateChunkModels() {
-	for (size_t i = this->chunkOrder.size(); i-- > 0; ) {
-		string chunkKey = this->chunkOrder[i];
+	for (size_t i = this->nearbyKeys.size(); i-- > 0; ) {
+		string chunkKey = this->nearbyKeys[i];
 		Chunk& chunk = this->chunks.at(chunkKey);
 		if (chunk.dirty) {
 			chunk.generateModel(*this);
-			// return; // only update one chunk per frame
+			// return; // TODO: ?? only update one chunk per frame
 		}
 	}
 }
@@ -188,10 +193,10 @@ bool World::cameraIsSubmerged(const CameraController& cameraController) {
 }
 
 void World::sortChunks() {
-	// sorted order (farthest to closest) saved in World::chunkOrder
+	// sorted: farthest to closest
 	std::sort(
-		this->chunkOrder.begin(),
-		this->chunkOrder.end(),
+		this->keysToRender.begin(),
+		this->keysToRender.end(),
 		[this](const string& key1, const string& key2){
 			Chunk& chunk1 = this->chunks.at(key1);
 			Chunk& chunk2 = this->chunks.at(key2);
@@ -200,6 +205,7 @@ void World::sortChunks() {
 		}
 	);
 
+	// not needed, just looks cool
 	std::sort(
 		this->chunksToGenerate.begin(),
 		this->chunksToGenerate.end(),
@@ -213,7 +219,8 @@ void World::sortChunks() {
 void World::cameraMoved(const CameraController& cameraController, PerlinNoise& pn) {
 	// TODO: faster way to do this?
 
-	this->chunkOrder.clear();
+	this->nearbyKeys.clear();
+	this->keysToRender.clear();
 
 	this->chunksToGenerate.clear();
 
@@ -250,8 +257,9 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 						Chunk& chunk = possibleChunk.value();
 						chunk.distanceFromCamera = dist;
 
+						this->nearbyKeys.push_back(key);
 						if (!chunk.blank || !chunk.transparentBlank) {
-							this->chunkOrder.push_back(key);	
+							this->keysToRender.push_back(key);	
 						}
 					} else {
 						this->chunksToGenerate.push_back(std::make_pair(idx, dist));

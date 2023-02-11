@@ -2,8 +2,6 @@
 
 ## BUGS:
 
-- Breaking blocks doesn't change chunkOrder, so it never has to be rebuilt
-
 ## TODO:
 
 - C++ stuff
@@ -37,6 +35,7 @@
 		- Throttle chunk loading and mesh generation
 		- Custom sorted map vs unordered_map??
 		- Unload models from GPU when not in view
+		- Unload/don't create/load models that are blank
 - Everything 2
     - When under water, show the "top" of the water
 	- Glass blocks

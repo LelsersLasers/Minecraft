@@ -33,7 +33,10 @@ using std::reference_wrapper;
 class World : public NoCopy {
 	public:
 		unordered_map<string, Chunk> chunks;
-		vector<string> chunkOrder;
+
+		vector<string> nearbyKeys;
+		vector<string> keysToRender;
+		
 		vector<pair<tuple<int, int, int>, float>> chunksToGenerate;
 
 		World();

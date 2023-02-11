@@ -172,8 +172,8 @@ int main() {
 
             BeginMode3D(cameraController.camera);
             {
-				for (size_t idx = 0; idx < world.chunkOrder.size(); idx++) {
-					string key = world.chunkOrder[idx]; // draw front to back
+				for (size_t idx = 0; idx < world.keysToRender.size(); idx++) {
+					string key = world.keysToRender[idx]; // draw front to back
 
 					Chunk& chunk = world.chunks.at(key);
 
