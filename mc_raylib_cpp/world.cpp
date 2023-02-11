@@ -35,6 +35,13 @@ World::World() {
 	this->shouldSortKeysToRender = false;
 
 	this->chunksToGenerate = vector<pair<tuple<int, int, int>, float>>();
+
+	this->compareKeysByDistance = [this](const string& key1, const string& key2) -> bool {
+		Chunk& chunk1 = this->chunks.at(key1);
+		Chunk& chunk2 = this->chunks.at(key2);
+
+		return chunk1.distanceFromCamera > chunk2.distanceFromCamera;
+	};
 }
 
 optional<reference_wrapper<Chunk>> World::getChunkAt(tuple<int, int, int> chunkPos) {
@@ -203,12 +210,7 @@ void World::sortKeysToRender() {
 	std::sort(
 		this->keysToRender.begin(),
 		this->keysToRender.end(),
-		[this](const string& key1, const string& key2){
-			Chunk& chunk1 = this->chunks.at(key1);
-			Chunk& chunk2 = this->chunks.at(key2);
-
-			return chunk1.distanceFromCamera > chunk2.distanceFromCamera;
-		}
+		this->compareKeysByDistance
 	);
 }
 void World::sortChunksToGenerate() {

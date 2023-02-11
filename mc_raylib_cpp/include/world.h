@@ -41,6 +41,8 @@ class World : public NoCopy {
 
 		bool shouldSortKeysToRender;
 
+		std::function<bool(const string&, const string&)> compareKeysByDistance;
+
 		World();
 		// ~World();
 
@@ -49,8 +51,6 @@ class World : public NoCopy {
 
 		void generateChunk(PerlinNoise& pn);
 		void updateChunkModels();
-
-		// bool inBounds(tuple<int, int, int> chunkPos);
 
 		void dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> srcBlock);
 
