@@ -1,11 +1,9 @@
 #include "raylib.h"
+#include "raymath.h"
 
 #include <cmath>
 
 #include "include/consts.h"
-
-#include "include/Vector3Util.h"
-#include "include/Vector2Util.h"
 
 #include "include/cameraController.h"
 
@@ -33,8 +31,8 @@ CameraController::CameraController() {
 }
 
 void CameraController::moveBy(const Vector3 &vec) {
-	this->camera.position += vec;
-	this->camera.target += vec;
+	this->camera.position = Vector3Add(this->camera.position, vec);
+	this->camera.target = Vector3Add(this->camera.target, vec);
 }
 
 Vector3 CameraController::calcForward() const {
@@ -67,7 +65,7 @@ Vector3 CameraController::calcRight() const {
 
 void CameraController::update() {
 	Vector2 newMousePosition = GetMousePosition();
-	Vector2 mouseDelta = this->mousePosition - newMousePosition;
+	Vector2 mouseDelta = Vector2Subtract(this->mousePosition, newMousePosition);
 	this->mousePosition = newMousePosition;
 
 	this->yaw += mouseDelta.x * this->mouseSensitivity;
@@ -80,7 +78,7 @@ void CameraController::update() {
 		this->pitch = -PI / 2.0 + 0.01;
 	}
 	
-	this->camera.target = this->camera.position + this->calcForward();
+	this->camera.target = Vector3Add(this->camera.position, this->calcForward());
 }
 
 tuple<int, int, int> CameraController::getChunkPos() const {

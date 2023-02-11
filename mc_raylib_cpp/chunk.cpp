@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include "raymath.h"
 
 #include <stdlib.h>
 #include <cstring> // memcpy
@@ -6,12 +7,12 @@
 
 #include <vector>
 #include <tuple>
+#include <optional>
 
 #include "include/block.h"
 #include "include/world.h"
 #include "include/blockType.h"
 #include "include/dir.h"
-#include "include/Vector3Util.h"
 #include "include/consts.h"
 #include "include/PerlinNoiseUtil.h"
 
@@ -19,6 +20,7 @@
 
 using std::vector;
 using std::tuple;
+using std::optional;
 
 #include "include/chunk.h"
 
@@ -30,11 +32,16 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 	
 	this->dirty = true;
 
+	this->blank = true;
+	this->transparentBlank = true;
+
 	this->model = { 0 };
 	this->oldMesh = { 0 };
 
 	this->transparentModel = { 0 };
 	this->transparentOldMesh = { 0 };
+
+	this->distanceFromCamera = 0.0f;
 }
 Chunk::~Chunk() {
 	UnloadModel(this->model);
@@ -182,7 +189,11 @@ void Chunk::generateModel(World& world) {
 					continue;
 				}
 
-				Vector3 pos = Vector3FromInts(x, y, z);
+				Vector3 pos = {
+					(float)x,
+					(float)y,
+					(float)z
+				};
 
 				bool shortenZ = false;
 				if (block.blockType == BlockType::WATER) {
@@ -204,7 +215,7 @@ void Chunk::generateModel(World& world) {
 					for (size_t j = 0; j < 2; j++) { // 2 triangles per face
 						for (size_t k = 0; k < 3; k++) { // 3 vertices per triangle
 
-							Vector3 vertex = pos + CUBE_VERTICES[allTriangleOffsets[i][j][k]];
+							Vector3 vertex = Vector3Add(pos, CUBE_VERTICES[allTriangleOffsets[i][j][k]]);
 							Color color = block.getColor(dir);
 
 							if (block.transparent) {
@@ -245,7 +256,10 @@ void Chunk::generateModel(World& world) {
 	transparentMesh.vertexCount = transparentVertexCount;
 	transparentMesh.triangleCount = transparentVertexCount / 3;
 
+	this->blank = vertexCount == 0;
+	this->transparentBlank = transparentVertexCount == 0;
 
+	// 3 floats per vertex, 4 colors per vertex
 	mesh.vertices = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
 	mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));
 
@@ -291,7 +305,7 @@ bool Chunk::inBounds(int x, int y, int z) { // static
 // }
 
 tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollision) const {
-	Vector3 point = rayCollision.point - this->getWorldPos();
+	Vector3 point = Vector3Subtract(point, this->getWorldPos());
 
 	float smallestDistance = INFINITY;
 
@@ -323,8 +337,14 @@ tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollisio
 					continue;
 				}
 
-				Vector3 pos = Vector3FromInts(x, y, z) + Vector3Uniform(0.5);
-				float distance = length(pos - point);
+				Vector3 spot = {
+					(float)x,
+					(float)y,
+					(float)z
+				};
+
+				Vector3 pos = Vector3Add(spot, { 0.5f, 0.5f, 0.5f });
+				float distance = Vector3Length(Vector3Subtract(pos, point));
 				if (distance < smallestDistance) {
 					smallestDistance = distance;
 
@@ -365,8 +385,9 @@ void Chunk::placeBlockAt(tuple<size_t, size_t, size_t> blockIdx, Vector3 rayNorm
 
 		tuple<int, int, int> newChunkPos = std::make_tuple(newChunkX, newChunkY, newChunkZ);
 
-		if (World::inBounds(newChunkPos)) {
-			Chunk& newChunk = world.getChunkAt(newChunkPos);
+		optional<reference_wrapper<Chunk>> possibleChunk = world.getChunkAt(newChunkPos);
+		if (possibleChunk.has_value()) {
+			Chunk& newChunk = possibleChunk.value();
 
 			size_t chunkBlockX = (size_t)EUCMOD_SIMPLE(newBlockX, CHUNK_SIZE);
 			size_t chunkBlockY = (size_t)EUCMOD_SIMPLE(newBlockY, CHUNK_SIZE);

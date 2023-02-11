@@ -10,9 +10,10 @@
 		- Avoid creating object and then reassinging it
 		- Can create some objects as `Type* var = new Type(args)`
 	- Improve iterating
-		- Mostly iterating over World::chunks
 		- Enhanced for loops?
-- Replace Vector3/2Util with raymath
+		- RN: Loop through chunkOrder multiple times
+	- World::chunks.at() vs World::getChunkAt()
+	- Add `f` to floats
 - Block has array[6] of Colors (indexed by Dir) instead of getColorFn()/getColor()
 - Everything
 	- World gen
@@ -25,15 +26,14 @@
 			- Directional blocks
 		- Leaves
 			- Semi transparent
-	- Infinite world
-		- World::chunks is an unordered map?
 	- Textures
 		- Texture atlas
 		- Replaces colors
+	- World lower cap
+		- Bedrock layer
 	- Preformance
-		- View distance
-		- Skip "blank" chunks
-		- Only raycast neighboring chunks
+		- [ ] Unload models from GPU when not in view
+		- [ ] Unload/don't create/load models that are blank
 - Everything 2
     - When under water, show the "top" of the water
 	- Glass blocks

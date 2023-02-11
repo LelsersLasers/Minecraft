@@ -1,28 +1,28 @@
 #include "raylib.h"
-
 #include "raymath.h"
 
 #include <time.h>
 #include <stdlib.h>
 // #include <iostream>
+#include <climits>
 
 #include <vector>
 #include <tuple>
 #include <string>
+#include <optional>
 
 #include "include/consts.h"
-
-#include "include/Vector3Util.h"
-// #include "include/Vector2Util.h"
 
 #include "include/cameraController.h"
 #include "include/block.h"
 #include "include/blockType.h"
 #include "include/chunk.h"
 #include "include/world.h"
+#include "include/raycastRequest.h"
 
 using std::vector;
 using std::tuple;
+using std::optional;
 
 
 int main() {
@@ -32,6 +32,8 @@ int main() {
 	bool transparentWireframe = false;
 	bool chunkOutlines = false;
 	bool faces = true;
+
+	bool autoMove = false;
 
 	srand(time(NULL));
 
@@ -66,14 +68,11 @@ int main() {
 
 	CameraController cameraController; // uses default defined constructor
 
-
-	PerlinNoise pn(time(NULL));
-	// PerlinNoise pn;
+	PerlinNoise pn(rand() % UINT_MAX);
 
 	World world; // uses default defined constructor
-	world.generateChunks(pn);
+	world.cameraMoved(cameraController, pn);
 	world.updateChunkModels();
-	world.sortChunks(cameraController);
 
 
 
@@ -98,25 +97,29 @@ int main() {
 		{
 			Vector3 moveVec = Vector3Zero();
 
-			if (IsKeyDown(KEY_W)) {
-				moveVec += cameraController.calcForward();
+			if (IsKeyDown(KEY_W) || autoMove) {
+				moveVec = Vector3Add(moveVec, cameraController.calcForward());
 			}
 			if (IsKeyDown(KEY_S)) {
-				moveVec -= cameraController.calcForward();
+				moveVec = Vector3Subtract(moveVec, cameraController.calcForward());
 			}
 			if (IsKeyDown(KEY_A)) {
-				moveVec -= cameraController.calcRight();
+				moveVec = Vector3Subtract(moveVec, cameraController.calcRight());
 			}
 			if (IsKeyDown(KEY_D)) {
-				moveVec += cameraController.calcRight();
+				moveVec = Vector3Add(moveVec, cameraController.calcRight());
 			}
 
-			if (moveVec != Vector3Zero()) {
-				moveVec = normalize(moveVec) * delta * 20.0;
-				cameraController.moveBy(moveVec);
+			if (!Vector3Equals(moveVec, Vector3Zero())) {
+				moveVec = Vector3Scale(Vector3Normalize(moveVec), delta * 20.0);
 
-				// TODO: only sort in some cases?
-				world.sortChunks(cameraController);
+				tuple<int, int, int> oldCameraChunk = cameraController.getChunkPos();
+				cameraController.moveBy(moveVec);
+				tuple<int, int, int> newCameraChunk = cameraController.getChunkPos();
+
+				if (oldCameraChunk != newCameraChunk) {
+					world.cameraMoved(cameraController, pn);
+				}
 			}
 		}
 
@@ -141,6 +144,9 @@ int main() {
 			if (IsKeyPressed(KEY_J)) {
 				chunkOutlines = !chunkOutlines;
 			}
+			if (IsKeyPressed(KEY_ZERO)) {
+				autoMove = !autoMove;
+			}
 		}
 
 
@@ -152,7 +158,8 @@ int main() {
 			}
 		}
 
-		// iterates over chunks
+		world.generateChunk(pn); // generate 1 or 0 chunks
+
 		world.updateChunkModels();
 
 
@@ -162,75 +169,40 @@ int main() {
 
             BeginMode3D(cameraController.camera);
             {
+				for (size_t idx = 0; idx < world.keysToRender.size(); idx++) {
+					string key = world.keysToRender[idx]; // draw front to back
 
-				vector<RayCollision> rayCollisions;
-				vector<Chunk*> chunkCollisions;
-
-				for (size_t idx = 0; idx < world.chunkOrder.size(); idx++) {
-
-					size_t i = world.chunkOrder[idx]; // draw back to front
+					Chunk& chunk = world.chunks.at(key);
 
 					if (chunkOutlines) {
 						DrawCubeWiresV(
-							world.chunks[i].getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
-							Vector3Uniform((float)CHUNK_SIZE),
+							Vector3Add(chunk.getWorldPos(), Vector3Scale(Vector3One(), (float)CHUNK_SIZE / 2.0)),
+							Vector3Scale(Vector3One(), (float)CHUNK_SIZE),
 							PINK
 						);
 					}
 					if (faces) {
-						DrawModel(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, WHITE);
-						DrawModel(world.chunks[i].transparentModel, world.chunks[i].getWorldPos(), 1.0, WHITE);
+						DrawModel(chunk.model, chunk.getWorldPos(), 1.0, WHITE);
+						DrawModel(chunk.transparentModel, chunk.getWorldPos(), 1.0, WHITE);
 					}
 					if (wireframe) {
-						DrawModelWires(world.chunks[i].model, world.chunks[i].getWorldPos(), 1.0, BLACK);
+						DrawModelWires(chunk.model, chunk.getWorldPos(), 1.0, BLACK);
 					}
 					if (transparentWireframe) {
-						DrawModelWires(world.chunks[i].transparentModel, world.chunks[i].getWorldPos(), 1.0, BLACK);
+						DrawModelWires(chunk.transparentModel, chunk.getWorldPos(), 1.0, BLACK);
 					}
-
-
-					{
-						Ray qRay = {
-							cameraController.camera.position,
-							cameraController.calcForward()
-						};
-						Vector3 pos = world.chunks[i].getWorldPos();
-						Matrix qTransform = MatrixTranslate(pos.x, pos.y, pos.z);
-						RayCollision qRayCollision = GetRayCollisionMesh(qRay, world.chunks[i].model.meshes[0], qTransform);
-						if (qRayCollision.hit && qRayCollision.distance < REACH) {
-							rayCollisions.push_back(qRayCollision);
-							chunkCollisions.push_back(&world.chunks[i]);
-						}
-					}
-
-
 				}
 
-				if (rayCollisions.size() > 0) {
-					RayCollision closestRayCollision = rayCollisions[0];
-					Chunk* closestChunkCollision = chunkCollisions[0];
+				RaycastRequest raycastRequest = RaycastRequest::NONE;
+				if (IsKeyPressed(KEY_Q)) {
+					raycastRequest = RaycastRequest::DESTROY_BLOCK;
+				} else if (IsKeyPressed(KEY_E)) {
+					raycastRequest = RaycastRequest::PLACE_BLOCK;
+				}
 
-					for (size_t i = 1; i < rayCollisions.size(); i++) {
-						if (rayCollisions[i].distance < closestRayCollision.distance) {
-							closestRayCollision = rayCollisions[i];
-							closestChunkCollision = chunkCollisions[i];
-						}
-					}
-
-					tuple<size_t, size_t, size_t> bestBlockTuple = closestChunkCollision->handleRayCollision(closestRayCollision);
-					Vector3 bestBlockOutlinePos = (Vector3){
-						(float)std::get<0>(bestBlockTuple),
-						(float)std::get<1>(bestBlockTuple),
-						(float)std::get<2>(bestBlockTuple)
-					} + Vector3Uniform(0.5);
-					DrawCubeWiresV(bestBlockOutlinePos + closestChunkCollision->getWorldPos(), Vector3Uniform(1.0), RED);
-
-					if (IsKeyPressed(KEY_Q)) {
-						closestChunkCollision->destroyBlockAt(bestBlockTuple, world);
-					}
-					if (IsKeyPressed(KEY_E)) {
-						closestChunkCollision->placeBlockAt(bestBlockTuple, closestRayCollision.normal, selectedBlock, world);
-					}
+				optional<Vector3> outlinedBlock = world.handleRaycastRequest(cameraController, raycastRequest, selectedBlock);
+				if (outlinedBlock.has_value()) {
+					DrawCubeWiresV(outlinedBlock.value(), Vector3One(), RED);
 				}
 
 

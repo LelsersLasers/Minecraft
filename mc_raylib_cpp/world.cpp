@@ -1,84 +1,126 @@
 #include "raylib.h"
+#include "raymath.h"
 
 #include <stdlib.h>
+#include <cmath>
 
 #include <vector>
 #include <tuple>
+#include <utility>
+#include <optional>
 
 #include <algorithm>
 #include <functional>
 
-#include "include/Vector3Util.h"
-
 #include "include/block.h"
 #include "include/chunk.h"
+#include "include/raycastRequest.h"
 #include "include/consts.h"
 
 #include "include/world.h"
 
 using std::vector;
 using std::tuple;
+using std::pair;
+using std::optional;
+using std::reference_wrapper;
 
 
 World::World() {
-	this->chunks = vector<Chunk>();
-	this->chunks.reserve(WORLD_SIZE * WORLD_SIZE * WORLD_SIZE);
+	this->chunks = unordered_map<string, Chunk>();
 
-	this->chunkOrder = vector<size_t>();
-	this->chunkOrder.reserve(WORLD_SIZE * WORLD_SIZE * WORLD_SIZE);
-	for (size_t i = 0; i < WORLD_SIZE * WORLD_SIZE * WORLD_SIZE; i++) {
-		this->chunkOrder.push_back(i);
-	}
+	this->nearbyKeys = vector<string>();
+	this->keysToRender = vector<string>();
+
+	this->chunksToGenerate = vector<pair<tuple<int, int, int>, float>>();
 }
 
-Chunk& World::getChunkAt(tuple<int, int, int> chunkPos) {
-	size_t x = std::get<0>(chunkPos);
-	size_t y = std::get<1>(chunkPos);
-	size_t z = std::get<2>(chunkPos);
-	
-	return this->chunks[x * WORLD_SIZE * WORLD_SIZE + y * WORLD_SIZE + z];
+optional<reference_wrapper<Chunk>> World::getChunkAt(tuple<int, int, int> chunkPos) {
+	// Does this copy??
+	string key = TUP_TO_STR(chunkPos);
+	auto iter = this->chunks.find(key);
+	if (iter != this->chunks.end()) {
+		Chunk& chunk = iter->second;
+		return chunk;
+	} else {
+		return {};
+	}
 }
 Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
-	if (World::inBounds(chunkPos)) {
-		Chunk& chunk = this->getChunkAt(chunkPos);
+	optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(chunkPos);
+	if (possibleChunk.has_value()) {
+		Chunk& chunk = possibleChunk.value();
 		return chunk.getBlockAt(x, y, z);
-	}
-	else {
-		return AIR_BLOCK;
+	} else {
+		return BEDROCK_BLOCK;
 	}
 }
 
-void World::generateChunks(PerlinNoise& pn) {
-	this->chunks.clear();
+void World::generateChunk(PerlinNoise& pn) {
 
-	for (size_t x = 0; x < WORLD_SIZE; x++) {
-		for (size_t y = 0; y < WORLD_SIZE; y++) {
-			for (size_t z = 0; z < WORLD_SIZE; z++) {
+	if (this->chunksToGenerate.size() == 0) {
+		return;
+	}
 
-				Chunk chunk = Chunk(std::make_tuple(x, y, z));
-				chunk.generateBlocks(pn);
-				this->chunks.push_back(chunk);
+	pair<tuple<int, int, int>, float> chunkToGenerate = this->chunksToGenerate.back();
+	this->chunksToGenerate.pop_back();
 
-			}
+	tuple<int, int, int> chunkTup = chunkToGenerate.first;
+	string key = TUP_TO_STR(chunkTup);
+
+	Chunk chunk = Chunk(chunkTup);
+	chunk.generateBlocks(pn);
+	chunk.distanceFromCamera = chunkToGenerate.second;
+
+	// TODO: copies chunk!!!!!!
+	// this->chunks.insert(std::make_pair(key, chunk));
+	pair<string, Chunk> pair = std::make_pair(key, chunk);
+	this->chunks.insert(pair);
+
+	for (size_t j = 0; j < 6; j++) {
+		tuple<int, int, int> dirTuple = allDirTuples[j];
+
+		tuple<int, int, int> neighborTup = std::make_tuple(
+			std::get<0>(chunkTup) + std::get<0>(dirTuple),
+			std::get<1>(chunkTup) + std::get<1>(dirTuple),
+			std::get<2>(chunkTup) + std::get<2>(dirTuple)
+		);
+
+		optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(neighborTup);
+		if (possibleChunk.has_value()) {
+			Chunk& neighbor = possibleChunk.value();
+			neighbor.dirty = true;
 		}
+	}
+
+
+	// TODO: better way to do this?
+	Chunk& chunkRef = this->chunks.at(key);
+
+	chunkRef.generateModel(*this);
+	this->nearbyKeys.push_back(key);
+	if (!chunkRef.blank || !chunkRef.transparentBlank) {
+		// TODO: would need to be sorted in?
+		this->keysToRender.push_back(key);	
 	}
 }
 void World::updateChunkModels() {
-	for (size_t i = 0; i < this->chunks.size(); i++) {
-		if (this->chunks[i].dirty) {
-			this->chunks[i].generateModel(*this);
+	for (size_t i = this->nearbyKeys.size(); i-- > 0; ) {
+		string chunkKey = this->nearbyKeys[i];
+		Chunk& chunk = this->chunks.at(chunkKey);
+		if (chunk.dirty) {
+			chunk.generateModel(*this);
+			// return; // TODO: ?? only update one chunk per frame
 		}
 	}
 }
 
 
 
-bool World::inBounds(tuple<int, int, int> chunkPos) {
-	int x = std::get<0>(chunkPos);
-	int y = std::get<1>(chunkPos);
-	int z = std::get<2>(chunkPos);
-	return x >= 0 && x < WORLD_SIZE && y >= 0 && y < WORLD_SIZE && z >= 0 && z < WORLD_SIZE;
-}
+// bool World::inBounds(tuple<int, int, int> chunkPos) {
+// 	string key = TUP_TO_STR(chunkPos);
+// 	return this->chunks.find(key) != this->chunks.end();
+// }
 
 void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> srcBlock) {
 	int chunkX = std::get<0>(srcChunk);
@@ -121,8 +163,9 @@ void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> s
 	for (size_t i = 0; i < neighborChunks.size(); i++) {
 		tuple<int, int, int> neighborChunk = neighborChunks[i];
 
-		if (World::inBounds(neighborChunk)) {
-			Chunk& chunk = this->getChunkAt(neighborChunk);
+		optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(neighborChunk);
+		if (possibleChunk.has_value()) {
+			Chunk& chunk = possibleChunk.value();
 			chunk.dirty = true;
 		}
 	}
@@ -130,37 +173,174 @@ void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> s
 
 bool World::cameraIsSubmerged(const CameraController& cameraController) {
 	tuple<int, int, int> chunkPos = cameraController.getChunkPos();
-	if (!World::inBounds(chunkPos)) {
+
+	optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(chunkPos);
+	if (possibleChunk.has_value()) {
+		Chunk& chunk = possibleChunk.value();
+
+		int blockX = EUCMOD((int)cameraController.camera.position.x, CHUNK_SIZE);
+		int blockY = EUCMOD((int)cameraController.camera.position.y, CHUNK_SIZE);
+		int blockZ = EUCMOD((int)cameraController.camera.position.z, CHUNK_SIZE);
+
+		Block block = chunk.getBlockAt(blockX, blockY, blockZ);
+
+		return block.blockType == BlockType::WATER;
+	} else {
 		return false;
 	}
-
-	Chunk& chunk = this->getChunkAt(chunkPos);
-
-	int blockX = EUCMOD((int)cameraController.camera.position.x, CHUNK_SIZE);
-	int blockY = EUCMOD((int)cameraController.camera.position.y, CHUNK_SIZE);
-	int blockZ = EUCMOD((int)cameraController.camera.position.z, CHUNK_SIZE);
-
-	Block block = chunk.getBlockAt(blockX, blockY, blockZ);
-
-	return block.blockType == BlockType::WATER;
 }
 
-void World::sortChunks(const CameraController& cameraController) {
-	// sorted order (farthest to closest) saved in World::chunkOrder
+void World::sortChunks() {
+	// sorted: farthest to closest
 	std::sort(
-		this->chunkOrder.begin(),
-		this->chunkOrder.end(),
-		[&cameraController, this](const size_t& idx1, const size_t& idx2){
-			Chunk& chunk1 = this->chunks[idx1];
-			Chunk& chunk2 = this->chunks[idx2];
+		this->keysToRender.begin(),
+		this->keysToRender.end(),
+		[this](const string& key1, const string& key2){
+			Chunk& chunk1 = this->chunks.at(key1);
+			Chunk& chunk2 = this->chunks.at(key2);
 
-			Vector3 chunk1Pos = chunk1.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0);
-			Vector3 chunk2Pos = chunk2.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0);
-
-			Vector3 chunk1Dif = chunk1Pos - cameraController.camera.position;
-			Vector3 chunk2Dif = chunk2Pos - cameraController.camera.position;
-
-			return length(chunk1Dif) > length(chunk2Dif);
+			return chunk1.distanceFromCamera > chunk2.distanceFromCamera;
 		}
 	);
+
+	// not needed, just looks cool
+	std::sort(
+		this->chunksToGenerate.begin(),
+		this->chunksToGenerate.end(),
+		[this](const pair<tuple<int, int, int>, float>& a, const pair<tuple<int, int, int>, float>& b){
+
+			return a.second > b.second;
+		}
+	);
+}
+
+void World::cameraMoved(const CameraController& cameraController, PerlinNoise& pn) {
+	// TODO: faster way to do this?
+
+	this->nearbyKeys.clear();
+	this->keysToRender.clear();
+
+	this->chunksToGenerate.clear();
+
+
+	tuple<int, int, int> cameraChunk = cameraController.getChunkPos();
+	int cameraChunkX = std::get<0>(cameraChunk);
+	int cameraChunkY = std::get<1>(cameraChunk);
+	int cameraChunkZ = std::get<2>(cameraChunk);
+
+	int startX = cameraChunkX - VIEW_DIST;
+	int startY = cameraChunkY - VIEW_DIST;
+	int startZ = cameraChunkZ - VIEW_DIST;
+
+	int endX = cameraChunkX + VIEW_DIST;
+	int endY = cameraChunkY + VIEW_DIST;
+	int endZ = cameraChunkZ + VIEW_DIST;
+
+	for (int x = startX; x <= endX; x++) {
+		for (int y = startY; y <= endY; y++) {
+			for (int z = startZ; z <= endZ; z++) {
+
+				tuple<int, int, int> idx = std::make_tuple(x, y, z);
+				string key = TUP_TO_STR(idx);
+
+				int diffX = x - cameraChunkX;
+				int diffY = y - cameraChunkY;
+				int diffZ = z - cameraChunkZ;
+
+				float dist = sqrtf(diffX * diffX + diffY * diffY + diffZ * diffZ);
+
+				if (dist <= VIEW_DIST) {
+					optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(idx);
+					if (possibleChunk.has_value()) {
+						Chunk& chunk = possibleChunk.value();
+						chunk.distanceFromCamera = dist;
+
+						this->nearbyKeys.push_back(key);
+						if (!chunk.blank || !chunk.transparentBlank) {
+							this->keysToRender.push_back(key);	
+						}
+					} else {
+						this->chunksToGenerate.push_back(std::make_pair(idx, dist));
+					}
+				}
+
+			}
+		}
+	}
+
+	this->sortChunks();
+}
+
+optional<Vector3> World::handleRaycastRequest(const CameraController& cameraController, RaycastRequest& raycastRequest, Block selectedBlock) {
+
+	tuple<int, int, int> cameraChunk = cameraController.getChunkPos();
+	int cameraChunkX = std::get<0>(cameraChunk);
+	int cameraChunkY = std::get<1>(cameraChunk);
+	int cameraChunkZ = std::get<2>(cameraChunk);
+
+	vector<RayCollision> rayCollisions;
+	vector<Chunk*> chunkCollisions;
+
+	Ray ray = {
+		cameraController.camera.position,
+		cameraController.calcForward()
+	};
+	// TODO: use chunkOrder and break when distance is out of neighboring chunks
+	for (int x = cameraChunkX - 1; x <= cameraChunkX + 1; x++) {
+		for (int y = cameraChunkY - 1; y <= cameraChunkY + 1; y++) {
+			for (int z = cameraChunkZ - 1; z <= cameraChunkZ + 1; z++) {
+
+				tuple<int, int, int> idx = std::make_tuple(x, y, z);
+
+				optional<reference_wrapper<Chunk>> possibleChunk = this->getChunkAt(idx);
+				if (possibleChunk.has_value()) {
+					Chunk& chunk = possibleChunk.value();
+
+					if (chunk.blank) {
+						continue;
+					}
+
+					Vector3 pos = chunk.getWorldPos();
+					Matrix qTransform = MatrixTranslate(pos.x, pos.y, pos.z);
+					RayCollision qRayCollision = GetRayCollisionMesh(ray, chunk.model.meshes[0], qTransform);
+					if (qRayCollision.hit && qRayCollision.distance < REACH) {
+						rayCollisions.push_back(qRayCollision);
+						chunkCollisions.push_back(&chunk);
+					}
+
+				}
+
+			}
+		}
+	}
+
+	if (rayCollisions.size() > 0) {
+		RayCollision closestRayCollision = rayCollisions[0];
+		Chunk* closestChunkCollision = chunkCollisions[0];
+
+		for (size_t i = 1; i < rayCollisions.size(); i++) {
+			if (rayCollisions[i].distance < closestRayCollision.distance) {
+				closestRayCollision = rayCollisions[i];
+				closestChunkCollision = chunkCollisions[i];
+			}
+		}
+
+		tuple<size_t, size_t, size_t> bestBlockTuple = closestChunkCollision->handleRayCollision(closestRayCollision);
+
+		if (raycastRequest == RaycastRequest::DESTROY_BLOCK) {
+			closestChunkCollision->destroyBlockAt(bestBlockTuple, *this);
+		} else if (raycastRequest == RaycastRequest::PLACE_BLOCK) {
+			closestChunkCollision->placeBlockAt(bestBlockTuple, closestRayCollision.normal, selectedBlock, *this);
+		} else { // center of outlined block
+			Vector3 blockCenter = (Vector3){
+				(float)std::get<0>(bestBlockTuple) + 0.5f,
+				(float)std::get<1>(bestBlockTuple) + 0.5f,
+				(float)std::get<2>(bestBlockTuple) + 0.5f
+			};
+			Vector3 bestBlockOutlinePos = Vector3Add(blockCenter, closestChunkCollision->getWorldPos());
+			return bestBlockOutlinePos;
+		}
+	}
+
+	return {};
 }
