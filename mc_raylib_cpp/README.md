@@ -14,6 +14,7 @@
 		- RN: Loop through chunkOrder multiple times
 	- World::chunks.at() vs World::getChunkAt()
 	- Add `f` to floats
+	- [ ] `-Ofast` flag??
 - Block has array[6] of Colors (indexed by Dir) instead of getColorFn()/getColor()
 - Everything
 	- World gen

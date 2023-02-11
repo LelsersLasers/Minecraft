@@ -305,7 +305,7 @@ bool Chunk::inBounds(int x, int y, int z) { // static
 // }
 
 tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollision) const {
-	Vector3 point = Vector3Subtract(point, this->getWorldPos());
+	Vector3 point = Vector3Subtract(rayCollision.point, this->getWorldPos());
 
 	float smallestDistance = INFINITY;
 
