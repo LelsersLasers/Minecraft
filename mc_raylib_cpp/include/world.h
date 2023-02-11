@@ -39,6 +39,8 @@ class World : public NoCopy {
 		
 		vector<pair<tuple<int, int, int>, float>> chunksToGenerate;
 
+		bool shouldSortKeysToRender;
+
 		World();
 		// ~World();
 
@@ -54,7 +56,8 @@ class World : public NoCopy {
 
 		bool cameraIsSubmerged(const CameraController& cameraController);
 
-		void sortChunks();
+		void sortKeysToRender();
+		void sortChunksToGenerate();
 
 		void cameraMoved(const CameraController& cameraController, PerlinNoise& pn);
 

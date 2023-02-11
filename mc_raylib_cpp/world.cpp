@@ -32,6 +32,8 @@ World::World() {
 	this->nearbyKeys = vector<string>();
 	this->keysToRender = vector<string>();
 
+	this->shouldSortKeysToRender = false;
+
 	this->chunksToGenerate = vector<pair<tuple<int, int, int>, float>>();
 }
 
@@ -110,7 +112,13 @@ void World::updateChunkModels() {
 		Chunk& chunk = this->chunks.at(chunkKey);
 		if (chunk.dirty) {
 			chunk.generateModel(*this);
-			// return; // TODO: ?? only update one chunk per frame
+			if (!chunk.blank || !chunk.transparentBlank) {
+				if (!std::binary_search(this->keysToRender.begin(), this->keysToRender.end(), chunkKey)) {
+					this->keysToRender.push_back(chunkKey);
+				}
+			}
+			shouldSortKeysToRender = true;
+			// return; // only update one chunk per frame????
 		}
 	}
 }
@@ -190,7 +198,7 @@ bool World::cameraIsSubmerged(const CameraController& cameraController) {
 	}
 }
 
-void World::sortChunks() {
+void World::sortKeysToRender() {
 	// sorted: farthest to closest
 	std::sort(
 		this->keysToRender.begin(),
@@ -202,7 +210,8 @@ void World::sortChunks() {
 			return chunk1.distanceFromCamera > chunk2.distanceFromCamera;
 		}
 	);
-
+}
+void World::sortChunksToGenerate() {
 	// not needed, just looks cool
 	std::sort(
 		this->chunksToGenerate.begin(),
@@ -268,7 +277,8 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 		}
 	}
 
-	this->sortChunks();
+	this->sortChunksToGenerate();
+	this->shouldSortKeysToRender = true;
 }
 
 optional<Vector3> World::handleRaycastRequest(const CameraController& cameraController, RaycastRequest& raycastRequest, Block selectedBlock) {

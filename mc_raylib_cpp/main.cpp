@@ -162,6 +162,10 @@ int main() {
 
 		world.updateChunkModels();
 
+		if (world.shouldSortKeysToRender) {
+			world.sortKeysToRender();
+		}
+
 
         BeginDrawing();
         {
