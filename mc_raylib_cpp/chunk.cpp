@@ -300,9 +300,6 @@ void Chunk::generateModel(World& world) {
 bool Chunk::inBounds(int x, int y, int z) { // static
 	return x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE && z >= 0 && z < CHUNK_SIZE;
 }
-// bool Chunk::onEdge(int x, int y, int z) { // static
-// 	return x == 0 || x == CHUNK_SIZE - 1 || y == 0 || y == CHUNK_SIZE - 1 || z == 0 || z == CHUNK_SIZE - 1;
-// }
 
 tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollision) const {
 	Vector3 point = Vector3Subtract(rayCollision.point, this->getWorldPos());

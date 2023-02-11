@@ -109,8 +109,8 @@ void World::generateChunk(PerlinNoise& pn) {
 	chunkRef.generateModel(*this);
 	this->nearbyKeys.push_back(key);
 	if (!chunkRef.blank || !chunkRef.transparentBlank) {
-		// TODO: would need to be sorted in?
 		this->keysToRender.push_back(key);	
+		this->shouldSortKeysToRender = true;
 	}
 }
 void World::updateChunkModels() {
@@ -119,23 +119,27 @@ void World::updateChunkModels() {
 		Chunk& chunk = this->chunks.at(chunkKey);
 		if (chunk.dirty) {
 			chunk.generateModel(*this);
+
+			// TODO: better way to do this?
 			if (!chunk.blank || !chunk.transparentBlank) {
-				if (!std::binary_search(this->keysToRender.begin(), this->keysToRender.end(), chunkKey)) {
+
+				// can't use binary search, because keysToRender is not sorted yet
+				bool found = false;
+				for (size_t j = 0; j < this->keysToRender.size(); j++) {
+					if (this->keysToRender[j] == chunkKey) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
 					this->keysToRender.push_back(chunkKey);
+					this->shouldSortKeysToRender = true;
 				}
 			}
-			shouldSortKeysToRender = true;
 			// return; // only update one chunk per frame????
 		}
 	}
 }
-
-
-
-// bool World::inBounds(tuple<int, int, int> chunkPos) {
-// 	string key = TUP_TO_STR(chunkPos);
-// 	return this->chunks.find(key) != this->chunks.end();
-// }
 
 void World::dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> srcBlock) {
 	int chunkX = std::get<0>(srcChunk);
@@ -212,9 +216,11 @@ void World::sortKeysToRender() {
 		this->keysToRender.end(),
 		this->compareKeysByDistance
 	);
+	this->shouldSortKeysToRender = false;
 }
 void World::sortChunksToGenerate() {
 	// not needed, just looks cool
+	// sorted: farthest to closest
 	std::sort(
 		this->chunksToGenerate.begin(),
 		this->chunksToGenerate.end(),

@@ -35,6 +35,7 @@
 	- Preformance
 		- [ ] Unload models from GPU when not in view
 		- [ ] Unload/don't create/load models that are blank
+		- Vectors of reference_wrappers instead of keys?
 - Everything 2
     - When under water, show the "top" of the water
 	- Glass blocks
