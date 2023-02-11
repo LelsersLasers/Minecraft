@@ -12,8 +12,6 @@
 #include <algorithm>
 #include <functional>
 
-#include "include/Vector3Util.h"
-
 #include "include/block.h"
 #include "include/chunk.h"
 #include "include/raycastRequest.h"
@@ -334,12 +332,13 @@ optional<Vector3> World::handleRaycastRequest(const CameraController& cameraCont
 		} else if (raycastRequest == RaycastRequest::PLACE_BLOCK) {
 			closestChunkCollision->placeBlockAt(bestBlockTuple, closestRayCollision.normal, selectedBlock, *this);
 		} else { // center of outlined block
-			Vector3 bestBlockOutlinePos = (Vector3){
-				(float)std::get<0>(bestBlockTuple),
-				(float)std::get<1>(bestBlockTuple),
-				(float)std::get<2>(bestBlockTuple)
-			} + Vector3Uniform(0.5);
-			return bestBlockOutlinePos + closestChunkCollision->getWorldPos();
+			Vector3 blockCenter = (Vector3){
+				(float)std::get<0>(bestBlockTuple) + 0.5f,
+				(float)std::get<1>(bestBlockTuple) + 0.5f,
+				(float)std::get<2>(bestBlockTuple) + 0.5f
+			};
+			Vector3 bestBlockOutlinePos = Vector3Add(blockCenter, closestChunkCollision->getWorldPos());
+			return bestBlockOutlinePos;
 		}
 	}
 

@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include "raymath.h"
 
 #include <stdlib.h>
 #include <cstring> // memcpy
@@ -12,7 +13,6 @@
 #include "include/world.h"
 #include "include/blockType.h"
 #include "include/dir.h"
-#include "include/Vector3Util.h"
 #include "include/consts.h"
 #include "include/PerlinNoiseUtil.h"
 
@@ -189,7 +189,11 @@ void Chunk::generateModel(World& world) {
 					continue;
 				}
 
-				Vector3 pos = Vector3FromInts(x, y, z);
+				Vector3 pos = {
+					(float)x,
+					(float)y,
+					(float)z
+				};
 
 				bool shortenZ = false;
 				if (block.blockType == BlockType::WATER) {
@@ -211,7 +215,7 @@ void Chunk::generateModel(World& world) {
 					for (size_t j = 0; j < 2; j++) { // 2 triangles per face
 						for (size_t k = 0; k < 3; k++) { // 3 vertices per triangle
 
-							Vector3 vertex = pos + CUBE_VERTICES[allTriangleOffsets[i][j][k]];
+							Vector3 vertex = Vector3Add(pos, CUBE_VERTICES[allTriangleOffsets[i][j][k]]);
 							Color color = block.getColor(dir);
 
 							if (block.transparent) {
@@ -301,7 +305,7 @@ bool Chunk::inBounds(int x, int y, int z) { // static
 // }
 
 tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollision) const {
-	Vector3 point = rayCollision.point - this->getWorldPos();
+	Vector3 point = Vector3Subtract(point, this->getWorldPos());
 
 	float smallestDistance = INFINITY;
 
@@ -333,8 +337,14 @@ tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollisio
 					continue;
 				}
 
-				Vector3 pos = Vector3FromInts(x, y, z) + Vector3Uniform(0.5);
-				float distance = length(pos - point);
+				Vector3 spot = {
+					(float)x,
+					(float)y,
+					(float)z
+				};
+
+				Vector3 pos = Vector3Add(spot, { 0.5f, 0.5f, 0.5f });
+				float distance = Vector3Length(Vector3Subtract(pos, point));
 				if (distance < smallestDistance) {
 					smallestDistance = distance;
 

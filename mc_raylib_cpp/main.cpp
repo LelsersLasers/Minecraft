@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include "raymath.h"
 
 #include <time.h>
 #include <stdlib.h>
@@ -11,9 +12,6 @@
 #include <optional>
 
 #include "include/consts.h"
-
-#include "include/Vector3Util.h"
-// #include "include/Vector2Util.h"
 
 #include "include/cameraController.h"
 #include "include/block.h"
@@ -100,20 +98,20 @@ int main() {
 			Vector3 moveVec = Vector3Zero();
 
 			if (IsKeyDown(KEY_W) || autoMove) {
-				moveVec += cameraController.calcForward();
+				moveVec = Vector3Add(moveVec, cameraController.calcForward());
 			}
 			if (IsKeyDown(KEY_S)) {
-				moveVec -= cameraController.calcForward();
+				moveVec = Vector3Subtract(moveVec, cameraController.calcForward());
 			}
 			if (IsKeyDown(KEY_A)) {
-				moveVec -= cameraController.calcRight();
+				moveVec = Vector3Subtract(moveVec, cameraController.calcRight());
 			}
 			if (IsKeyDown(KEY_D)) {
-				moveVec += cameraController.calcRight();
+				moveVec = Vector3Add(moveVec, cameraController.calcRight());
 			}
 
-			if (moveVec != Vector3Zero()) {
-				moveVec = normalize(moveVec) * delta * 20.0;
+			if (!Vector3Equals(moveVec, Vector3Zero())) {
+				moveVec = Vector3Scale(Vector3Normalize(moveVec), delta * 20.0);
 
 				tuple<int, int, int> oldCameraChunk = cameraController.getChunkPos();
 				cameraController.moveBy(moveVec);
@@ -160,9 +158,8 @@ int main() {
 			}
 		}
 
-		world.generateChunk(pn);
+		world.generateChunk(pn); // generate 1 or 0 chunks
 
-		// iterates over chunks
 		world.updateChunkModels();
 
 
@@ -179,8 +176,8 @@ int main() {
 
 					if (chunkOutlines) {
 						DrawCubeWiresV(
-							chunk.getWorldPos() + Vector3Uniform((float)CHUNK_SIZE / 2.0),
-							Vector3Uniform((float)CHUNK_SIZE),
+							Vector3Add(chunk.getWorldPos(), Vector3Scale(Vector3One(), (float)CHUNK_SIZE / 2.0)),
+							Vector3Scale(Vector3One(), (float)CHUNK_SIZE),
 							PINK
 						);
 					}
@@ -205,7 +202,7 @@ int main() {
 
 				optional<Vector3> outlinedBlock = world.handleRaycastRequest(cameraController, raycastRequest, selectedBlock);
 				if (outlinedBlock.has_value()) {
-					DrawCubeWiresV(outlinedBlock.value(), Vector3Uniform(1.0), RED);
+					DrawCubeWiresV(outlinedBlock.value(), Vector3One(), RED);
 				}
 
 

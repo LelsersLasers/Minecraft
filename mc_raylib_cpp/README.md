@@ -13,7 +13,7 @@
 		- Enhanced for loops?
 		- RN: Loop through chunkOrder multiple times
 	- World::chunks.at() vs World::getChunkAt()
-- Replace Vector3/2Util with raymath
+	- Add `f` to floats
 - Block has array[6] of Colors (indexed by Dir) instead of getColorFn()/getColor()
 - Everything
 	- World gen
@@ -32,10 +32,8 @@
 	- World lower cap
 		- Bedrock layer
 	- Preformance
-		- Throttle chunk loading and mesh generation
-		- Custom sorted map vs unordered_map??
-		- Unload models from GPU when not in view
-		- Unload/don't create/load models that are blank
+		- [ ] Unload models from GPU when not in view
+		- [ ] Unload/don't create/load models that are blank
 - Everything 2
     - When under water, show the "top" of the water
 	- Glass blocks
