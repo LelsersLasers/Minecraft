@@ -9,6 +9,7 @@
 	- Better usage of pointers
 		- Avoid creating object and then reassinging it
 		- Can create some objects as `Type* var = new Type(args)`
+	- Pointers vs references??
 	- Improve iterating
 		- Enhanced for loops?
 		- RN: Loop through chunkOrder multiple times
@@ -22,9 +23,7 @@
 		- Octaves
 		- Basic biomes
 	- Trees
-		- Wooden logs
-			- Directional blocks
-		- Leaves
+		- With leaves
 			- Semi transparent
 	- Textures
 		- Texture atlas
@@ -34,12 +33,16 @@
 	- Preformance
 		- [ ] Unload models from GPU when not in view
 		- [ ] Unload/don't create/load models that are blank
-		- Vectors of reference_wrappers instead of keys?
+		- Vectors of reference_wrappers instead of strings (keys)
+		- Store chunk block data as a list of indexes to a vector of blocks
+			- Avoids repeating/duplicating block info
 - Everything 2
     - When under water, show the "top" of the water
 	- Glass blocks
 		- Sort blocks within a chunk?
 			- Or does it work already?
+	- Directional blocks
+		- Wooden logs
 	- Working player
 		- Collision physics
 		- Player::IsSubmerged()
