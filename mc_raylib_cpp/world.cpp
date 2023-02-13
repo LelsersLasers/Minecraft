@@ -295,8 +295,8 @@ optional<Vector3> World::handleRaycastRequest(const CameraController& cameraCont
 	int cameraChunkY = std::get<1>(cameraChunk);
 	int cameraChunkZ = std::get<2>(cameraChunk);
 
-	vector<RayCollision> rayCollisions = vector<RayCollision>();
-	vector<reference_wrapper<Chunk>> chunkCollisions = vector<reference_wrapper<Chunk>>();
+	vector<RayCollision> rayCollisions;
+	vector<Chunk*> chunkCollisions;
 
 	Ray ray = {
 		cameraController.camera.position,
@@ -322,7 +322,7 @@ optional<Vector3> World::handleRaycastRequest(const CameraController& cameraCont
 					RayCollision qRayCollision = GetRayCollisionMesh(ray, chunk.model.meshes[0], qTransform);
 					if (qRayCollision.hit && qRayCollision.distance < REACH) {
 						rayCollisions.push_back(qRayCollision);
-						chunkCollisions.push_back(chunk);
+						chunkCollisions.push_back(&chunk);
 					}
 
 				}
@@ -333,7 +333,7 @@ optional<Vector3> World::handleRaycastRequest(const CameraController& cameraCont
 
 	if (rayCollisions.size() > 0) {
 		RayCollision closestRayCollision = rayCollisions[0];
-		Chunk& closestChunkCollision = chunkCollisions[0];
+		Chunk* closestChunkCollision = chunkCollisions[0];
 
 		for (size_t i = 1; i < rayCollisions.size(); i++) {
 			if (rayCollisions[i].distance < closestRayCollision.distance) {
@@ -342,19 +342,19 @@ optional<Vector3> World::handleRaycastRequest(const CameraController& cameraCont
 			}
 		}
 
-		tuple<size_t, size_t, size_t> bestBlockTuple = closestChunkCollision.handleRayCollision(closestRayCollision);
+		tuple<size_t, size_t, size_t> bestBlockTuple = closestChunkCollision->handleRayCollision(closestRayCollision);
 
 		if (raycastRequest == RaycastRequest::DESTROY_BLOCK) {
-			closestChunkCollision.destroyBlockAt(bestBlockTuple, *this);
+			closestChunkCollision->destroyBlockAt(bestBlockTuple, *this);
 		} else if (raycastRequest == RaycastRequest::PLACE_BLOCK) {
-			closestChunkCollision.placeBlockAt(bestBlockTuple, closestRayCollision.normal, selectedBlock, *this);
+			closestChunkCollision->placeBlockAt(bestBlockTuple, closestRayCollision.normal, selectedBlock, *this);
 		} else { // center of outlined block
 			Vector3 blockCenter = (Vector3){
 				(float)std::get<0>(bestBlockTuple) + 0.5f,
 				(float)std::get<1>(bestBlockTuple) + 0.5f,
 				(float)std::get<2>(bestBlockTuple) + 0.5f
 			};
-			Vector3 bestBlockOutlinePos = Vector3Add(blockCenter, closestChunkCollision.getWorldPos());
+			Vector3 bestBlockOutlinePos = Vector3Add(blockCenter, closestChunkCollision->getWorldPos());
 			return bestBlockOutlinePos;
 		}
 	}
