@@ -34,6 +34,9 @@ class Chunk { // : public NoCopy {
 		Model transparentModel;
 		Mesh transparentOldMesh;
 
+		bool modelLoaded;
+		bool transparentModelLoaded;
+
 		float distanceFromCamera;
 	
 		Chunk(const tuple<int, int, int>& position);

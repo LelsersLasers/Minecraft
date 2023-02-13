@@ -41,11 +41,18 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 	this->transparentModel = { 0 };
 	this->transparentOldMesh = { 0 };
 
+	this->modelLoaded = false;
+	this->transparentModelLoaded = false;
+
 	this->distanceFromCamera = 0.0f;
 }
 Chunk::~Chunk() {
-	UnloadModel(this->model);
-	UnloadModel(this->transparentModel);
+	if (this->modelLoaded) {
+		UnloadModel(this->model);
+	}
+	if (this->transparentModelLoaded) {
+		UnloadModel(this->transparentModel);
+	}
 }
 
 Block Chunk::getBlockAt(size_t x, size_t y, size_t z) const {
@@ -281,18 +288,22 @@ void Chunk::generateModel(World& world) {
 	free(transparentColors);
 
 
-	UnloadMesh(this->oldMesh);
-	UploadMesh(&mesh, false);
+	
+	// TODO: untested change!
+	if (!this->blank || !this->transparentBlank) {
+		UnloadMesh(this->oldMesh);
+		UploadMesh(&mesh, false);
 
-	UnloadMesh(this->transparentOldMesh);
-	UploadMesh(&transparentMesh, false);
+		UnloadMesh(this->transparentOldMesh);
+		UploadMesh(&transparentMesh, false);
 
 
-	this->model = LoadModelFromMesh(mesh);
-	this->oldMesh = mesh;
+		this->model = LoadModelFromMesh(mesh);
+		this->oldMesh = mesh;
 
-	this->transparentModel = LoadModelFromMesh(transparentMesh);
-	this->transparentOldMesh = transparentMesh;
+		this->transparentModel = LoadModelFromMesh(transparentMesh);
+		this->transparentOldMesh = transparentMesh;
+	}
 
 	this->dirty = false;
 }
