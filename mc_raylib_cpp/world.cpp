@@ -145,7 +145,7 @@ void World::updateChunkModels() {
 					}
 				}
 			}
-			
+
 			// return; // only update one chunk per frame????
 		}
 	}
@@ -257,7 +257,7 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 
 	int startX = cameraChunkX - VIEW_DIST;
 	int startY = cameraChunkY - VIEW_DIST;
-	int startZ = cameraChunkZ - VIEW_DIST;
+	int startZ = MAX(cameraChunkZ - VIEW_DIST, LOWEST_CHUNK_Z);
 
 	int endX = cameraChunkX + VIEW_DIST;
 	int endY = cameraChunkY + VIEW_DIST;

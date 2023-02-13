@@ -321,13 +321,13 @@ tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollisio
 	int pointY = (int)point.y;
 	int pointZ = (int)point.z;
 
-	size_t startX = BRANCHLESS_MAX(pointX - 1, 0);
-	size_t startY = BRANCHLESS_MAX(pointY - 1, 0);
-	size_t startZ = BRANCHLESS_MAX(pointZ - 1, 0);
+	size_t startX = MAX(pointX - 1, 0);
+	size_t startY = MAX(pointY - 1, 0);
+	size_t startZ = MAX(pointZ - 1, 0);
 
-	size_t endX = BRANCHLESS_MIN(pointX + 2, CHUNK_SIZE);
-	size_t endY = BRANCHLESS_MIN(pointY + 2, CHUNK_SIZE);
-	size_t endZ = BRANCHLESS_MIN(pointZ + 2, CHUNK_SIZE);
+	size_t endX = MIN(pointX + 2, CHUNK_SIZE);
+	size_t endY = MIN(pointY + 2, CHUNK_SIZE);
+	size_t endZ = MIN(pointZ + 2, CHUNK_SIZE);
 
 
 	for (size_t x = startX; x < endX; x++) {

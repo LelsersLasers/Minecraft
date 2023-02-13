@@ -26,8 +26,6 @@
 	- Textures
 		- Texture atlas
 		- Replaces colors
-	- World lower cap
-		- Bedrock layer
 - Everything 2
     - When under water, show the "top" of the water
 	- Glass blocks
