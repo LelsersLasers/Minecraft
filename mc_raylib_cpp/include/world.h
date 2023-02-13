@@ -34,14 +34,14 @@ class World : public NoCopy {
 	public:
 		unordered_map<string, Chunk> chunks;
 
-		vector<string> nearbyKeys;
-		vector<string> keysToRender;
+		vector<reference_wrapper<Chunk>> nearbyChunks;
+		vector<reference_wrapper<Chunk>> chunksToRender;
 		
 		vector<pair<tuple<int, int, int>, float>> chunksToGenerate;
 
-		bool shouldSortKeysToRender;
+		bool shouldSortChunksToRender;
 
-		std::function<bool(const string&, const string&)> compareKeysByDistance;
+		std::function<bool(const reference_wrapper<Chunk>&, const reference_wrapper<Chunk>&)> compareChunksByDistance;
 
 		World();
 		// ~World();

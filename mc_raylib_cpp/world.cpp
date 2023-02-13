@@ -29,16 +29,16 @@ using std::reference_wrapper;
 World::World() {
 	this->chunks = unordered_map<string, Chunk>();
 
-	this->nearbyKeys = vector<string>();
-	this->keysToRender = vector<string>();
+	this->nearbyChunks = vector<reference_wrapper<Chunk>>();
+	this->chunksToRender = vector<reference_wrapper<Chunk>>();
 
-	this->shouldSortKeysToRender = false;
+	this->shouldSortChunksToRender = false;
 
 	this->chunksToGenerate = vector<pair<tuple<int, int, int>, float>>();
 
-	this->compareKeysByDistance = [this](const string& key1, const string& key2) -> bool {
-		Chunk& chunk1 = this->chunks.at(key1);
-		Chunk& chunk2 = this->chunks.at(key2);
+	this->compareChunksByDistance = [this](const reference_wrapper<Chunk>& chunkRef1, const reference_wrapper<Chunk>& chunkRef2) -> bool {
+		Chunk& chunk1 = chunkRef1;
+		Chunk& chunk2 = chunkRef2;
 
 		return chunk1.distanceFromCamera > chunk2.distanceFromCamera;
 	};
@@ -107,16 +107,15 @@ void World::generateChunk(PerlinNoise& pn) {
 	Chunk& chunkRef = this->chunks.at(key);
 
 	chunkRef.generateModel(*this);
-	this->nearbyKeys.push_back(key);
+	this->nearbyChunks.push_back(chunkRef);
 	if (!chunkRef.blank || !chunkRef.transparentBlank) {
-		this->keysToRender.push_back(key);	
-		this->shouldSortKeysToRender = true;
+		this->chunksToRender.push_back(chunkRef);	
+		this->shouldSortChunksToRender = true;
 	}
 }
 void World::updateChunkModels() {
-	for (size_t i = this->nearbyKeys.size(); i-- > 0; ) {
-		string chunkKey = this->nearbyKeys[i];
-		Chunk& chunk = this->chunks.at(chunkKey);
+	for (size_t i = this->nearbyChunks.size(); i-- > 0; ) {
+		Chunk& chunk = this->nearbyChunks[i];
 		if (chunk.dirty) {
 			chunk.generateModel(*this);
 
@@ -125,15 +124,16 @@ void World::updateChunkModels() {
 
 				// can't use binary search, because keysToRender is not sorted yet
 				bool found = false;
-				for (size_t j = 0; j < this->keysToRender.size(); j++) {
-					if (this->keysToRender[j] == chunkKey) {
+				for (size_t j = 0; j < this->chunksToRender.size(); j++) {
+					Chunk& chunkToRender = this->chunksToRender[j];
+					if (chunkToRender.position == chunk.position) {
 						found = true;
 						break;
 					}
 				}
 				if (!found) {
-					this->keysToRender.push_back(chunkKey);
-					this->shouldSortKeysToRender = true;
+					this->chunksToRender.push_back(chunk);
+					this->shouldSortChunksToRender = true;
 				}
 			}
 			// return; // only update one chunk per frame????
@@ -212,11 +212,11 @@ bool World::cameraIsSubmerged(const CameraController& cameraController) {
 void World::sortKeysToRender() {
 	// sorted: farthest to closest
 	std::sort(
-		this->keysToRender.begin(),
-		this->keysToRender.end(),
-		this->compareKeysByDistance
+		this->chunksToRender.begin(),
+		this->chunksToRender.end(),
+		this->compareChunksByDistance
 	);
-	this->shouldSortKeysToRender = false;
+	this->shouldSortChunksToRender = false;
 }
 void World::sortChunksToGenerate() {
 	// not needed, just looks cool
@@ -234,8 +234,8 @@ void World::sortChunksToGenerate() {
 void World::cameraMoved(const CameraController& cameraController, PerlinNoise& pn) {
 	// TODO: faster way to do this?
 
-	this->nearbyKeys.clear();
-	this->keysToRender.clear();
+	this->nearbyChunks.clear();
+	this->chunksToRender.clear();
 
 	this->chunksToGenerate.clear();
 
@@ -258,7 +258,6 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 			for (int z = startZ; z <= endZ; z++) {
 
 				tuple<int, int, int> idx = std::make_tuple(x, y, z);
-				string key = TUP_TO_STR(idx);
 
 				int diffX = x - cameraChunkX;
 				int diffY = y - cameraChunkY;
@@ -272,9 +271,9 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 						Chunk& chunk = possibleChunk.value();
 						chunk.distanceFromCamera = dist;
 
-						this->nearbyKeys.push_back(key);
+						this->nearbyChunks.push_back(chunk);
 						if (!chunk.blank || !chunk.transparentBlank) {
-							this->keysToRender.push_back(key);	
+							this->chunksToRender.push_back(chunk);	
 						}
 					} else {
 						this->chunksToGenerate.push_back(std::make_pair(idx, dist));
@@ -286,7 +285,7 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 	}
 
 	this->sortChunksToGenerate();
-	this->shouldSortKeysToRender = true;
+	this->shouldSortChunksToRender = true;
 }
 
 optional<Vector3> World::handleRaycastRequest(const CameraController& cameraController, RaycastRequest& raycastRequest, Block selectedBlock) {
@@ -303,7 +302,7 @@ optional<Vector3> World::handleRaycastRequest(const CameraController& cameraCont
 		cameraController.camera.position,
 		cameraController.calcForward()
 	};
-	// TODO: use chunkOrder and break when distance is out of neighboring chunks
+	// TODO: use chunksToRender and break when distance is out of neighboring chunks
 	for (int x = cameraChunkX - 1; x <= cameraChunkX + 1; x++) {
 		for (int y = cameraChunkY - 1; y <= cameraChunkY + 1; y++) {
 			for (int z = cameraChunkZ - 1; z <= cameraChunkZ + 1; z++) {

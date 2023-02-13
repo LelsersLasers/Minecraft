@@ -162,7 +162,7 @@ int main() {
 
 		world.updateChunkModels();
 
-		if (world.shouldSortKeysToRender) {
+		if (world.shouldSortChunksToRender) {
 			world.sortKeysToRender();
 		}
 
@@ -173,10 +173,8 @@ int main() {
 
             BeginMode3D(cameraController.camera);
             {
-				for (size_t idx = 0; idx < world.keysToRender.size(); idx++) {
-					string key = world.keysToRender[idx]; // draw front to back
-
-					Chunk& chunk = world.chunks.at(key);
+				for (size_t i = 0; i < world.chunksToRender.size(); i++) {
+					Chunk& chunk = world.chunksToRender[i];
 
 					if (chunkOutlines) {
 						DrawCubeWiresV(

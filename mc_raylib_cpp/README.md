@@ -9,17 +9,15 @@
 	- Better usage of pointers
 		- Avoid creating object and then reassinging it
 		- Can create some objects as `Type* var = new Type(args)`
-	- Pointers vs references??
+	- Pointers vs references vs reference_wrapper
 	- Improve iterating
 		- Enhanced for loops?
 		- RN: Loop through chunkOrder multiple times
-	- World::chunks.at() vs World::getChunkAt()
 	- Add `f` to floats
 - Block has array[6] of Colors (indexed by Dir) instead of getColorFn()/getColor()
 - Everything
 	- World gen
 		- Perlin noise
-		- "Instead of sampling the Perlin noise in two dimensions try sampling it in three and placing a cube wherever it’s greater than some threshold. It’s not as simple as a basic mesh but it lets you create complex features like caves and overhangs."
 		- Octaves
 		- Basic biomes
 	- Trees
@@ -33,7 +31,6 @@
 	- Preformance
 		- [ ] Unload models from GPU when not in view
 		- [ ] Unload/don't create/load models that are blank
-		- Vectors of reference_wrappers instead of strings (keys)
 		- Store chunk block data as a list of indexes to a vector of blocks
 			- Avoids repeating/duplicating block info
 - Everything 2
@@ -56,6 +53,8 @@
 	- World gen
 		- More biomes
         - 3d perlin noise
+			- 
+		- "Instead of sampling the Perlin noise in two dimensions try sampling it in three and placing a cube wherever it’s greater than some threshold. It’s not as simple as a basic mesh but it lets you create complex features like caves and overhangs."
         - Made from 5 diiferent noise setups
             - +spline interpolation (or something like that)
         - Caves
