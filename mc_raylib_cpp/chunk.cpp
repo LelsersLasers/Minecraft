@@ -2,8 +2,8 @@
 #include "raymath.h"
 
 #include <stdlib.h>
-#include <cstring> // memcpy
-#include <cmath> // sqrtf
+#include <cstring>		// memcpy
+#include <cmath>		// sqrtf
 
 #include <vector>
 #include <tuple>
@@ -40,9 +40,6 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 
 	this->transparentModel = { 0 };
 	this->transparentOldMesh = { 0 };
-
-	this->modelLoaded = false;
-	this->transparentModelLoaded = false;
 
 	this->distanceFromCamera = 0.0f;
 }
@@ -293,9 +290,6 @@ void Chunk::generateModel(World& world) {
 
 		this->transparentModel = LoadModelFromMesh(transparentMesh);
 		this->transparentOldMesh = transparentMesh;
-
-		this->modelLoaded = true;
-		this->transparentModelLoaded = true;
 	}
 
 
