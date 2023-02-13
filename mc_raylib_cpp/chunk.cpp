@@ -47,12 +47,8 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 	this->distanceFromCamera = 0.0f;
 }
 Chunk::~Chunk() {
-	if (this->modelLoaded) {
-		UnloadModel(this->model);
-	}
-	if (this->transparentModelLoaded) {
-		UnloadModel(this->transparentModel);
-	}
+	UnloadModel(this->model);
+	UnloadModel(this->transparentModel);
 }
 
 Block Chunk::getBlockAt(size_t x, size_t y, size_t z) const {
@@ -257,40 +253,34 @@ void Chunk::generateModel(World& world) {
 		}
 	}
 
-	mesh.vertexCount = vertexCount;
-	mesh.triangleCount = vertexCount / 3;
-
-	transparentMesh.vertexCount = transparentVertexCount;
-	transparentMesh.triangleCount = transparentVertexCount / 3;
 
 	this->blank = vertexCount == 0;
 	this->transparentBlank = transparentVertexCount == 0;
 
-	// 3 floats per vertex, 4 colors per vertex
-	mesh.vertices = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
-	mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));
 
-	transparentMesh.vertices = (float *)malloc(transparentMesh.vertexCount * 3 * sizeof(float));
-	transparentMesh.colors = (unsigned char *)malloc(transparentMesh.vertexCount * 4 * sizeof(unsigned char));
-
-
-	std::memcpy(mesh.vertices, vertices, mesh.vertexCount * 3 * sizeof(float));
-	std::memcpy(mesh.colors,   colors,   mesh.vertexCount * 4 * sizeof(unsigned char));
-
-	std::memcpy(transparentMesh.vertices, transparentVertices, transparentMesh.vertexCount * 3 * sizeof(float));
-	std::memcpy(transparentMesh.colors,   transparentColors,   transparentMesh.vertexCount * 4 * sizeof(unsigned char));
-
-
-	free(vertices);
-	free(colors);
-
-	free(transparentVertices);
-	free(transparentColors);
-
-
-	
-	// TODO: untested change!
 	if (!this->blank || !this->transparentBlank) {
+
+		mesh.vertexCount = vertexCount;
+		mesh.triangleCount = vertexCount / 3;
+
+		transparentMesh.vertexCount = transparentVertexCount;
+		transparentMesh.triangleCount = transparentVertexCount / 3;
+
+		// 3 floats per vertex, 4 colors (unsigned char) per vertex
+		mesh.vertices = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
+		mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));
+
+		transparentMesh.vertices = (float *)malloc(transparentMesh.vertexCount * 3 * sizeof(float));
+		transparentMesh.colors = (unsigned char *)malloc(transparentMesh.vertexCount * 4 * sizeof(unsigned char));
+
+
+		std::memcpy(mesh.vertices, vertices, mesh.vertexCount * 3 * sizeof(float));
+		std::memcpy(mesh.colors,   colors,   mesh.vertexCount * 4 * sizeof(unsigned char));
+
+		std::memcpy(transparentMesh.vertices, transparentVertices, transparentMesh.vertexCount * 3 * sizeof(float));
+		std::memcpy(transparentMesh.colors,   transparentColors,   transparentMesh.vertexCount * 4 * sizeof(unsigned char));
+
+
 		UnloadMesh(this->oldMesh);
 		UploadMesh(&mesh, false);
 
@@ -303,7 +293,18 @@ void Chunk::generateModel(World& world) {
 
 		this->transparentModel = LoadModelFromMesh(transparentMesh);
 		this->transparentOldMesh = transparentMesh;
+
+		this->modelLoaded = true;
+		this->transparentModelLoaded = true;
 	}
+
+
+	free(vertices);
+	free(colors);
+
+	free(transparentVertices);
+	free(transparentColors);
+
 
 	this->dirty = false;
 }

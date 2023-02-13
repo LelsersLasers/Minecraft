@@ -30,7 +30,6 @@
 		- Bedrock layer
 	- Preformance
 		- [ ] Unload models from GPU when not in view
-		- [ ] Unload/don't create/load models that are blank
 		- Store chunk block data as a list of indexes to a vector of blocks
 			- Avoids repeating/duplicating block info
 - Everything 2
