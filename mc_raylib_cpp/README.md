@@ -26,13 +26,6 @@
 	- Textures
 		- Texture atlas
 		- Replaces colors
-	- World lower cap
-		- Bedrock layer
-	- Preformance
-		- [ ] Unload models from GPU when not in view
-		- [ ] Unload/don't create/load models that are blank
-		- Store chunk block data as a list of indexes to a vector of blocks
-			- Avoids repeating/duplicating block info
 - Everything 2
     - When under water, show the "top" of the water
 	- Glass blocks
@@ -53,8 +46,7 @@
 	- World gen
 		- More biomes
         - 3d perlin noise
-			- 
-		- "Instead of sampling the Perlin noise in two dimensions try sampling it in three and placing a cube wherever it’s greater than some threshold. It’s not as simple as a basic mesh but it lets you create complex features like caves and overhangs."
+			- "Instead of sampling the Perlin noise in two dimensions try sampling it in three and placing a cube wherever it’s greater than some threshold. It’s not as simple as a basic mesh but it lets you create complex features like caves and overhangs."
         - Made from 5 diiferent noise setups
             - +spline interpolation (or something like that)
         - Caves
@@ -62,3 +54,7 @@
 		- For far away chunks
 	- Flowing water
 	- Falling sand blocks
+	- Preformance
+		- Unload models from GPU when not in view
+		- Store chunk block data as a list of indexes to a vector of blocks
+			- Avoids repeating/duplicating block info

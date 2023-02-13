@@ -2,8 +2,8 @@
 #include "raymath.h"
 
 #include <stdlib.h>
-#include <cstring> // memcpy
-#include <cmath> // sqrtf
+#include <cstring>		// memcpy
+#include <cmath>		// sqrtf
 
 #include <vector>
 #include <tuple>
@@ -250,28 +250,47 @@ void Chunk::generateModel(World& world) {
 		}
 	}
 
-	mesh.vertexCount = vertexCount;
-	mesh.triangleCount = vertexCount / 3;
-
-	transparentMesh.vertexCount = transparentVertexCount;
-	transparentMesh.triangleCount = transparentVertexCount / 3;
 
 	this->blank = vertexCount == 0;
 	this->transparentBlank = transparentVertexCount == 0;
 
-	// 3 floats per vertex, 4 colors per vertex
-	mesh.vertices = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
-	mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));
 
-	transparentMesh.vertices = (float *)malloc(transparentMesh.vertexCount * 3 * sizeof(float));
-	transparentMesh.colors = (unsigned char *)malloc(transparentMesh.vertexCount * 4 * sizeof(unsigned char));
+	if (!this->blank || !this->transparentBlank) {
+
+		mesh.vertexCount = vertexCount;
+		mesh.triangleCount = vertexCount / 3;
+
+		transparentMesh.vertexCount = transparentVertexCount;
+		transparentMesh.triangleCount = transparentVertexCount / 3;
+
+		// 3 floats per vertex, 4 colors (unsigned char) per vertex
+		mesh.vertices = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
+		mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));
+
+		transparentMesh.vertices = (float *)malloc(transparentMesh.vertexCount * 3 * sizeof(float));
+		transparentMesh.colors = (unsigned char *)malloc(transparentMesh.vertexCount * 4 * sizeof(unsigned char));
 
 
-	std::memcpy(mesh.vertices, vertices, mesh.vertexCount * 3 * sizeof(float));
-	std::memcpy(mesh.colors,   colors,   mesh.vertexCount * 4 * sizeof(unsigned char));
+		std::memcpy(mesh.vertices, vertices, mesh.vertexCount * 3 * sizeof(float));
+		std::memcpy(mesh.colors,   colors,   mesh.vertexCount * 4 * sizeof(unsigned char));
 
-	std::memcpy(transparentMesh.vertices, transparentVertices, transparentMesh.vertexCount * 3 * sizeof(float));
-	std::memcpy(transparentMesh.colors,   transparentColors,   transparentMesh.vertexCount * 4 * sizeof(unsigned char));
+		std::memcpy(transparentMesh.vertices, transparentVertices, transparentMesh.vertexCount * 3 * sizeof(float));
+		std::memcpy(transparentMesh.colors,   transparentColors,   transparentMesh.vertexCount * 4 * sizeof(unsigned char));
+
+
+		UnloadMesh(this->oldMesh);
+		UploadMesh(&mesh, false);
+
+		UnloadMesh(this->transparentOldMesh);
+		UploadMesh(&transparentMesh, false);
+
+
+		this->model = LoadModelFromMesh(mesh);
+		this->oldMesh = mesh;
+
+		this->transparentModel = LoadModelFromMesh(transparentMesh);
+		this->transparentOldMesh = transparentMesh;
+	}
 
 
 	free(vertices);
@@ -280,19 +299,6 @@ void Chunk::generateModel(World& world) {
 	free(transparentVertices);
 	free(transparentColors);
 
-
-	UnloadMesh(this->oldMesh);
-	UploadMesh(&mesh, false);
-
-	UnloadMesh(this->transparentOldMesh);
-	UploadMesh(&transparentMesh, false);
-
-
-	this->model = LoadModelFromMesh(mesh);
-	this->oldMesh = mesh;
-
-	this->transparentModel = LoadModelFromMesh(transparentMesh);
-	this->transparentOldMesh = transparentMesh;
 
 	this->dirty = false;
 }
@@ -315,13 +321,13 @@ tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollisio
 	int pointY = (int)point.y;
 	int pointZ = (int)point.z;
 
-	size_t startX = BRANCHLESS_MAX(pointX - 1, 0);
-	size_t startY = BRANCHLESS_MAX(pointY - 1, 0);
-	size_t startZ = BRANCHLESS_MAX(pointZ - 1, 0);
+	size_t startX = MAX(pointX - 1, 0);
+	size_t startY = MAX(pointY - 1, 0);
+	size_t startZ = MAX(pointZ - 1, 0);
 
-	size_t endX = BRANCHLESS_MIN(pointX + 2, CHUNK_SIZE);
-	size_t endY = BRANCHLESS_MIN(pointY + 2, CHUNK_SIZE);
-	size_t endZ = BRANCHLESS_MIN(pointZ + 2, CHUNK_SIZE);
+	size_t endX = MIN(pointX + 2, CHUNK_SIZE);
+	size_t endY = MIN(pointY + 2, CHUNK_SIZE);
+	size_t endZ = MIN(pointZ + 2, CHUNK_SIZE);
 
 
 	for (size_t x = startX; x < endX; x++) {

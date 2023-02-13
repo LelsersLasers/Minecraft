@@ -135,7 +135,17 @@ void World::updateChunkModels() {
 					this->chunksToRender.push_back(chunk);
 					this->shouldSortChunksToRender = true;
 				}
+			} else {
+				// can't use binary search, because keysToRender is not sorted yet
+				for (size_t j = 0; j < this->chunksToRender.size(); j++) {
+					Chunk& chunkToRender = this->chunksToRender[j];
+					if (chunkToRender.position == chunk.position) {
+						this->chunksToRender.erase(this->chunksToRender.begin() + j);
+						break;
+					}
+				}
 			}
+
 			// return; // only update one chunk per frame????
 		}
 	}
@@ -247,7 +257,7 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 
 	int startX = cameraChunkX - VIEW_DIST;
 	int startY = cameraChunkY - VIEW_DIST;
-	int startZ = cameraChunkZ - VIEW_DIST;
+	int startZ = MAX(cameraChunkZ - VIEW_DIST, LOWEST_CHUNK_Z);
 
 	int endX = cameraChunkX + VIEW_DIST;
 	int endY = cameraChunkY + VIEW_DIST;
