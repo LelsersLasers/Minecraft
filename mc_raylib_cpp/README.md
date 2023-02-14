@@ -2,6 +2,8 @@
 
 ## BUGS:
 
+- Logs can "float" if up chunk procs rand
+
 ## TODO:
 
 - C++ stuff

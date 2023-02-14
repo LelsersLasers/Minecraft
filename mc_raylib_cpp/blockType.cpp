@@ -75,6 +75,22 @@ Color getColorSand(Dir dir) {
 			return YELLOW;
 	}
 }
+Color getColorLog(Dir dir) {
+	// return DARKBROWN;
+	switch (dir) {
+		case Dir::Top:
+		case Dir::Bottom:
+			return DARKBROWN * 0.5;
+		case Dir::Right:
+		case Dir::Left:
+			return DARKBROWN * 0.9;
+		case Dir::Forward:
+		case Dir::Backward:
+			return DARKBROWN * 0.8;
+		default: // should not be reached
+			return DARKBROWN;
+	}
+}
 
 Color (*getColorFn(const BlockType& blockType))(Dir dir) {
 	switch (blockType) {
@@ -92,6 +108,8 @@ Color (*getColorFn(const BlockType& blockType))(Dir dir) {
 			return getColorWater;
 		case BlockType::SAND:
 			return getColorSand;
+		case BlockType::LOG:
+			return getColorLog;
         default: // should not be reached
             return getColorAir; 
 	}
@@ -112,6 +130,8 @@ bool getTransparent(const BlockType& blockType) {
 		case BlockType::WATER:
 			return true;
 		case BlockType::SAND:
+			return false;
+		case BlockType::LOG:
 			return false;
         default: // should not be reached
             return false;
@@ -145,6 +165,7 @@ std::string getBlockName(const BlockType& BlockType) {
 			return "Water";
 		case BlockType::SAND:
 			return "Sand";
+		case BlockType::LOG:
 		default: // should not be reached
 			return "Air";
 	}

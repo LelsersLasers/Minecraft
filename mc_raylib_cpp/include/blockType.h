@@ -15,9 +15,10 @@ enum BlockType {
 	BEDROCK = 4,
 	WATER = 5,
 	SAND = 6,
+	LOG = 7,
 };
 
-#define BLOCK_MAX (SAND)
+#define BLOCK_MAX (LOG)
 
 Color getColorAir(Dir dir);
 Color getColorGrass(Dir dir);
@@ -26,6 +27,7 @@ Color getColorStone(Dir dir);
 Color getColorBedrock(Dir dir);
 Color getColorWater(Dir dir);
 Color getColorSand(Dir dir);
+Color getColorLog(Dir dir);
 
 Color (*getColorFn(const BlockType& blockType))(Dir dir);
 

@@ -61,7 +61,9 @@ Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
 		Chunk& chunk = possibleChunk.value();
 		return chunk.getBlockAt(x, y, z);
 	} else {
-		return BEDROCK_BLOCK;
+		// TEMP: should usally return BEDROCK_BLOCK
+		// return BEDROCK_BLOCK;
+		return AIR_BLOCK;
 	}
 }
 
@@ -255,8 +257,8 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 	int cameraChunkY = std::get<1>(cameraChunk);
 	int cameraChunkZ = std::get<2>(cameraChunk);
 
-	int startX = cameraChunkX - VIEW_DIST;
-	int startY = cameraChunkY - VIEW_DIST;
+	int startX = MAX(cameraChunkX - VIEW_DIST, 0); // TEMP: delete MAX
+	int startY = MAX(cameraChunkY - VIEW_DIST, 0); // TEMP: delete MAX
 	int startZ = MAX(cameraChunkZ - VIEW_DIST, LOWEST_CHUNK_Z);
 
 	int endX = cameraChunkX + VIEW_DIST;

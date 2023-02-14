@@ -19,6 +19,7 @@
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
 #define RAND(min, max) (rand() % ((max) - (min)) + (min)) // range is [min, max)
+#define RAND_CHANCE(chance) (((float)rand() / (float)RAND_MAX) < (chance)) // returns bool
 
 #define TUP_TO_STR(tup) std::to_string(std::get<0>(tup)) + "," + std::to_string(std::get<1>(tup)) + "," + std::to_string(std::get<2>(tup))
 
@@ -41,6 +42,8 @@ const int VIEW_DIST = 8; // in chunks
 
 const int WATER_LEVEL = CHUNK_SIZE * WORLD_SIZE / 2;
 const int LOWEST_CHUNK_Z = 0;
+
+const float treeChance = 0.01f;
 
 const Vector3 CUBE_VERTICES[] = {
 	(Vector3){0.0, 0.0, 0.0},

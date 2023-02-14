@@ -28,6 +28,7 @@ const Block STONE_BLOCK(BlockType::STONE);
 const Block BEDROCK_BLOCK(BlockType::BEDROCK);
 const Block WATER_BLOCK(BlockType::WATER);
 const Block SAND_BLOCK(BlockType::SAND);
+const Block LOG_BLOCK(BlockType::LOG);
 
 
 

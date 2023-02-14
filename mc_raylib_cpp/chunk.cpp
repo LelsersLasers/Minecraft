@@ -5,6 +5,8 @@
 #include <cstring>		// memcpy
 #include <cmath>		// sqrtf
 
+#include <iostream>
+
 #include <vector>
 #include <tuple>
 #include <optional>
@@ -86,9 +88,10 @@ void Chunk::generateBlocks(PerlinNoise& pn) {
 			int maxHeight = CHUNK_SIZE * WORLD_SIZE - 5;
 			int scaledHeight = (int)((double)maxHeight * height) + 5;
 
+			bool tree = RAND_CHANCE(treeChance);
+
 			for (size_t z = 0; z < CHUNK_SIZE; z++) {
 				int worldZ = worldChunkZ + (int)z;
-
 
 				if (worldZ == 0) {
 					this->blocks.push_back(BEDROCK_BLOCK);
@@ -100,28 +103,11 @@ void Chunk::generateBlocks(PerlinNoise& pn) {
 					this->blocks.push_back(GRASS_BLOCK);
 				} else if (worldZ <= WATER_LEVEL) {
 					this->blocks.push_back(WATER_BLOCK);
+				} else if (tree && worldZ <= scaledHeight + RAND(4, 6)) {
+					this->blocks.push_back(LOG_BLOCK);
 				} else {
 					this->blocks.push_back(AIR_BLOCK);
 				}
-
-				// if (worldZ == 0) {
-				// 	this->blocks.push_back(BEDROCK_BLOCK);
-				// } else if (worldZ <= CHUNK_SIZE + 2) {
-				// 	this->blocks.push_back(STONE_BLOCK);
-				// } else if (worldZ <= CHUNK_SIZE + 5) {
-				// 	this->blocks.push_back(DIRT_BLOCK);
-				// } else if (worldZ == CHUNK_SIZE + 6) {
-				// 	this->blocks.push_back(GRASS_BLOCK);
-				// } else if (worldX == 0 || worldY == CHUNK_SIZE - 1) {
-				// 	this->blocks.push_back(DIRT_BLOCK);
-				// } else if (worldZ <= CHUNK_SIZE + 9) {
-				// 	this->blocks.push_back(WATER_BLOCK);
-				// } else {
-				// 	this->blocks.push_back(AIR_BLOCK);
-				// }
-
-				// this->blocks.push_back(GRASS_BLOCK);
-				// this->blocks.push_back(Block(getRandomBlockType()));
 
 			}
 		}
