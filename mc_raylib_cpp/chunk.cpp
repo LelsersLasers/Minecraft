@@ -208,7 +208,11 @@ void Chunk::generateModel(World& world) {
 					tuple<int, int, int> dirTuple = allDirTuples[i];
 
 					Block neighbor = this->getBlockInDirection(x, y, z, dirTuple, world);
-					if (!neighbor.transparent || (block.blockType == BlockType::WATER && neighbor.blockType == BlockType::WATER)) {
+					if (
+						(!neighbor.transparent
+							|| (block.blockType == BlockType::WATER && neighbor.blockType == BlockType::WATER)
+						) && !(block.blockType == BlockType::WATER && dir == Dir::Top && neighbor.blockType != BlockType::WATER)
+					) {
 						continue;
 					}
 
