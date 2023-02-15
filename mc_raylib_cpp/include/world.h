@@ -13,6 +13,7 @@
 #include <functional>
 
 #include "block.h"
+#include "blockType.h"
 #include "cameraController.h"
 #include "raycastRequest.h"
 #include "blockPlaceRequest.h"
@@ -56,7 +57,7 @@ class World : public NoCopy {
 		void generateChunk(PerlinNoise& pn);
 
 		int getHeightAt(PerlinNoise& pn, int x, int z);
-		void setBlockAt(Chunk& chunk, int x, int y, int z, Block block);
+		void createBlockPlaceRequestAt(Chunk& chunk, int x, int y, int z, Block block, vector<BlockType> canOverwrite);
 		void createChunkData(PerlinNoise& pn, Chunk& chunk);
 
 		void updateChunkModels();

@@ -2,8 +2,6 @@
 
 ## BUGS:
 
-- Don't place leaves inside of other blocks
-
 ## TODO:
 
 - C++ stuff
@@ -12,6 +10,8 @@
 		- Avoid creating object and then reassinging it
 		- Can create some objects as `Type* var = new Type(args)`
 	- Pointers vs references vs reference_wrapper
+        - Preference order: reference, reference_wrapper, pointer
+    - [ ] Constructor initalization list
 	- Improve iterating
 		- Enhanced for loops?
 		- RN: Loop through chunkOrder multiple times

@@ -1,3 +1,4 @@
+#include "include/blockType.h"
 #include "raylib.h"
 #include "raymath.h"
 
@@ -137,30 +138,27 @@ int World::getHeightAt(PerlinNoise& pn, int x, int y) { // static
 	int scaledHeight = (int)((double)maxHeight * height);
 	return scaledHeight;
 }
-void World::setBlockAt(Chunk& chunk, int x, int y, int z, Block block) {
-	if (Chunk::inBounds(x, y, z)) {
-		chunk.setBlockAt(x, y, z, block);
-	} else {
-		int chunkXDiff = (x < 0) * -1 + (x >= CHUNK_SIZE) * 1;
-		int chunkYDiff = (y < 0) * -1 + (y >= CHUNK_SIZE) * 1;
-		int chunkZDiff = (z < 0) * -1 + (z >= CHUNK_SIZE) * 1;
+void World::createBlockPlaceRequestAt(Chunk& chunk, int x, int y, int z, Block block, vector<BlockType> canOverwrite) {
+	int chunkXDiff = (x < 0) * -1 + (x >= CHUNK_SIZE) * 1;
+	int chunkYDiff = (y < 0) * -1 + (y >= CHUNK_SIZE) * 1;
+	int chunkZDiff = (z < 0) * -1 + (z >= CHUNK_SIZE) * 1;
 
-		tuple<int, int, int> neighborTup = std::make_tuple(
-			std::get<0>(chunk.position) + chunkXDiff,
-			std::get<1>(chunk.position) + chunkYDiff,
-			std::get<2>(chunk.position) + chunkZDiff
-		);
+	tuple<int, int, int> neighborTup = std::make_tuple(
+		std::get<0>(chunk.position) + chunkXDiff,
+		std::get<1>(chunk.position) + chunkYDiff,
+		std::get<2>(chunk.position) + chunkZDiff
+	);
 
-		BlockPlaceRequest request = BlockPlaceRequest {
-			chunkPos: neighborTup,
-			x: (size_t)EUCMOD_SIMPLE(x, CHUNK_SIZE),
-			y: (size_t)EUCMOD_SIMPLE(y, CHUNK_SIZE),
-			z: (size_t)EUCMOD_SIMPLE(z, CHUNK_SIZE),
-			block: block
-		};
+	BlockPlaceRequest request = BlockPlaceRequest {
+		chunkPos: neighborTup,
+		x: (size_t)EUCMOD_SIMPLE(x, CHUNK_SIZE),
+		y: (size_t)EUCMOD_SIMPLE(y, CHUNK_SIZE),
+		z: (size_t)EUCMOD_SIMPLE(z, CHUNK_SIZE),
+		block: block,
+		canOverwrite: canOverwrite
+	};
 
-		this->blockPlaceRequests.push_back(request);
-	}
+	this->blockPlaceRequests.push_back(request);
 }
 void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 	chunk.blocks.clear();
@@ -236,7 +234,7 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 				chunk.setBlockAt(x, y, chunkZHeight, GRASS_BLOCK);
 
 				for (int z = dirtStart; z < chunkZHeight; z++) {
-					this->setBlockAt(chunk, x, y, z, DIRT_BLOCK);
+					this->createBlockPlaceRequestAt(chunk, x, y, z, DIRT_BLOCK, vector<BlockType>({ BlockType::STONE }));
 				}
 
 			}
@@ -245,6 +243,11 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 	//--------------------------------------------------------------------------------//
 
 	// Trees -------------------------------------------------------------------------//
+	/*
+		TREE_CHANCE chance to place a tree at every scaledHeight above WATER_LEVEL
+		Trunk height: [4, 5]
+		Leaves radius: 5w, 4h block around top of tree
+	*/
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
 		// int worldX = worldChunkX + (int)x;
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
@@ -261,21 +264,23 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 				bool tree = RAND_CHANCE(TREE_CHANCE);
 				if (tree) {
 
+					// tree trunk
 					int treeHeight = RAND(4, 6);
 					int treeStart = chunkZHeight + 1;
 					int treeEnd = treeStart + treeHeight;
 
 					for (int z = treeStart; z < treeEnd; z++) {
-						this->setBlockAt(chunk, x, y, z, LOG_BLOCK);	
+						this->createBlockPlaceRequestAt(chunk, x, y, z, LOG_BLOCK, vector<BlockType>({ BlockType::AIR }));	
 					}
 
+					// tree leaves
 					int leavesStartX = x - 2;
 					int leavesStartY = y - 2;
-					int leavesStartZ = treeEnd - 2;
+					int leavesStartZ = treeEnd - 3;
 
 					int leavesEndX = x + 2;
 					int leavesEndY = y + 2;
-					int leavesEndZ = treeEnd + 1;
+					int leavesEndZ = treeEnd;
 
 					for (int leavesX = leavesStartX; leavesX <= leavesEndX; leavesX++) {
 						for (int leavesY = leavesStartY; leavesY <= leavesEndY; leavesY++) {
@@ -299,7 +304,7 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 									continue;
 								}
 
-								this->setBlockAt(chunk, leavesX, leavesY, leavesZ, SAND_BLOCK);
+								this->createBlockPlaceRequestAt(chunk, leavesX, leavesY, leavesZ, SAND_BLOCK, vector<BlockType>({ BlockType::AIR }));
 							}
 						}
 					}
@@ -323,7 +328,19 @@ void World::updateChunkModels() {
 		for (size_t j = 0; j < this->blockPlaceRequests.size(); j++) {
 			BlockPlaceRequest& request = this->blockPlaceRequests[j];
 			if (request.chunkPos == chunk.position) {
-				chunk.setBlockAt(request.x, request.y, request.z, request.block);
+				Block blockToBeReplaced = chunk.getBlockAt(request.x, request.y, request.z);
+
+				bool found = false;
+				for (size_t k = 0; k < request.canOverwrite.size(); k++) {
+					if (request.canOverwrite[k] == blockToBeReplaced.blockType) {
+						found = true;
+						break;
+					}
+				}
+				if (found) {
+					chunk.setBlockAt(request.x, request.y, request.z, request.block);
+				}
+
 				this->blockPlaceRequests.erase(this->blockPlaceRequests.begin() + j);
 			}
 		}
