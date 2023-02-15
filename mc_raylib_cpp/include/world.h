@@ -56,6 +56,7 @@ class World : public NoCopy {
 		void generateChunk(PerlinNoise& pn);
 
 		int getHeightAt(PerlinNoise& pn, int x, int z);
+		void setBlockAt(Chunk& chunk, size_t x, size_t y, int z, Block block);
 		void createChunkData(PerlinNoise& pn, Chunk& chunk);
 
 		void updateChunkModels();

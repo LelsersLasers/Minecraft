@@ -43,7 +43,7 @@ const int VIEW_DIST = 8; // in chunks
 const int WATER_LEVEL = CHUNK_SIZE * WORLD_SIZE / 2;
 const int LOWEST_CHUNK_Z = 0;
 
-const float treeChance = 0.01f;
+const float TREE_CHANCE = 0.01f;
 
 const Vector3 CUBE_VERTICES[] = {
 	(Vector3){0.0, 0.0, 0.0},

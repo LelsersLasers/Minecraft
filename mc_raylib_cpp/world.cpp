@@ -137,6 +137,28 @@ int World::getHeightAt(PerlinNoise& pn, int x, int y) { // static
 	int scaledHeight = (int)((double)maxHeight * height);
 	return scaledHeight;
 }
+void World::setBlockAt(Chunk& chunk, size_t x, size_t y, int z, Block block) {
+	if (z >= 0 && z < CHUNK_SIZE) {
+		chunk.setBlockAt(x, y, z, block);
+	} else {
+		int chunkZDiff = z < 0 ? -1 : 1;
+		tuple<int, int, int> neighborTup = std::make_tuple(
+			std::get<0>(chunk.position),
+			std::get<1>(chunk.position),
+			std::get<2>(chunk.position) + chunkZDiff
+		);
+
+		BlockPlaceRequest request = BlockPlaceRequest {
+			chunkPos: neighborTup,
+			x: x,
+			y: y,
+			z: (size_t)EUCMOD_SIMPLE(z, CHUNK_SIZE),
+			block: block
+		};
+
+		this->blockPlaceRequests.push_back(request);
+	}
+}
 void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 	chunk.blocks.clear();
 
@@ -155,6 +177,8 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 		}
 	}
 
+	// TODO: condension logic? lots of duplicated code (for loops, etc)
+
 
 	// Shaping -----------------------------------------------------------------------//
 	/*
@@ -164,9 +188,9 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 		else -> Air
 	*/
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
-		int worldX = worldChunkX + (int)x;
+		// int worldX = worldChunkX + (int)x;
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
-			int worldY = worldChunkY + (int)y;
+			// int worldY = worldChunkY + (int)y;
 
 			int scaledHeight = scaledHeights[x][y];
 
@@ -195,9 +219,9 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 		else -> unaffected
 	*/
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
-		int worldX = worldChunkX + (int)x;
+		// int worldX = worldChunkX + (int)x;
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
-			int worldY = worldChunkY + (int)y;
+			// int worldY = worldChunkY + (int)y;
 
 			int scaledHeight = scaledHeights[x][y];
 			int chunkZHeight = scaledHeight - worldChunkZ;
@@ -209,32 +233,44 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 				chunk.setBlockAt(x, y, chunkZHeight, GRASS_BLOCK);
 
 				for (int z = dirtStart; z < chunkZHeight; z++) {
-					if (z >= 0 && z < CHUNK_SIZE) {
-						chunk.setBlockAt(x, y, z, DIRT_BLOCK);
-					} else {
-						int chunkZDiff = z < 0 ? -1 : 1;
-						tuple<int, int, int> neighborTup = std::make_tuple(
-							std::get<0>(chunk.position),
-							std::get<1>(chunk.position),
-							std::get<2>(chunk.position) + chunkZDiff
-						);
-
-						BlockPlaceRequest request = BlockPlaceRequest {
-							chunkPos: neighborTup,
-							x: x,
-							y: y,
-							z: (size_t)EUCMOD_SIMPLE(z, CHUNK_SIZE),
-							block: DIRT_BLOCK
-						};
-
-						this->blockPlaceRequests.push_back(request);
-					}
+					this->setBlockAt(chunk, x, y, z, DIRT_BLOCK);
 				}
 
 			}
 		}
 	}
 	//--------------------------------------------------------------------------------//
+
+	// Trees -------------------------------------------------------------------------//
+	for (size_t x = 0; x < CHUNK_SIZE; x++) {
+		// int worldX = worldChunkX + (int)x;
+		for (size_t y = 0; y < CHUNK_SIZE; y++) {
+			// int worldY = worldChunkY + (int)y;
+
+			int scaledHeight = scaledHeights[x][y];
+			if (scaledHeight <= WATER_LEVEL) { // don't place trees underwater
+				continue;
+			}
+
+			int chunkZHeight = scaledHeight - worldChunkZ;
+
+			if (chunkZHeight >= 0 && chunkZHeight < CHUNK_SIZE) { // only run for chunk that contains the scaledHeight
+				bool tree = RAND_CHANCE(TREE_CHANCE);
+				if (tree) {
+
+					int treeHeight = RAND(4, 6);
+					int treeStart = chunkZHeight + 1;
+					int treeEnd = treeStart + treeHeight;
+
+					for (int z = treeStart; z < treeEnd; z++) {
+						this->setBlockAt(chunk, x, y, z, LOG_BLOCK);	
+					}
+
+				}
+			}
+
+		}
+	}
 	
 
 	chunk.dirty = true;
