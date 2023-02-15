@@ -44,8 +44,6 @@ class Chunk { // : public NoCopy {
 
 		Vector3 getWorldPos() const;
 
-		void generateBlocks(PerlinNoise& perlinNoise);
-
 		Block getBlockInDirection(size_t x, size_t y, size_t z, tuple<int, int, int> dirTuple, World& world);
 		void generateModel(World& world);
 

@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <cmath>
 
+// #include <iostream>
+
 #include <vector>
 #include <tuple>
 #include <utility>
@@ -16,6 +18,9 @@
 #include "include/chunk.h"
 #include "include/raycastRequest.h"
 #include "include/consts.h"
+#include "include/PerlinNoise.h"
+#include "include/PerlinNoiseUtil.h"
+#include "include/blockPlaceRequest.h"
 
 #include "include/world.h"
 
@@ -35,6 +40,8 @@ World::World() {
 	this->shouldSortChunksToRender = false;
 
 	this->chunksToGenerate = vector<pair<tuple<int, int, int>, float>>();
+
+	this->blockPlaceRequests = vector<BlockPlaceRequest>();
 
 	this->compareChunksByDistance = [this](const reference_wrapper<Chunk>& chunkRef1, const reference_wrapper<Chunk>& chunkRef2) -> bool {
 		Chunk& chunk1 = chunkRef1;
@@ -80,7 +87,8 @@ void World::generateChunk(PerlinNoise& pn) {
 	string key = TUP_TO_STR(chunkTup);
 
 	Chunk chunk = Chunk(chunkTup);
-	chunk.generateBlocks(pn);
+	// chunk.generateBlocks(pn);
+	this->createChunkData(pn, chunk);
 	chunk.distanceFromCamera = chunkToGenerate.second;
 
 	// TODO: copies chunk!!!!!!
@@ -115,14 +123,141 @@ void World::generateChunk(PerlinNoise& pn) {
 		this->shouldSortChunksToRender = true;
 	}
 }
+
+
+int World::getHeightAt(PerlinNoise& pn, int x, int y) { // static
+	double height = PerlinNoise3DWithOctaves(
+		pn,
+		(double)x / PERLIN_NOISE_DIVISOR,
+		(double)y / PERLIN_NOISE_DIVISOR,
+		1.0,
+		OCTAVES
+	);
+	int maxHeight = CHUNK_SIZE * WORLD_SIZE;
+	int scaledHeight = (int)((double)maxHeight * height);
+	return scaledHeight;
+}
+void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
+	chunk.blocks.clear();
+
+	int worldChunkX = std::get<0>(chunk.position) * CHUNK_SIZE;
+	int worldChunkY = std::get<1>(chunk.position) * CHUNK_SIZE;
+	int worldChunkZ = std::get<2>(chunk.position) * CHUNK_SIZE;
+
+	int scaledHeights[CHUNK_SIZE][CHUNK_SIZE];
+	for (size_t x = 0; x < CHUNK_SIZE; x++) {
+		int worldX = worldChunkX + (int)x;
+		for (size_t y = 0; y < CHUNK_SIZE; y++) {
+			int worldY = worldChunkY + (int)y;
+
+			int scaledHeight = World::getHeightAt(pn, worldX, worldY);
+			scaledHeights[x][y] = scaledHeight;
+		}
+	}
+
+
+	// Shaping -----------------------------------------------------------------------//
+	/*
+		Z == 0 -> Bedrock
+		Z <= scaledHeight -> Stone
+		Z > scaledHeight && Z <= WATER_LEVEL -> Water
+		else -> Air
+	*/
+	for (size_t x = 0; x < CHUNK_SIZE; x++) {
+		int worldX = worldChunkX + (int)x;
+		for (size_t y = 0; y < CHUNK_SIZE; y++) {
+			int worldY = worldChunkY + (int)y;
+
+			int scaledHeight = scaledHeights[x][y];
+
+			for (size_t z = 0; z < CHUNK_SIZE; z++) {
+				int worldZ = worldChunkZ + (int)z;
+
+				if (worldZ == 0) {
+					chunk.blocks.push_back(BEDROCK_BLOCK);
+				} else if (worldZ <= scaledHeight) {
+					chunk.blocks.push_back(STONE_BLOCK);
+				} else if (worldZ <= WATER_LEVEL) {
+					chunk.blocks.push_back(WATER_BLOCK);
+				} else {
+					chunk.blocks.push_back(AIR_BLOCK);
+				}
+
+			}
+		}
+	}
+	//--------------------------------------------------------------------------------//
+
+	// Top ---------------------------------------------------------------------------//
+	/*
+		Z == scaledHeight -> Grass
+		Z == scaledHeight - RAND(3, 5) -> Dirt
+		else -> unaffected
+	*/
+	for (size_t x = 0; x < CHUNK_SIZE; x++) {
+		int worldX = worldChunkX + (int)x;
+		for (size_t y = 0; y < CHUNK_SIZE; y++) {
+			int worldY = worldChunkY + (int)y;
+
+			int scaledHeight = scaledHeights[x][y];
+			int chunkZHeight = scaledHeight - worldChunkZ;
+
+			if (chunkZHeight >= 0 && chunkZHeight < CHUNK_SIZE) { // only run for chunk that contains the scaledHeight
+				int dirtDepth = RAND(3, 5);
+				int dirtStart = chunkZHeight - dirtDepth;
+
+				chunk.setBlockAt(x, y, chunkZHeight, GRASS_BLOCK);
+
+				for (int z = dirtStart; z < chunkZHeight; z++) {
+					if (z >= 0 && z < CHUNK_SIZE) {
+						chunk.setBlockAt(x, y, z, DIRT_BLOCK);
+					} else {
+						int chunkZDiff = z < 0 ? -1 : 1;
+						tuple<int, int, int> neighborTup = std::make_tuple(
+							std::get<0>(chunk.position),
+							std::get<1>(chunk.position),
+							std::get<2>(chunk.position) + chunkZDiff
+						);
+
+						BlockPlaceRequest request = BlockPlaceRequest {
+							chunkPos: neighborTup,
+							x: x,
+							y: y,
+							z: (size_t)EUCMOD_SIMPLE(z, CHUNK_SIZE),
+							block: DIRT_BLOCK
+						};
+
+						this->blockPlaceRequests.push_back(request);
+					}
+				}
+
+			}
+		}
+	}
+	//--------------------------------------------------------------------------------//
+	
+
+	chunk.dirty = true;
+}
+
 void World::updateChunkModels() {
 	for (size_t i = this->nearbyChunks.size(); i-- > 0; ) {
 		Chunk& chunk = this->nearbyChunks[i];
+
+		// TODO: better way to do this?
+		for (size_t j = 0; j < this->blockPlaceRequests.size(); j++) {
+			BlockPlaceRequest& request = this->blockPlaceRequests[j];
+			if (request.chunkPos == chunk.position) {
+				chunk.setBlockAt(request.x, request.y, request.z, request.block);
+				this->blockPlaceRequests.erase(this->blockPlaceRequests.begin() + j);
+			}
+		}
+
 		if (chunk.dirty) {
 			chunk.generateModel(*this);
 
 			// TODO: better way to do this?
-			if (!chunk.blank || !chunk.transparentBlank) {
+			if (!chunk.blank || !chunk.transparentBlank) { // newly not blank
 
 				// can't use binary search, because keysToRender is not sorted yet
 				bool found = false;
@@ -137,7 +272,7 @@ void World::updateChunkModels() {
 					this->chunksToRender.push_back(chunk);
 					this->shouldSortChunksToRender = true;
 				}
-			} else {
+			} else { // newly blank
 				// can't use binary search, because keysToRender is not sorted yet
 				for (size_t j = 0; j < this->chunksToRender.size(); j++) {
 					Chunk& chunkToRender = this->chunksToRender[j];

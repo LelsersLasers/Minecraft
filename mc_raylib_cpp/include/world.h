@@ -15,6 +15,7 @@
 #include "block.h"
 #include "cameraController.h"
 #include "raycastRequest.h"
+#include "blockPlaceRequest.h"
 
 #include "PerlinNoise.h"
 #include "noCopy.h"
@@ -41,6 +42,9 @@ class World : public NoCopy {
 
 		bool shouldSortChunksToRender;
 
+		vector<BlockPlaceRequest> blockPlaceRequests;
+
+
 		std::function<bool(const reference_wrapper<Chunk>&, const reference_wrapper<Chunk>&)> compareChunksByDistance;
 
 		World();
@@ -50,6 +54,10 @@ class World : public NoCopy {
 		Block getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z);
 
 		void generateChunk(PerlinNoise& pn);
+
+		int getHeightAt(PerlinNoise& pn, int x, int z);
+		void createChunkData(PerlinNoise& pn, Chunk& chunk);
+
 		void updateChunkModels();
 
 		void dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> srcBlock);

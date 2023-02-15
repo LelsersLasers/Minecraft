@@ -66,56 +66,6 @@ Vector3 Chunk::getWorldPos() const {
 	};
 }
 
-void Chunk::generateBlocks(PerlinNoise& pn) {
-	this->blocks.clear();
-
-	int worldChunkX = std::get<0>(this->position) * CHUNK_SIZE;
-	int worldChunkY = std::get<1>(this->position) * CHUNK_SIZE;
-	int worldChunkZ = std::get<2>(this->position) * CHUNK_SIZE;
-
-	for (size_t x = 0; x < CHUNK_SIZE; x++) {
-		int worldX = worldChunkX + (int)x;
-		for (size_t y = 0; y < CHUNK_SIZE; y++) {
-			int worldY = worldChunkY + (int)y;
-
-			double height = PerlinNoise3DWithOctaves(
-				pn,
-				(double)worldX / PERLIN_NOISE_DIVISOR,
-				(double)worldY / PERLIN_NOISE_DIVISOR,
-				1.0,
-				OCTAVES
-			);
-			int maxHeight = CHUNK_SIZE * WORLD_SIZE - 5;
-			int scaledHeight = (int)((double)maxHeight * height) + 5;
-
-			bool tree = RAND_CHANCE(treeChance);
-
-			for (size_t z = 0; z < CHUNK_SIZE; z++) {
-				int worldZ = worldChunkZ + (int)z;
-
-				if (worldZ == 0) {
-					this->blocks.push_back(BEDROCK_BLOCK);
-				} else if (worldZ <= scaledHeight - RAND(3, 6)) {
-					this->blocks.push_back(STONE_BLOCK);
-				} else if (worldZ <= scaledHeight - 1) {
-					this->blocks.push_back(DIRT_BLOCK);
-				} else if (worldZ == scaledHeight) {
-					this->blocks.push_back(GRASS_BLOCK);
-				} else if (worldZ <= WATER_LEVEL) {
-					this->blocks.push_back(WATER_BLOCK);
-				} else if (tree && worldZ <= scaledHeight + RAND(4, 6)) {
-					this->blocks.push_back(LOG_BLOCK);
-				} else {
-					this->blocks.push_back(AIR_BLOCK);
-				}
-
-			}
-		}
-	}
-
-	this->dirty = true;
-}
-
 Block Chunk::getBlockInDirection(size_t x, size_t y, size_t z, tuple<int, int, int> dirTuple, World& world) {
 	int dirX = std::get<0>(dirTuple);
 	int dirY = std::get<1>(dirTuple);
@@ -195,9 +145,9 @@ void Chunk::generateModel(World& world) {
 
 					Block neighbor = this->getBlockInDirection(x, y, z, dirTuple, world);
 					if (
-						(!neighbor.transparent
-							|| (block.blockType == BlockType::WATER && neighbor.blockType == BlockType::WATER)
-						) && !(block.blockType == BlockType::WATER && dir == Dir::Top && neighbor.blockType != BlockType::WATER)
+						(!neighbor.transparent // neighbor is solid
+							|| (block.blockType == BlockType::WATER && neighbor.blockType == BlockType::WATER) // water on water
+						) && !(block.blockType == BlockType::WATER && dir == Dir::Top && neighbor.blockType != BlockType::WATER) // avoid shortenZ weridness
 					) {
 						continue;
 					}
