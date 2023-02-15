@@ -137,21 +137,24 @@ int World::getHeightAt(PerlinNoise& pn, int x, int y) { // static
 	int scaledHeight = (int)((double)maxHeight * height);
 	return scaledHeight;
 }
-void World::setBlockAt(Chunk& chunk, size_t x, size_t y, int z, Block block) {
-	if (z >= 0 && z < CHUNK_SIZE) {
+void World::setBlockAt(Chunk& chunk, int x, int y, int z, Block block) {
+	if (Chunk::inBounds(x, y, z)) {
 		chunk.setBlockAt(x, y, z, block);
 	} else {
-		int chunkZDiff = z < 0 ? -1 : 1;
+		int chunkXDiff = (x < 0) * -1 + (x >= CHUNK_SIZE) * 1;
+		int chunkYDiff = (y < 0) * -1 + (y >= CHUNK_SIZE) * 1;
+		int chunkZDiff = (z < 0) * -1 + (z >= CHUNK_SIZE) * 1;
+
 		tuple<int, int, int> neighborTup = std::make_tuple(
-			std::get<0>(chunk.position),
-			std::get<1>(chunk.position),
+			std::get<0>(chunk.position) + chunkXDiff,
+			std::get<1>(chunk.position) + chunkYDiff,
 			std::get<2>(chunk.position) + chunkZDiff
 		);
 
 		BlockPlaceRequest request = BlockPlaceRequest {
 			chunkPos: neighborTup,
-			x: x,
-			y: y,
+			x: (size_t)EUCMOD_SIMPLE(x, CHUNK_SIZE),
+			y: (size_t)EUCMOD_SIMPLE(y, CHUNK_SIZE),
 			z: (size_t)EUCMOD_SIMPLE(z, CHUNK_SIZE),
 			block: block
 		};
@@ -266,11 +269,47 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 						this->setBlockAt(chunk, x, y, z, LOG_BLOCK);	
 					}
 
+					int leavesStartX = x - 2;
+					int leavesStartY = y - 2;
+					int leavesStartZ = treeEnd - 2;
+
+					int leavesEndX = x + 2;
+					int leavesEndY = y + 2;
+					int leavesEndZ = treeEnd + 1;
+
+					for (int leavesX = leavesStartX; leavesX <= leavesEndX; leavesX++) {
+						for (int leavesY = leavesStartY; leavesY <= leavesEndY; leavesY++) {
+
+							bool leavesXOnEdge = leavesX == leavesStartX || leavesX == leavesEndX;
+							bool leavesYOnEdge = leavesY == leavesStartY || leavesY == leavesEndY;
+
+							bool leavesXOnInsideOfEdge = leavesX == leavesStartX + 1 || leavesX == leavesEndX - 1;
+							bool leavesYOnInsideOfEdge = leavesY == leavesStartY + 1 || leavesY == leavesEndY - 1;
+
+							if (leavesXOnEdge && leavesYOnEdge) {
+								continue;
+							}
+
+							for (int leavesZ = leavesStartZ; leavesZ <= leavesEndZ; leavesZ++) {
+								if (leavesX == (int)x && leavesY == (int)y && leavesZ < leavesEndZ) {
+									continue;
+								} else if ((leavesXOnEdge || leavesYOnEdge) && leavesZ >= leavesEndZ - 1) {
+									continue;
+								} else if ((leavesXOnInsideOfEdge && leavesYOnInsideOfEdge) && leavesZ == leavesEndZ) {
+									continue;
+								}
+
+								this->setBlockAt(chunk, leavesX, leavesY, leavesZ, SAND_BLOCK);
+							}
+						}
+					}
+
 				}
 			}
 
 		}
 	}
+	//--------------------------------------------------------------------------------//
 	
 
 	chunk.dirty = true;

@@ -2,7 +2,7 @@
 
 ## BUGS:
 
-- Logs can "float" if up chunk procs rand
+- Don't place leaves inside of other blocks
 
 ## TODO:
 
@@ -19,7 +19,7 @@
 - Block has array[6] of Colors (indexed by Dir) instead of getColorFn()/getColor()
 - Everything
 	- World gen
-		- Perlin noise
+		- 2d Perlin noise
 		- Octaves
 		- Basic biomes
 	- Trees
@@ -38,6 +38,10 @@
 	- Working player
 		- Collision physics
 		- Player::IsSubmerged()
+	- Inventory
+		- Hotbar
+		- Break blocks -> add to inventory
+		- Place blocks -> remove from inventory
 	- Day/night cycle
 		- Sun/moon
 		- Skybox
