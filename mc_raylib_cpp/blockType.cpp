@@ -10,85 +10,101 @@
 
 Color getColorAir(Dir _dir)		{ return BLANK; }
 Color getColorGrass(Dir dir) {
-	// return GREEN;
+	Color baseColor = GREEN;
 	switch (dir) {
 		case Dir::Top:
 		case Dir::Bottom:
-			return GREEN;
+			return baseColor;
 		case Dir::Right:
 		case Dir::Left:
-			return GREEN * 0.9;
+			return baseColor * 0.9;
 		case Dir::Forward:
 		case Dir::Backward:
-			return GREEN * 0.8;
+			return baseColor * 0.8;
 		default: // should not be reached
-			return GREEN;
+			return BLANK;
 	}
 }
 Color getColorDirt(Dir dir) {
-	// return BROWN;
+	Color baseColor = BROWN;
 	switch (dir) {
 		case Dir::Top:
 		case Dir::Bottom:
-			return BROWN;
+			return baseColor;
 		case Dir::Right:
 		case Dir::Left:
-			return BROWN * 0.9;
+			return baseColor * 0.9;
 		case Dir::Forward:
 		case Dir::Backward:
-			return BROWN * 0.8;
+			return baseColor * 0.8;
 		default: // should not be reached
-			return BROWN;
+			return BLANK;
 	}
 }
 Color getColorStone(Dir dir) {
-	// return GRAY;
+	Color baseColor = GRAY;
 	switch (dir) {
 		case Dir::Top:
 		case Dir::Bottom:
-			return GRAY;
+			return baseColor;
 		case Dir::Right:
 		case Dir::Left:
-			return GRAY * 0.9;
+			return baseColor * 0.9;
 		case Dir::Forward:
 		case Dir::Backward:
-			return GRAY * 0.8;
+			return baseColor * 0.8;
 		default: // should not be reached
-			return GRAY;
+			return BLANK;
 	}
 }
 Color getColorBedrock(Dir _dir)	{ return DARKGRAY; }
 Color getColorWater(Dir _dir)	{ return ColorAlpha(BLUE, 0.8); }
 Color getColorSand(Dir dir) {
-	// return YELLOW;
+	Color baseColor = YELLOW;
 	switch (dir) {
 		case Dir::Top:
 		case Dir::Bottom:
-			return YELLOW;
+			return baseColor;
 		case Dir::Right:
 		case Dir::Left:
-			return YELLOW * 0.9;
+			return baseColor * 0.9;
 		case Dir::Forward:
 		case Dir::Backward:
-			return YELLOW * 0.8;
+			return baseColor * 0.8;
 		default: // should not be reached
-			return YELLOW;
+			return BLANK;
 	}
 }
 Color getColorLog(Dir dir) {
-	// return DARKBROWN;
+	Color baseColor = DARKBROWN;
 	switch (dir) {
 		case Dir::Top:
 		case Dir::Bottom:
-			return DARKBROWN * 0.5;
+			return baseColor * 0.5;
 		case Dir::Right:
 		case Dir::Left:
-			return DARKBROWN * 0.9;
+			return baseColor * 0.9;
 		case Dir::Forward:
 		case Dir::Backward:
-			return DARKBROWN * 0.8;
+			return baseColor * 0.8;
 		default: // should not be reached
-			return DARKBROWN;
+			return BLANK;
+	}
+}
+Color getColorLeaves(Dir dir) {
+	Color baseColor = ColorAlpha(RED, 0.3);
+	switch (dir) {
+		case Dir::Top:
+		case Dir::Bottom:
+			return baseColor * 0.5;
+		case Dir::Right:
+		case Dir::Left:
+			return baseColor * 0.9;
+		case Dir::Forward:
+		case Dir::Backward:
+			return baseColor * 0.8;
+		default: // should not be reached
+			return BLANK;
 	}
 }
 
@@ -110,6 +126,8 @@ Color (*getColorFn(const BlockType& blockType))(Dir dir) {
 			return getColorSand;
 		case BlockType::LOG:
 			return getColorLog;
+		case BlockType::LEAVES:
+			return getColorLeaves;
         default: // should not be reached
             return getColorAir; 
 	}
@@ -133,19 +151,39 @@ bool getTransparent(const BlockType& blockType) {
 			return false;
 		case BlockType::LOG:
 			return false;
+		case BlockType::LEAVES:
+			return true;
         default: // should not be reached
             return false;
+	}
+}
+bool getSolid(const BlockType& blockType) {
+	switch (blockType) {
+		case BlockType::AIR:
+			return false;
+		case BlockType::GRASS:
+			return true;
+		case BlockType::DIRT:
+			return true;
+		case BlockType::STONE:
+			return true;
+		case BlockType::BEDROCK:
+			return true;
+		case BlockType::WATER:
+			return false;
+		case BlockType::SAND:
+			return true;
+		case BlockType::LOG:
+			return true;
+		case BlockType::LEAVES:
+			return true;
+		default: // should not be reached
+			return false;
 	}
 }
 
 BlockType getRandomBlockType() {
 	return (BlockType)(rand() % (BLOCK_MAX + 1));
-	// return BlockType::GRASS;
-	// if (rand() % 2 == 0) {
-	// 	return BlockType::GRASS;
-	// } else {
-	// 	return BlockType::AIR;
-	// }
 }
 
 
@@ -166,6 +204,9 @@ std::string getBlockName(const BlockType& BlockType) {
 		case BlockType::SAND:
 			return "Sand";
 		case BlockType::LOG:
+			return "Log";
+		case BlockType::LEAVES:
+			return "Leaves";
 		default: // should not be reached
 			return "Air";
 	}

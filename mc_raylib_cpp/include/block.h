@@ -12,6 +12,7 @@ class Block {
 	public:
 		BlockType blockType;
 		bool transparent;
+		bool solid;
 		Color (*getColor)(Dir dir);
 
 
@@ -29,6 +30,7 @@ const Block BEDROCK_BLOCK(BlockType::BEDROCK);
 const Block WATER_BLOCK(BlockType::WATER);
 const Block SAND_BLOCK(BlockType::SAND);
 const Block LOG_BLOCK(BlockType::LOG);
+const Block LEAVES_BLOCK(BlockType::LEAVES);
 
 
 

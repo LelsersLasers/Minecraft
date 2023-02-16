@@ -121,7 +121,7 @@ void Chunk::generateModel(World& world) {
 			for (size_t z = 0; z < CHUNK_SIZE; z++) {
 
 				Block block = this->getBlockAt(x, y, z);
-				if (block.blockType == BlockType::AIR) {
+				if (block.blockType == BlockType::AIR) { // always will be blank
 					continue;
 				}
 
@@ -145,7 +145,7 @@ void Chunk::generateModel(World& world) {
 
 					Block neighbor = this->getBlockInDirection(x, y, z, dirTuple, world);
 					if (
-						(!neighbor.transparent // neighbor is solid
+						(!neighbor.transparent // neight has non-see through faces
 							|| (block.blockType == BlockType::WATER && neighbor.blockType == BlockType::WATER) // water on water
 						) && !(block.blockType == BlockType::WATER && dir == Dir::Top && neighbor.blockType != BlockType::WATER) // avoid shortenZ weridness
 					) {
@@ -158,7 +158,7 @@ void Chunk::generateModel(World& world) {
 							Vector3 vertex = Vector3Add(pos, CUBE_VERTICES[allTriangleOffsets[i][j][k]]);
 							Color color = block.getColor(dir);
 
-							if (block.transparent) {
+							if (!block.solid) {
 								transparentVertices[transparentVertexCount * 3 + 0] = vertex.x;
 								transparentVertices[transparentVertexCount * 3 + 1] = vertex.y;
 								// transparentVertices[transparentVertexCount * 3 + 2] = vertex.z;
@@ -276,7 +276,7 @@ tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollisio
 				
 				Block block = this->getBlockAt(x, y, z);
 
-				if (block.transparent) {
+				if (!block.solid) {
 					continue;
 				}
 

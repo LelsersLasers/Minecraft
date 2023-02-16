@@ -304,7 +304,7 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 									continue;
 								}
 
-								this->createBlockPlaceRequestAt(chunk, leavesX, leavesY, leavesZ, SAND_BLOCK, vector<BlockType>({ BlockType::AIR }));
+								this->createBlockPlaceRequestAt(chunk, leavesX, leavesY, leavesZ, LEAVES_BLOCK, vector<BlockType>({ BlockType::AIR }));
 							}
 						}
 					}
