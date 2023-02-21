@@ -12,6 +12,7 @@
 #include <optional>
 
 #include "include/block.h"
+#include "include/atlas.h"
 #include "include/world.h"
 #include "include/blockType.h"
 #include "include/dir.h"
@@ -95,7 +96,7 @@ Block Chunk::getBlockInDirection(size_t x, size_t y, size_t z, tuple<int, int, i
 	return neighbor;
 }
 
-void Chunk::generateModel(World& world) {
+void Chunk::generateModel(World& world, Atlas& atlas) {
 
 	Mesh mesh = { 0 };
 	Mesh transparentMesh = { 0 };
@@ -110,8 +111,12 @@ void Chunk::generateModel(World& world) {
 	float* transparentVertices = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 3 * sizeof(float));
 
 	// max colors: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 4 floats per vertex (rgba)
-	unsigned char* colors = (unsigned char *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 4 * sizeof(unsigned char));
-	unsigned char* transparentColors = (unsigned char *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 4 * sizeof(unsigned char));
+	// unsigned char* colors = (unsigned char *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 4 * sizeof(unsigned char));
+	// unsigned char* transparentColors = (unsigned char *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 4 * sizeof(unsigned char));
+
+	// max texcoords: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 2 floats per vertex
+	float* texcoords = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 2 * sizeof(float));
+	float* transparentTexcoords = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 2 * sizeof(float));
 
 	int vertexCount = 0;
 	int transparentVertexCount = 0;
@@ -156,7 +161,8 @@ void Chunk::generateModel(World& world) {
 						for (size_t k = 0; k < 3; k++) { // 3 vertices per triangle
 
 							Vector3 vertex = Vector3Add(pos, CUBE_VERTICES[allTriangleOffsets[i][j][k]]);
-							Color color = block.getColor(dir);
+							// Color color = block.getColor(dir);
+							Vector2 texcoord = CUBE_TEXCOORDS[allTriangleOffsets[i][j][k] % 4]; // TODO: !!!
 
 							if (!block.solid) {
 								transparentVertices[transparentVertexCount * 3 + 0] = vertex.x;
@@ -164,10 +170,13 @@ void Chunk::generateModel(World& world) {
 								// transparentVertices[transparentVertexCount * 3 + 2] = vertex.z;
 								transparentVertices[transparentVertexCount * 3 + 2] = pos.z + CUBE_VERTICES[allTriangleOffsets[i][j][k]].z * (shortenZ ? 0.8f : 1.0f);
 
-								transparentColors[transparentVertexCount * 4 + 0] = color.r;
-								transparentColors[transparentVertexCount * 4 + 1] = color.g;
-								transparentColors[transparentVertexCount * 4 + 2] = color.b;
-								transparentColors[transparentVertexCount * 4 + 3] = color.a;
+								// transparentColors[transparentVertexCount * 4 + 0] = color.r;
+								// transparentColors[transparentVertexCount * 4 + 1] = color.g;
+								// transparentColors[transparentVertexCount * 4 + 2] = color.b;
+								// transparentColors[transparentVertexCount * 4 + 3] = color.a;
+
+								transparentTexcoords[transparentVertexCount * 2 + 0] = texcoord.x;
+								transparentTexcoords[transparentVertexCount * 2 + 1] = texcoord.y;
 
 								transparentVertexCount++;
 							}
@@ -176,10 +185,13 @@ void Chunk::generateModel(World& world) {
 								vertices[vertexCount * 3 + 1] = vertex.y;
 								vertices[vertexCount * 3 + 2] = vertex.z;
 
-								colors[vertexCount * 4 + 0] = color.r;
-								colors[vertexCount * 4 + 1] = color.g;
-								colors[vertexCount * 4 + 2] = color.b;
-								colors[vertexCount * 4 + 3] = color.a;
+								// colors[vertexCount * 4 + 0] = color.r;
+								// colors[vertexCount * 4 + 1] = color.g;
+								// colors[vertexCount * 4 + 2] = color.b;
+								// colors[vertexCount * 4 + 3] = color.a;
+
+								texcoords[vertexCount * 2 + 0] = texcoord.x;
+								texcoords[vertexCount * 2 + 1] = texcoord.y;
 
 								vertexCount++;
 							}
@@ -203,19 +215,23 @@ void Chunk::generateModel(World& world) {
 		transparentMesh.vertexCount = transparentVertexCount;
 		transparentMesh.triangleCount = transparentVertexCount / 3;
 
-		// 3 floats per vertex, 4 colors (unsigned char) per vertex
+		// 3 floats per vertex, 2 floats per vertex
 		mesh.vertices = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
-		mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));
+		// mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));
+		mesh.texcoords = (float *)malloc(mesh.vertexCount * 2 * sizeof(float));
 
 		transparentMesh.vertices = (float *)malloc(transparentMesh.vertexCount * 3 * sizeof(float));
-		transparentMesh.colors = (unsigned char *)malloc(transparentMesh.vertexCount * 4 * sizeof(unsigned char));
+		// transparentMesh.colors = (unsigned char *)malloc(transparentMesh.vertexCount * 4 * sizeof(unsigned char));
+		transparentMesh.texcoords = (float *)malloc(transparentMesh.vertexCount * 2 * sizeof(float));
 
 
 		std::memcpy(mesh.vertices, vertices, mesh.vertexCount * 3 * sizeof(float));
-		std::memcpy(mesh.colors,   colors,   mesh.vertexCount * 4 * sizeof(unsigned char));
+		// std::memcpy(mesh.colors,   colors,   mesh.vertexCount * 4 * sizeof(unsigned char));
+		std::memcpy(mesh.texcoords, texcoords, mesh.vertexCount * 2 * sizeof(float));
 
 		std::memcpy(transparentMesh.vertices, transparentVertices, transparentMesh.vertexCount * 3 * sizeof(float));
-		std::memcpy(transparentMesh.colors,   transparentColors,   transparentMesh.vertexCount * 4 * sizeof(unsigned char));
+		// std::memcpy(transparentMesh.colors,   transparentColors,   transparentMesh.vertexCount * 4 * sizeof(unsigned char));
+		std::memcpy(transparentMesh.texcoords, transparentTexcoords, transparentMesh.vertexCount * 2 * sizeof(float));
 
 
 		UnloadMesh(this->oldMesh);
@@ -226,6 +242,8 @@ void Chunk::generateModel(World& world) {
 
 
 		this->model = LoadModelFromMesh(mesh);
+		this->model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = atlas.texture; // way to do this for all models?
+
 		this->oldMesh = mesh;
 
 		this->transparentModel = LoadModelFromMesh(transparentMesh);
@@ -234,10 +252,12 @@ void Chunk::generateModel(World& world) {
 
 
 	free(vertices);
-	free(colors);
+	// free(colors);
+	free(texcoords);
 
 	free(transparentVertices);
-	free(transparentColors);
+	// free(transparentColors);
+	free(transparentTexcoords);
 
 
 	this->dirty = false;

@@ -54,13 +54,13 @@ class World : public NoCopy {
 		optional<reference_wrapper<Chunk>> getChunkAt(tuple<int, int, int> chunkPos);
 		Block getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z);
 
-		void generateChunk(PerlinNoise& pn);
+		void generateChunk(PerlinNoise& pn, Atlas& atlas);
 
 		int getHeightAt(PerlinNoise& pn, int x, int z);
 		void createBlockPlaceRequestAt(Chunk& chunk, int x, int y, int z, Block block, vector<BlockType> canOverwrite);
 		void createChunkData(PerlinNoise& pn, Chunk& chunk);
 
-		void updateChunkModels();
+		void updateChunkModels(Atlas& atlas);
 
 		void dirtyNeighbors(tuple<int, int, int> srcChunk, tuple<int, int, int> srcBlock);
 

@@ -16,6 +16,7 @@
 #include <functional>
 
 #include "include/block.h"
+#include "include/atlas.h"
 #include "include/chunk.h"
 #include "include/raycastRequest.h"
 #include "include/consts.h"
@@ -75,7 +76,7 @@ Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
 	}
 }
 
-void World::generateChunk(PerlinNoise& pn) {
+void World::generateChunk(PerlinNoise& pn, Atlas& atlas) {
 
 	if (this->chunksToGenerate.size() == 0) {
 		return;
@@ -117,7 +118,7 @@ void World::generateChunk(PerlinNoise& pn) {
 	// TODO: better way to do this?
 	Chunk& chunkRef = this->chunks.at(key);
 
-	chunkRef.generateModel(*this);
+	chunkRef.generateModel(*this, atlas);
 	this->nearbyChunks.push_back(chunkRef);
 	if (!chunkRef.blank || !chunkRef.transparentBlank) {
 		this->chunksToRender.push_back(chunkRef);	
@@ -320,7 +321,7 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 	chunk.dirty = true;
 }
 
-void World::updateChunkModels() {
+void World::updateChunkModels(Atlas& atlas) {
 	for (size_t i = this->nearbyChunks.size(); i-- > 0; ) {
 		Chunk& chunk = this->nearbyChunks[i];
 
@@ -346,7 +347,7 @@ void World::updateChunkModels() {
 		}
 
 		if (chunk.dirty) {
-			chunk.generateModel(*this);
+			chunk.generateModel(*this, atlas);
 
 			// TODO: better way to do this?
 			if (!chunk.blank || !chunk.transparentBlank) { // newly not blank

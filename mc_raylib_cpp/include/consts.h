@@ -56,6 +56,14 @@ const Vector3 CUBE_VERTICES[] = {
 	(Vector3){0.0, 1.0, 1.0}, 
 };
 
+// TODO: !!!
+const Vector2 CUBE_TEXCOORDS[] =  {
+	(Vector2){0.0, 0.0},
+	(Vector2){1.0, 0.0},
+	(Vector2){1.0, 1.0},
+	(Vector2){0.0, 1.0},
+};
+
 
 const int REACH = 5;
 

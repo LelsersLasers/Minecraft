@@ -14,6 +14,7 @@
 #include "include/consts.h"
 
 #include "include/cameraController.h"
+#include "include/atlas.h"
 #include "include/block.h"
 #include "include/blockType.h"
 #include "include/chunk.h"
@@ -72,11 +73,13 @@ int main() {
 
 	CameraController cameraController; // uses default defined constructor
 
+	Atlas atlas("assets/grass.png");
+
 	PerlinNoise pn(rand() % UINT_MAX);
 
 	World world; // uses default defined constructor
 	world.cameraMoved(cameraController, pn);
-	world.updateChunkModels();
+	world.updateChunkModels(atlas);
 
 
 
@@ -162,9 +165,9 @@ int main() {
 			}
 		}
 
-		world.generateChunk(pn); // generate 1 or 0 chunks
+		world.generateChunk(pn, atlas); // generate 1 or 0 chunks
 
-		world.updateChunkModels();
+		world.updateChunkModels(atlas);
 
 		if (world.shouldSortChunksToRender) {
 			world.sortKeysToRender();

@@ -18,7 +18,7 @@ using std::vector;
 using std::tuple;
 
 
-class Chunk { // : public NoCopy {
+class Chunk { // : public NoCopy { TODO:
 	public:
 		vector<Block> blocks;
 		tuple<int, int, int> position;
@@ -45,7 +45,7 @@ class Chunk { // : public NoCopy {
 		Vector3 getWorldPos() const;
 
 		Block getBlockInDirection(size_t x, size_t y, size_t z, tuple<int, int, int> dirTuple, World& world);
-		void generateModel(World& world);
+		void generateModel(World& world, Atlas& atlas);
 
 		static bool inBounds(int x, int y, int z);
 		// static bool onEdge(int x, int y, int z);
