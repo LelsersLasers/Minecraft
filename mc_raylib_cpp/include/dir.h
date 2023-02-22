@@ -50,5 +50,14 @@ const size_t allTexcoordsTriangleOffsets[6][2][3] = {
     {{0, 3, 1}, {3, 2, 1}}, // backward
 };
 
+const Color allDirColorModifiers[6] = {
+    {255, 255, 255, 255}, // top        full color
+    {255, 255, 255, 255}, // bottom     full color
+    {205, 205, 205, 255}, // right      90% color
+    {205, 205, 205, 255}, // left       90% color
+    {150, 150, 150, 255}, // forward    80% color
+    {150, 150, 150, 255}, // backward   80% color
+};
+
 
 #endif

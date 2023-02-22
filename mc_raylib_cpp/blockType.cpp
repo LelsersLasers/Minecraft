@@ -23,7 +23,15 @@ Vector2 getTexcoordsStone(Dir dir)		{ return (Vector2){ 1, 0 }; }
 Vector2 getTexcoordsBedrock(Dir _dir)	{ return (Vector2){ 5, 2 }; }
 Vector2 getTexcoordsWater(Dir _dir)		{ return (Vector2){ 3, 4 }; }
 Vector2 getTexcoordsSand(Dir dir)		{ return (Vector2){ 2, 1 }; }
-Vector2 getTexcoordsLog(Dir dir)		{ return (Vector2){ 4, 1 }; }
+Vector2 getTexcoordsLog(Dir dir) {
+	switch (dir) {
+		case Dir::Top:
+		case Dir::Bottom:
+			return (Vector2){ 5, 1 };
+		default: // sides
+			return (Vector2){ 4, 1 };
+	}
+}
 Vector2 getTexcoordsLeaves(Dir dir)		{ return (Vector2){ 4, 3 }; }
 
 Vector2 (*getTexcoordsFn(const BlockType& blockType))(Dir dir) {

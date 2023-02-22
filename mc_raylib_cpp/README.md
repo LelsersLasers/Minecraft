@@ -32,8 +32,6 @@
 	- Textures
 		- Texture atlas
 		- Replaces colors
-	- Each direction has a color difference
-		- Fake lighting
 - Everything 2
     - When under water, show the "top" of the water
 	- Glass blocks

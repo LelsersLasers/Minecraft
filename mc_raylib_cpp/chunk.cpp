@@ -101,17 +101,12 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 	Mesh mesh = { 0 };
 	Mesh transparentMesh = { 0 };
 
-	// int posX = std::get<0>(this->position);
-	// int posY = std::get<1>(this->position);
-	// int posZ = std::get<2>(this->position);
-	// mesh.vaoId = posX * CHUNK_SIZE * CHUNK_SIZE + posY + posZ * CHUNK_SIZE;
-
 	// max vertices: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 3 floats per vertex
 	float* vertices = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 3 * sizeof(float));
 	float* transparentVertices = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 3 * sizeof(float));
 
 	// max colors: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 4 floats per vertex (rgba)
-	// unsigned char* colors = (unsigned char *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 4 * sizeof(unsigned char));
+	unsigned char* colors = (unsigned char *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 4 * sizeof(unsigned char));
 	// unsigned char* transparentColors = (unsigned char *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 4 * sizeof(unsigned char));
 
 	// max texcoords: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 2 floats per vertex
@@ -157,6 +152,7 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 						continue;
 					}
 
+					Color color = allDirColorModifiers[i];
 					for (size_t j = 0; j < 2; j++) { // 2 triangles per face
 						for (size_t k = 0; k < 3; k++) { // 3 vertices per triangle
 
@@ -166,7 +162,6 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 							Vector3 vertex = Vector3Add(pos, cubeVertex);
 
 							// Color color = block.getColor(dir);
-
 							size_t texcoordTriangleOffset = allTexcoordsTriangleOffsets[i][j][k];
 							Vector2 cubeTexcoord = CUBE_TEXCOORDS[texcoordTriangleOffset];
 							Vector2 texcoordScaled = Vector2Scale(cubeTexcoord, 1.0f / TEXCOORDS_DIVISOR);
@@ -195,10 +190,10 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 								vertices[vertexCount * 3 + 1] = vertex.y;
 								vertices[vertexCount * 3 + 2] = vertex.z;
 
-								// colors[vertexCount * 4 + 0] = color.r;
-								// colors[vertexCount * 4 + 1] = color.g;
-								// colors[vertexCount * 4 + 2] = color.b;
-								// colors[vertexCount * 4 + 3] = color.a;
+								colors[vertexCount * 4 + 0] = color.r;
+								colors[vertexCount * 4 + 1] = color.g;
+								colors[vertexCount * 4 + 2] = color.b;
+								colors[vertexCount * 4 + 3] = color.a;
 
 								texcoords[vertexCount * 2 + 0] = texcoord.x;
 								texcoords[vertexCount * 2 + 1] = texcoord.y;
@@ -227,7 +222,7 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 
 		// 3 floats per vertex, 2 floats per vertex
 		mesh.vertices = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
-		// mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));
+		mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));
 		mesh.texcoords = (float *)malloc(mesh.vertexCount * 2 * sizeof(float));
 
 		transparentMesh.vertices = (float *)malloc(transparentMesh.vertexCount * 3 * sizeof(float));
@@ -236,7 +231,7 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 
 
 		std::memcpy(mesh.vertices, vertices, mesh.vertexCount * 3 * sizeof(float));
-		// std::memcpy(mesh.colors,   colors,   mesh.vertexCount * 4 * sizeof(unsigned char));
+		std::memcpy(mesh.colors,   colors,   mesh.vertexCount * 4 * sizeof(unsigned char));
 		std::memcpy(mesh.texcoords, texcoords, mesh.vertexCount * 2 * sizeof(float));
 
 		std::memcpy(transparentMesh.vertices, transparentVertices, transparentMesh.vertexCount * 3 * sizeof(float));
@@ -265,7 +260,7 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 
 
 	free(vertices);
-	// free(colors);
+	free(colors);
 	free(texcoords);
 
 	free(transparentVertices);
