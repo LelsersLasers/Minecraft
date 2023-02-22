@@ -46,23 +46,25 @@ const int LOWEST_CHUNK_Z = 0;
 const float TREE_CHANCE = 0.01f;
 
 const Vector3 CUBE_VERTICES[] = {
-	(Vector3){0.0, 0.0, 0.0},
-	(Vector3){1.0, 0.0, 0.0},
-	(Vector3){1.0, 1.0, 0.0},
-	(Vector3){0.0, 1.0, 0.0},
-	(Vector3){0.0, 0.0, 1.0},
-	(Vector3){1.0, 0.0, 1.0},
-	(Vector3){1.0, 1.0, 1.0},
-	(Vector3){0.0, 1.0, 1.0}, 
+	(Vector3){0.0, 0.0, 0.0}, // 0
+	(Vector3){1.0, 0.0, 0.0}, // 1
+	(Vector3){1.0, 1.0, 0.0}, // 2
+	(Vector3){0.0, 1.0, 0.0}, // 3
+	(Vector3){0.0, 0.0, 1.0}, // 4
+	(Vector3){1.0, 0.0, 1.0}, // 5
+	(Vector3){1.0, 1.0, 1.0}, // 6
+	(Vector3){0.0, 1.0, 1.0}, // 7
 };
 
 // TODO: !!!
 const Vector2 CUBE_TEXCOORDS[] =  {
-	(Vector2){0.0, 0.0},
-	(Vector2){1.0, 0.0},
-	(Vector2){1.0, 1.0},
-	(Vector2){0.0, 1.0},
+	(Vector2){0.0, 0.0}, // top left		// 0
+	(Vector2){1.0, 0.0}, // top right		// 1
+	(Vector2){1.0, 1.0}, // bottom left		// 2
+	(Vector2){0.0, 1.0}, // bottom right	// 3
 };
+
+const float TEXCOORDS_DIVISOR = 2.0f;
 
 
 const int REACH = 5;

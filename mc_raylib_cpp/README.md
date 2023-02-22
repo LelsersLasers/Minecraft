@@ -4,6 +4,7 @@
 
 - Solid vs transparent
 - Leaves being weird, likely something with translucent blocks??
+- WATER TEXTURE?????????
 
 ## TODO:
 

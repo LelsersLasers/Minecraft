@@ -160,9 +160,17 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 					for (size_t j = 0; j < 2; j++) { // 2 triangles per face
 						for (size_t k = 0; k < 3; k++) { // 3 vertices per triangle
 
-							Vector3 vertex = Vector3Add(pos, CUBE_VERTICES[allTriangleOffsets[i][j][k]]);
+							size_t triangleOffset = allTriangleOffsets[i][j][k];
+
+							Vector3 cubeVertex = CUBE_VERTICES[triangleOffset];
+							Vector3 vertex = Vector3Add(pos, cubeVertex);
+							
 							// Color color = block.getColor(dir);
-							Vector2 texcoord = CUBE_TEXCOORDS[allTriangleOffsets[i][j][k] % 4]; // TODO: !!!
+
+							size_t texcoordTriangleOffset = allTexcoordsTriangleOffsets[i][j][k];
+							Vector2 cubeTexcoord = CUBE_TEXCOORDS[texcoordTriangleOffset];
+							Vector2 texcoord = Vector2Scale(cubeTexcoord, 1.0f / TEXCOORDS_DIVISOR);
+							
 
 							if (!block.solid) {
 								transparentVertices[transparentVertexCount * 3 + 0] = vertex.x;

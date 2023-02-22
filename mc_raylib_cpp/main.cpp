@@ -73,7 +73,7 @@ int main() {
 
 	CameraController cameraController; // uses default defined constructor
 
-	Atlas atlas("assets/grass.png");
+	Atlas atlas("assets/grass.png"); // must be square png
 
 	PerlinNoise pn(rand() % UINT_MAX);
 
