@@ -2,9 +2,9 @@
 
 ## BUGS:
 
-- Solid vs transparent
-- Leaves being weird, likely something with translucent blocks??
-- WATER TEXTURE?????????
+- Leaves:
+	- Solid vs transparent
+	- Leaves being weird, likely something with translucent blocks??
 
 ## TODO:
 
@@ -32,6 +32,8 @@
 	- Textures
 		- Texture atlas
 		- Replaces colors
+	- Each direction has a color difference
+		- Fake lighting
 - Everything 2
     - When under water, show the "top" of the water
 	- Glass blocks

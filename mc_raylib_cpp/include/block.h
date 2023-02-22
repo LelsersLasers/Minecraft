@@ -13,7 +13,7 @@ class Block {
 		BlockType blockType;
 		bool transparent;
 		bool solid;
-		Color (*getColor)(Dir dir);
+		Vector2 (*getTexcoords)(Dir dir);
 
 
 		Block(const BlockType& blockType);

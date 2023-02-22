@@ -64,7 +64,7 @@ const Vector2 CUBE_TEXCOORDS[] =  {
 	(Vector2){0.0, 1.0}, // bottom right	// 3
 };
 
-const float TEXCOORDS_DIVISOR = 2.0f;
+const float TEXCOORDS_DIVISOR = 16.0f;
 
 
 const int REACH = 5;

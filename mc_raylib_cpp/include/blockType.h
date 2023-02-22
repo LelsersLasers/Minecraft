@@ -21,17 +21,17 @@ enum BlockType {
 
 #define BLOCK_MAX (BlockType::LEAVES)
 
-Color getColorAir(Dir dir);
-Color getColorGrass(Dir dir);
-Color getColorDirt(Dir dir);
-Color getColorStone(Dir dir);
-Color getColorBedrock(Dir dir);
-Color getColorWater(Dir dir);
-Color getColorSand(Dir dir);
-Color getColorLog(Dir dir);
-Color getColorLeaves(Dir dir);
+Vector2 getTexcoordsAir(Dir dir);
+Vector2 getTexcoordsGrass(Dir dir);
+Vector2 getTexcoordsDirt(Dir dir);
+Vector2 getTexcoordsStone(Dir dir);
+Vector2 getTexcoordsBedrock(Dir dir);
+Vector2 getTexcoordsWater(Dir dir);
+Vector2 getTexcoordsSand(Dir dir);
+Vector2 getTexcoordsLog(Dir dir);
+Vector2 getTexcoordsLeaves(Dir dir);
 
-Color (*getColorFn(const BlockType& blockType))(Dir dir);
+Vector2 (*getTexcoordsFn(const BlockType& blockType))(Dir dir);
 
 bool getTransparent(const BlockType& blockType);
 bool getSolid(const BlockType& blockType);

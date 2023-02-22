@@ -1,135 +1,44 @@
 #include "raylib.h"
+#include "raymath.h"
 
 #include "stdlib.h"
 
 #include "include/blockType.h"
 #include "include/dir.h"
 
-#include "include/ColorUtil.h"
 
+Vector2 getTexcoordsAir(Dir _dir)		{ return (Vector2){ -1, -1 }; }
+Vector2 getTexcoordsGrass(Dir dir)		{ return (Vector2){ 0, 0 }; }
+Vector2 getTexcoordsDirt(Dir dir)		{ return (Vector2){ 2, 0 }; }
+Vector2 getTexcoordsStone(Dir dir)		{ return (Vector2){ 1, 0 }; }
+Vector2 getTexcoordsBedrock(Dir _dir)	{ return (Vector2){ 5, 2 }; }
+Vector2 getTexcoordsWater(Dir _dir)		{ return (Vector2){ 3, 4 }; }
+Vector2 getTexcoordsSand(Dir dir)		{ return (Vector2){ 2, 1 }; }
+Vector2 getTexcoordsLog(Dir dir)		{ return (Vector2){ 4, 1 }; }
+Vector2 getTexcoordsLeaves(Dir dir)		{ return (Vector2){ 4, 3 }; }
 
-Color getColorAir(Dir _dir)		{ return BLANK; }
-Color getColorGrass(Dir dir) {
-	Color baseColor = GREEN;
-	switch (dir) {
-		case Dir::Top:
-		case Dir::Bottom:
-			return baseColor;
-		case Dir::Right:
-		case Dir::Left:
-			return baseColor * 0.9;
-		case Dir::Forward:
-		case Dir::Backward:
-			return baseColor * 0.8;
-		default: // should not be reached
-			return BLANK;
-	}
-}
-Color getColorDirt(Dir dir) {
-	Color baseColor = BROWN;
-	switch (dir) {
-		case Dir::Top:
-		case Dir::Bottom:
-			return baseColor;
-		case Dir::Right:
-		case Dir::Left:
-			return baseColor * 0.9;
-		case Dir::Forward:
-		case Dir::Backward:
-			return baseColor * 0.8;
-		default: // should not be reached
-			return BLANK;
-	}
-}
-Color getColorStone(Dir dir) {
-	Color baseColor = GRAY;
-	switch (dir) {
-		case Dir::Top:
-		case Dir::Bottom:
-			return baseColor;
-		case Dir::Right:
-		case Dir::Left:
-			return baseColor * 0.9;
-		case Dir::Forward:
-		case Dir::Backward:
-			return baseColor * 0.8;
-		default: // should not be reached
-			return BLANK;
-	}
-}
-Color getColorBedrock(Dir _dir)	{ return DARKGRAY; }
-Color getColorWater(Dir _dir)	{ return ColorAlpha(BLUE, 0.8); }
-Color getColorSand(Dir dir) {
-	Color baseColor = YELLOW;
-	switch (dir) {
-		case Dir::Top:
-		case Dir::Bottom:
-			return baseColor;
-		case Dir::Right:
-		case Dir::Left:
-			return baseColor * 0.9;
-		case Dir::Forward:
-		case Dir::Backward:
-			return baseColor * 0.8;
-		default: // should not be reached
-			return BLANK;
-	}
-}
-Color getColorLog(Dir dir) {
-	Color baseColor = DARKBROWN;
-	switch (dir) {
-		case Dir::Top:
-		case Dir::Bottom:
-			return baseColor * 0.5;
-		case Dir::Right:
-		case Dir::Left:
-			return baseColor * 0.9;
-		case Dir::Forward:
-		case Dir::Backward:
-			return baseColor * 0.8;
-		default: // should not be reached
-			return BLANK;
-	}
-}
-Color getColorLeaves(Dir dir) {
-	Color baseColor = ColorAlpha(RED, 0.3);
-	switch (dir) {
-		case Dir::Top:
-		case Dir::Bottom:
-			return baseColor * 0.5;
-		case Dir::Right:
-		case Dir::Left:
-			return baseColor * 0.9;
-		case Dir::Forward:
-		case Dir::Backward:
-			return baseColor * 0.8;
-		default: // should not be reached
-			return BLANK;
-	}
-}
-
-Color (*getColorFn(const BlockType& blockType))(Dir dir) {
+Vector2 (*getTexcoordsFn(const BlockType& blockType))(Dir dir) {
 	switch (blockType) {
 		case BlockType::AIR:
-			return getColorAir;
+			return getTexcoordsAir;
 		case BlockType::GRASS:
-			return getColorGrass;
+			return getTexcoordsGrass;
 		case BlockType::DIRT:
-			return getColorDirt;
+			return getTexcoordsDirt;
 		case BlockType::STONE:
-			return getColorStone;
+			return getTexcoordsStone;
 		case BlockType::BEDROCK:
-			return getColorBedrock;
+			return getTexcoordsBedrock;
 		case BlockType::WATER:
-			return getColorWater;
+			return getTexcoordsWater;
 		case BlockType::SAND:
-			return getColorSand;
+			return getTexcoordsSand;
 		case BlockType::LOG:
-			return getColorLog;
+			return getTexcoordsLog;
 		case BlockType::LEAVES:
-			return getColorLeaves;
+			return getTexcoordsLeaves;
         default: // should not be reached
-            return getColorAir; 
+            return getTexcoordsAir; 
 	}
 }
 

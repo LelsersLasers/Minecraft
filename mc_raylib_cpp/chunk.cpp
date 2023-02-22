@@ -164,12 +164,14 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 
 							Vector3 cubeVertex = CUBE_VERTICES[triangleOffset];
 							Vector3 vertex = Vector3Add(pos, cubeVertex);
-							
+
 							// Color color = block.getColor(dir);
 
 							size_t texcoordTriangleOffset = allTexcoordsTriangleOffsets[i][j][k];
 							Vector2 cubeTexcoord = CUBE_TEXCOORDS[texcoordTriangleOffset];
-							Vector2 texcoord = Vector2Scale(cubeTexcoord, 1.0f / TEXCOORDS_DIVISOR);
+							Vector2 texcoordScaled = Vector2Scale(cubeTexcoord, 1.0f / TEXCOORDS_DIVISOR);
+							Vector2 texcoordOffset = Vector2Scale(block.getTexcoords(dir), 1.0f / TEXCOORDS_DIVISOR);
+							Vector2 texcoord = Vector2Add(texcoordScaled, texcoordOffset);
 							
 
 							if (!block.solid) {
@@ -254,7 +256,10 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 
 		this->oldMesh = mesh;
 
+		
 		this->transparentModel = LoadModelFromMesh(transparentMesh);
+		this->transparentModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = atlas.texture; // way to do this for all models?
+
 		this->transparentOldMesh = transparentMesh;
 	}
 
