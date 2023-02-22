@@ -109,12 +109,15 @@ int main() {
 			}
 			if (IsKeyDown(KEY_S)) {
 				moveVec = Vector3Subtract(moveVec, cameraController.calcForward());
+				autoMove = false;
 			}
 			if (IsKeyDown(KEY_A)) {
 				moveVec = Vector3Subtract(moveVec, cameraController.calcRight());
+				autoMove = false;
 			}
 			if (IsKeyDown(KEY_D)) {
 				moveVec = Vector3Add(moveVec, cameraController.calcRight());
+				autoMove = false;
 			}
 
 			if (!Vector3Equals(moveVec, Vector3Zero())) {
