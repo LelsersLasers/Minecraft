@@ -8,7 +8,16 @@
 
 
 Vector2 getTexcoordsAir(Dir _dir)		{ return (Vector2){ -1, -1 }; }
-Vector2 getTexcoordsGrass(Dir dir)		{ return (Vector2){ 0, 0 }; }
+Vector2 getTexcoordsGrass(Dir dir) {
+	switch (dir) {
+		case Dir::Top:
+			return (Vector2){ 0, 0 };
+		case Dir::Bottom:
+			return (Vector2){ 2, 0 };
+		default: // sides
+			return (Vector2){ 3, 0 };
+	}
+}
 Vector2 getTexcoordsDirt(Dir dir)		{ return (Vector2){ 2, 0 }; }
 Vector2 getTexcoordsStone(Dir dir)		{ return (Vector2){ 1, 0 }; }
 Vector2 getTexcoordsBedrock(Dir _dir)	{ return (Vector2){ 5, 2 }; }
