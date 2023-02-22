@@ -20,6 +20,7 @@
 #include "include/chunk.h"
 #include "include/world.h"
 #include "include/raycastRequest.h"
+#include "include/ChunkModelInfo.h"
 
 using std::vector;
 using std::tuple;
@@ -193,15 +194,18 @@ int main() {
 							PINK
 						);
 					}
-					if (faces) {
-						DrawModel(chunk.model, chunk.getWorldPos(), 1.0, WHITE);
-						DrawModel(chunk.transparentModel, chunk.getWorldPos(), 1.0, WHITE);
-					}
-					if (wireframe) {
-						DrawModelWires(chunk.model, chunk.getWorldPos(), 1.0, BLACK);
-					}
-					if (transparentWireframe) {
-						DrawModelWires(chunk.transparentModel, chunk.getWorldPos(), 1.0, BLACK);
+					// if (faces) {
+					// 	DrawModel(chunk.model, chunk.getWorldPos(), 1.0, WHITE);
+					// 	DrawModel(chunk.transparentModel, chunk.getWorldPos(), 1.0, WHITE);
+					// }
+					// if (wireframe) {
+					// 	DrawModelWires(chunk.model, chunk.getWorldPos(), 1.0, BLACK);
+					// }
+					// if (transparentWireframe) {
+					// 	DrawModelWires(chunk.transparentModel, chunk.getWorldPos(), 1.0, BLACK);
+					// }
+					for (size_t j = 0; j < TOTAL_CHUNK_MESHES; j++) {
+						DrawModel(chunk.models[j], chunk.getWorldPos(), 1.0, WHITE);
 					}
 				}
 

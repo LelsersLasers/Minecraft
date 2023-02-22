@@ -6,6 +6,7 @@
 #include <string>
 
 #include "dir.h"
+#include "ChunkModelInfo.h"
 
 enum BlockType {
 	AIR = 0,
@@ -35,6 +36,7 @@ Vector2 (*getTexcoordsFn(const BlockType& blockType))(Dir dir);
 
 bool getTransparent(const BlockType& blockType);
 bool getSolid(const BlockType& blockType);
+ChunkModelInfo getChunkModelInfo(const BlockType& blockType);
 
 BlockType getRandomBlockType();
 

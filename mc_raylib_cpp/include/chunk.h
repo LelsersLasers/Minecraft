@@ -10,8 +10,9 @@
 
 #include "block.h"
 #include "world.h"
-
 #include "PerlinNoise.h"
+#include "ChunkModelInfo.h"
+
 #include "noCopy.h"
 
 using std::vector;
@@ -25,14 +26,9 @@ class Chunk { // : public NoCopy { TODO:
 
 		bool dirty;
 
-		bool blank;
-		bool transparentBlank;
-	
-		Model model;
-		Mesh oldMesh;
-
-		Model transparentModel;
-		Mesh transparentOldMesh;
+		bool isBlankModels[TOTAL_CHUNK_MESHES];
+		Model models[TOTAL_CHUNK_MESHES];
+		Mesh oldMeshes[TOTAL_CHUNK_MESHES];
 
 		float distanceFromCamera;
 	

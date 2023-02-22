@@ -5,6 +5,7 @@
 
 #include "include/blockType.h"
 #include "include/dir.h"
+#include "include/ChunkModelInfo.h"
 
 
 Vector2 getTexcoordsAir(Dir _dir)		{ return (Vector2){ -1, -1 }; }
@@ -62,23 +63,16 @@ Vector2 (*getTexcoordsFn(const BlockType& blockType))(Dir dir) {
 bool getTransparent(const BlockType& blockType) {
 	switch (blockType) {
 		case BlockType::AIR:
-			return true;
-		case BlockType::GRASS:
-			return false;
-		case BlockType::DIRT:
-			return false;
-		case BlockType::STONE:
-			return false;
-		case BlockType::BEDROCK:
-			return false;
 		case BlockType::WATER:
-			return true;
-		case BlockType::SAND:
-			return false;
-		case BlockType::LOG:
-			return false;
 		case BlockType::LEAVES:
 			return true;
+		case BlockType::GRASS:
+		case BlockType::DIRT:
+		case BlockType::STONE:
+		case BlockType::BEDROCK:
+		case BlockType::SAND:
+		case BlockType::LOG:
+			return false;
         default: // should not be reached
             return false;
 	}
@@ -105,6 +99,25 @@ bool getSolid(const BlockType& blockType) {
 			return true;
 		default: // should not be reached
 			return false;
+	}
+}
+ChunkModelInfo getChunkModelInfo(const BlockType& blockType) {
+	switch (blockType) {
+		case BlockType::AIR: // doesn't actually do anything
+			return ChunkModelInfo::FULL_BLOCKS;
+		case BlockType::GRASS:
+		case BlockType::DIRT:
+		case BlockType::STONE:
+		case BlockType::BEDROCK:
+		case BlockType::SAND:
+		case BlockType::LOG:
+			return ChunkModelInfo::FULL_BLOCKS;
+		case BlockType::WATER:
+			return ChunkModelInfo::WATER_BLOCKS;
+		case BlockType::LEAVES:
+			return ChunkModelInfo::LEAVES_BLOCKS;
+		default: // should not be reached
+			return ChunkModelInfo::FULL_BLOCKS;
 	}
 }
 

@@ -64,6 +64,9 @@
 		- For far away chunks
 	- Flowing water
 	- Falling sand blocks
+	- "Ticks"
+		- Dirt -> grass
+		- Etc
 	- Preformance
 		- Unload models from GPU when not in view
 		- Store chunk block data as a list of indexes to a vector of blocks

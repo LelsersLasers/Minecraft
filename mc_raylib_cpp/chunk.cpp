@@ -18,6 +18,7 @@
 #include "include/dir.h"
 #include "include/consts.h"
 #include "include/PerlinNoiseUtil.h"
+#include "include/ChunkModelInfo.h"
 
 #include "include/PerlinNoise.h"
 
@@ -35,20 +36,18 @@ Chunk::Chunk(const tuple<int, int, int>& position) {
 	
 	this->dirty = true;
 
-	this->blank = true;
-	this->transparentBlank = true;
-
-	this->model = { 0 };
-	this->oldMesh = { 0 };
-
-	this->transparentModel = { 0 };
-	this->transparentOldMesh = { 0 };
+	for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
+		this->isBlankModels[i] = true;
+		this->models[i] = { 0 };
+		this->oldMeshes[i] = { 0 };
+	}
 
 	this->distanceFromCamera = 0.0f;
 }
 Chunk::~Chunk() {
-	UnloadModel(this->model);
-	UnloadModel(this->transparentModel);
+	for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
+		UnloadModel(this->models[i]);
+	}
 }
 
 Block Chunk::getBlockAt(size_t x, size_t y, size_t z) const {
@@ -98,23 +97,24 @@ Block Chunk::getBlockInDirection(size_t x, size_t y, size_t z, tuple<int, int, i
 
 void Chunk::generateModel(World& world, Atlas& atlas) {
 
-	Mesh mesh = { 0 };
-	Mesh transparentMesh = { 0 };
+	Mesh newMeshes[TOTAL_CHUNK_MESHES] = { 0 };
 
-	// max vertices: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 3 floats per vertex
-	float* vertices = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 3 * sizeof(float));
-	float* transparentVertices = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 3 * sizeof(float));
+	float* newVertices[TOTAL_CHUNK_MESHES];
+	unsigned char* newColors[TOTAL_CHUNK_MESHES];
+	float* newTexcoords[TOTAL_CHUNK_MESHES];
 
-	// max colors: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 4 floats per vertex (rgba)
-	unsigned char* colors = (unsigned char *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 4 * sizeof(unsigned char));
-	// unsigned char* transparentColors = (unsigned char *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 4 * sizeof(unsigned char));
+	int newVertexCounts[TOTAL_CHUNK_MESHES] = { 0 };
 
-	// max texcoords: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 2 floats per vertex
-	float* texcoords = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 2 * sizeof(float));
-	float* transparentTexcoords = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 2 * sizeof(float));
+	for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
+		// max vertices: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 3 floats per vertex
+		newVertices[i] = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 3 * sizeof(float));
 
-	int vertexCount = 0;
-	int transparentVertexCount = 0;
+		// max colors: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 4 floats per vertex (rgba)
+		newColors[i] = (unsigned char *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 4 * sizeof(unsigned char));
+		
+		// max texcoords: 6 faces per block, 2 triangles per face, 3 vertices per triangle, 2 floats per vertex
+		newTexcoords[i] = (float *)malloc(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 6 * 2 * 3 * 2 * sizeof(float));
+	}
 
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
@@ -139,6 +139,8 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 					}
 				}
 
+				ChunkModelInfo cmi = block.chunkModelInfo;
+
 				for (size_t i = 0; i < 6; i++) { // 6 faces per block
 					Dir dir = allDirEnums[i];
 					tuple<int, int, int> dirTuple = allDirTuples[i];
@@ -161,45 +163,26 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 							Vector3 cubeVertex = CUBE_VERTICES[triangleOffset];
 							Vector3 vertex = Vector3Add(pos, cubeVertex);
 
-							// Color color = block.getColor(dir);
 							size_t texcoordTriangleOffset = allTexcoordsTriangleOffsets[i][j][k];
 							Vector2 cubeTexcoord = CUBE_TEXCOORDS[texcoordTriangleOffset];
 							Vector2 texcoordScaled = Vector2Scale(cubeTexcoord, 1.0f / TEXCOORDS_DIVISOR);
 							Vector2 texcoordOffset = Vector2Scale(block.getTexcoords(dir), 1.0f / TEXCOORDS_DIVISOR);
 							Vector2 texcoord = Vector2Add(texcoordScaled, texcoordOffset);
-							
 
-							if (!block.solid) {
-								transparentVertices[transparentVertexCount * 3 + 0] = vertex.x;
-								transparentVertices[transparentVertexCount * 3 + 1] = vertex.y;
-								// transparentVertices[transparentVertexCount * 3 + 2] = vertex.z;
-								transparentVertices[transparentVertexCount * 3 + 2] = pos.z + CUBE_VERTICES[allTriangleOffsets[i][j][k]].z * (shortenZ ? 0.8f : 1.0f);
 
-								// transparentColors[transparentVertexCount * 4 + 0] = color.r;
-								// transparentColors[transparentVertexCount * 4 + 1] = color.g;
-								// transparentColors[transparentVertexCount * 4 + 2] = color.b;
-								// transparentColors[transparentVertexCount * 4 + 3] = color.a;
+							newVertices[cmi][newVertexCounts[cmi] * 3 + 0] = vertex.x;
+							newVertices[cmi][newVertexCounts[cmi] * 3 + 1] = vertex.y;
+							newVertices[cmi][newVertexCounts[cmi] * 3 + 2] = pos.z + CUBE_VERTICES[allTriangleOffsets[i][j][k]].z * (shortenZ ? 0.8f : 1.0f);
 
-								transparentTexcoords[transparentVertexCount * 2 + 0] = texcoord.x;
-								transparentTexcoords[transparentVertexCount * 2 + 1] = texcoord.y;
+							newColors[cmi][newVertexCounts[cmi] * 4 + 0] = color.r;
+							newColors[cmi][newVertexCounts[cmi] * 4 + 1] = color.g;
+							newColors[cmi][newVertexCounts[cmi] * 4 + 2] = color.b;
+							newColors[cmi][newVertexCounts[cmi] * 4 + 3] = color.a;
 
-								transparentVertexCount++;
-							}
-							else {
-								vertices[vertexCount * 3 + 0] = vertex.x;
-								vertices[vertexCount * 3 + 1] = vertex.y;
-								vertices[vertexCount * 3 + 2] = vertex.z;
+							newTexcoords[cmi][newVertexCounts[cmi] * 2 + 0] = texcoord.x;
+							newTexcoords[cmi][newVertexCounts[cmi] * 2 + 1] = texcoord.y;
 
-								colors[vertexCount * 4 + 0] = color.r;
-								colors[vertexCount * 4 + 1] = color.g;
-								colors[vertexCount * 4 + 2] = color.b;
-								colors[vertexCount * 4 + 3] = color.a;
-
-								texcoords[vertexCount * 2 + 0] = texcoord.x;
-								texcoords[vertexCount * 2 + 1] = texcoord.y;
-
-								vertexCount++;
-							}
+							newVertexCounts[cmi]++;
 						}
 					}
 				}
@@ -208,64 +191,43 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 	}
 
 
-	this->blank = vertexCount == 0;
-	this->transparentBlank = transparentVertexCount == 0;
-
-
-	if (!this->blank || !this->transparentBlank) {
-
-		mesh.vertexCount = vertexCount;
-		mesh.triangleCount = vertexCount / 3;
-
-		transparentMesh.vertexCount = transparentVertexCount;
-		transparentMesh.triangleCount = transparentVertexCount / 3;
-
-		// 3 floats per vertex, 2 floats per vertex
-		mesh.vertices = (float *)malloc(mesh.vertexCount * 3 * sizeof(float));
-		mesh.colors = (unsigned char *)malloc(mesh.vertexCount * 4 * sizeof(unsigned char));
-		mesh.texcoords = (float *)malloc(mesh.vertexCount * 2 * sizeof(float));
-
-		transparentMesh.vertices = (float *)malloc(transparentMesh.vertexCount * 3 * sizeof(float));
-		// transparentMesh.colors = (unsigned char *)malloc(transparentMesh.vertexCount * 4 * sizeof(unsigned char));
-		transparentMesh.texcoords = (float *)malloc(transparentMesh.vertexCount * 2 * sizeof(float));
-
-
-		std::memcpy(mesh.vertices, vertices, mesh.vertexCount * 3 * sizeof(float));
-		std::memcpy(mesh.colors,   colors,   mesh.vertexCount * 4 * sizeof(unsigned char));
-		std::memcpy(mesh.texcoords, texcoords, mesh.vertexCount * 2 * sizeof(float));
-
-		std::memcpy(transparentMesh.vertices, transparentVertices, transparentMesh.vertexCount * 3 * sizeof(float));
-		// std::memcpy(transparentMesh.colors,   transparentColors,   transparentMesh.vertexCount * 4 * sizeof(unsigned char));
-		std::memcpy(transparentMesh.texcoords, transparentTexcoords, transparentMesh.vertexCount * 2 * sizeof(float));
-
-
-		UnloadMesh(this->oldMesh);
-		UploadMesh(&mesh, false);
-
-		UnloadMesh(this->transparentOldMesh);
-		UploadMesh(&transparentMesh, false);
-
-
-		this->model = LoadModelFromMesh(mesh);
-		this->model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = atlas.texture; // way to do this for all models?
-
-		this->oldMesh = mesh;
-
-		
-		this->transparentModel = LoadModelFromMesh(transparentMesh);
-		this->transparentModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = atlas.texture; // way to do this for all models?
-
-		this->transparentOldMesh = transparentMesh;
+	bool allBlank = true;
+	for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
+		this->isBlankModels[i] = newVertexCounts[i] == 0;
+		allBlank = allBlank && this->isBlankModels[i];
 	}
 
 
-	free(vertices);
-	free(colors);
-	free(texcoords);
+	if (!allBlank) {
 
-	free(transparentVertices);
-	// free(transparentColors);
-	free(transparentTexcoords);
+		for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
+			newMeshes[i].vertexCount = newVertexCounts[i];
+			newMeshes[i].triangleCount = newVertexCounts[i] / 3;
+
+			// 3 floats per vertex, 4 unsigned char per color, 2 floats per texcoord
+			newMeshes[i].vertices = (float *)malloc(newMeshes[i].vertexCount * 3 * sizeof(float));
+			newMeshes[i].colors = (unsigned char *)malloc(newMeshes[i].vertexCount * 4 * sizeof(unsigned char));
+			newMeshes[i].texcoords = (float *)malloc(newMeshes[i].vertexCount * 2 * sizeof(float));
+
+			std::memcpy(newMeshes[i].vertices,	newVertices[i],		newMeshes[i].vertexCount * 3 * sizeof(float));
+			std::memcpy(newMeshes[i].colors,	newColors[i],		newMeshes[i].vertexCount * 4 * sizeof(unsigned char));
+			std::memcpy(newMeshes[i].texcoords, newTexcoords[i],	newMeshes[i].vertexCount * 2 * sizeof(float));
+
+			UnloadMesh(this->oldMeshes[i]);
+			UploadMesh(&newMeshes[i], false);
+
+			this->models[i] = LoadModelFromMesh(newMeshes[i]);
+			this->models[i].materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = atlas.texture; // way to do this for all models?
+
+			this->oldMeshes[i] = newMeshes[i];
+		}
+	}
+
+	for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
+		free(newVertices[i]);
+		free(newColors[i]);
+		free(newTexcoords[i]);
+	}
 
 
 	this->dirty = false;

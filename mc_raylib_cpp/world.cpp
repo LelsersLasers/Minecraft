@@ -23,6 +23,7 @@
 #include "include/PerlinNoise.h"
 #include "include/PerlinNoiseUtil.h"
 #include "include/blockPlaceRequest.h"
+#include "include/ChunkModelInfo.h"
 
 #include "include/world.h"
 
@@ -120,7 +121,12 @@ void World::generateChunk(PerlinNoise& pn, Atlas& atlas) {
 
 	chunkRef.generateModel(*this, atlas);
 	this->nearbyChunks.push_back(chunkRef);
-	if (!chunkRef.blank || !chunkRef.transparentBlank) {
+
+	bool allBlank = true;
+	for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
+		allBlank = allBlank && chunkRef.isBlankModels[i];
+	}
+	if (!allBlank) {
 		this->chunksToRender.push_back(chunkRef);	
 		this->shouldSortChunksToRender = true;
 	}
@@ -350,7 +356,12 @@ void World::updateChunkModels(Atlas& atlas) {
 			chunk.generateModel(*this, atlas);
 
 			// TODO: better way to do this?
-			if (!chunk.blank || !chunk.transparentBlank) { // newly not blank
+
+			bool allBlank = true;
+			for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
+				allBlank = allBlank && chunk.isBlankModels[i];
+			}
+			if (!allBlank) { // newly not blank
 
 				// can't use binary search, because keysToRender is not sorted yet
 				bool found = false;
@@ -512,7 +523,13 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 						chunk.distanceFromCamera = dist;
 
 						this->nearbyChunks.push_back(chunk);
-						if (!chunk.blank || !chunk.transparentBlank) {
+
+						bool allBlank = true;
+						for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
+							allBlank = allBlank && chunk.isBlankModels[i];
+						}
+
+						if (!allBlank) {
 							this->chunksToRender.push_back(chunk);	
 						}
 					} else {
@@ -553,18 +570,21 @@ optional<Vector3> World::handleRaycastRequest(const CameraController& cameraCont
 				if (possibleChunk.has_value()) {
 					Chunk& chunk = possibleChunk.value();
 
-					if (chunk.blank) {
-						continue;
-					}
+					for (size_t i = 0; i < RAYCAST_CHUNK_MODELS_COUNT; i++) {
+						ChunkModelInfo cmi = RAYCAST_CHUNK_MODELS[i];
 
-					Vector3 pos = chunk.getWorldPos();
-					Matrix qTransform = MatrixTranslate(pos.x, pos.y, pos.z);
-					RayCollision qRayCollision = GetRayCollisionMesh(ray, chunk.model.meshes[0], qTransform);
-					if (qRayCollision.hit && qRayCollision.distance < REACH) {
-						rayCollisions.push_back(qRayCollision);
-						chunkCollisions.push_back(&chunk);
-					}
+						if (chunk.isBlankModels[cmi]) {
+							continue;
+						}
 
+						Vector3 pos = chunk.getWorldPos();
+						Matrix qTransform = MatrixTranslate(pos.x, pos.y, pos.z);
+						RayCollision qRayCollision = GetRayCollisionMesh(ray, chunk.models[cmi].meshes[0], qTransform);
+						if (qRayCollision.hit && qRayCollision.distance < REACH) {
+							rayCollisions.push_back(qRayCollision);
+							chunkCollisions.push_back(&chunk);
+						}
+					}
 				}
 
 			}

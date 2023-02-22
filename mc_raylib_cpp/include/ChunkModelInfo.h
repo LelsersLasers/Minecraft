@@ -1,0 +1,26 @@
+#ifndef CHUNK_MODEL_INFO_GUARD
+#define CHUNK_MODEL_INFO_GUARD
+
+
+
+enum ChunkModelInfo {
+	FULL_BLOCKS = 0,
+	LEAVES_BLOCKS = 1,
+	WATER_BLOCKS = 2,
+};
+
+#define TOTAL_CHUNK_MESHES (3)
+
+const ChunkModelInfo RAYCAST_CHUNK_MODELS[2] = {
+	FULL_BLOCKS,
+	LEAVES_BLOCKS,
+};
+
+const int RAYCAST_CHUNK_MODELS_COUNT = 2;
+
+
+
+
+
+
+#endif

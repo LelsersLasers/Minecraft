@@ -5,6 +5,7 @@
 
 #include "blockType.h"
 #include "dir.h"
+#include "ChunkModelInfo.h"
 
 
 class Block {
@@ -13,6 +14,7 @@ class Block {
 		BlockType blockType;
 		bool transparent;
 		bool solid;
+		ChunkModelInfo chunkModelInfo;
 		Vector2 (*getTexcoords)(Dir dir);
 
 
