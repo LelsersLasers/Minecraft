@@ -138,35 +138,71 @@ int World::getHeightAt(PerlinNoise& pn, int x, int y) { // static
 	// double lowerResolutionX = round((double)x / PERLIN_NOISE_RESOLUTION_X);
 	// double lowerResolutionY = round((double)y / PERLIN_NOISE_RESOLUTION_Y);
 
+	float floatX = (float)x;
+	float floatY = (float)y;
+
+	Vector2 lowerResolutions[4] = {
+		(Vector2){ floorf(floatX / NOISE_RESOLUTION),	floorf(floatY / NOISE_RESOLUTION) },
+		(Vector2){ ceilf (floatX / NOISE_RESOLUTION),	floorf(floatY / NOISE_RESOLUTION) },
+		(Vector2){ floorf(floatX / NOISE_RESOLUTION),	ceilf (floatY / NOISE_RESOLUTION) },
+		(Vector2){ ceilf (floatX / NOISE_RESOLUTION),	ceilf (floatY / NOISE_RESOLUTION) },
+	};
+	float distances[4];
+
+	int heights[4];
 	int maxHeight = CHUNK_SIZE * WORLD_SIZE;
 
-	int height = LOWEST_SURFACE_Z;
-	for (int z = maxHeight; z >= LOWEST_SURFACE_Z; z--) {
-		// double lowerResolutionZ = round((double)z / PERLIN_NOISE_RESOLUTION_Z);
+	for (size_t i = 0; i < 4; i++) {
 
-		double noise = PerlinNoise3DWithOctaves(
-			pn,
-			// lowerResolutionX / PERLIN_NOISE_DIVISOR,
-			// lowerResolutionY / PERLIN_NOISE_DIVISOR,
-			// lowerResolutionZ / PERLIN_NOISE_DIVISOR,
-			(double)x / PERLIN_NOISE_DIVISOR,
-			(double)y / PERLIN_NOISE_DIVISOR,
-			(double)z / PERLIN_NOISE_DIVISOR,
-			OCTAVES
-		);
+		Vector2 lowerResolution = lowerResolutions[i];
+		Vector2 upscaled = Vector2Scale(lowerResolution, NOISE_RESOLUTION);
 
-		int distToBottom = maxHeight - z; // lower Z -> higher value
-		double distToBottomScale = (double)distToBottom / (double)maxHeight;
-		
-		double modifiedNoise = noise + distToBottomScale;
+		float distance = Vector2Distance(upscaled, (Vector2){ floatX, floatY });
+		distances[i] = distance;
 
-		if (modifiedNoise >= 1.0) {
-			height = z;
-			break;
+		int height = LOWEST_SURFACE_Z;
+		for (int z = maxHeight; z >= LOWEST_SURFACE_Z; z--) {
+
+			double noise = PerlinNoise3DWithOctaves(
+				pn,
+				(double)lowerResolution.x / NOISE_DIVISOR,
+				(double)lowerResolution.y / NOISE_DIVISOR,
+				(double)z / (NOISE_DIVISOR * NOISE_RESOLUTION),
+				// lowerResolution / NOISE_DIVISOR,
+				// (double)x / NOISE_DIVISOR,
+				// (double)y / NOISE_DIVISOR,
+				// (double)z / NOISE_DIVISOR,
+				OCTAVES
+			);
+
+			int distToBottom = maxHeight - z; // lower Z -> higher value
+			double distToBottomScale = (double)distToBottom / (double)maxHeight;
+			
+			double modifiedNoise = noise + distToBottomScale;
+
+			if (modifiedNoise >= 1.0) {
+				height = z;
+				break;
+			}
 		}
+
+		heights[i] = height;
 	}
 
-	return height;
+	float totalDistance = 0;
+	for (size_t i = 0; i < 4; i++) { totalDistance += distances[i]; }
+
+	float distanceWeightMax = 0;
+	for (size_t i = 0; i < 4; i++) { distanceWeightMax += totalDistance - distances[i]; }
+
+	float averageHeight = 0;
+	for (size_t i = 0; i < 4; i++) {
+		averageHeight += (float)heights[i] / (totalDistance - distances[i]) * (distanceWeightMax / 4.0f);
+	}
+
+	int scaledHeight = (int)roundf(averageHeight);
+
+	return scaledHeight;
 
 
 	// double height = PerlinNoise3DWithOctaves(
