@@ -13,7 +13,7 @@ CameraController::CameraController() {
 	this->camera.position =	(Vector3){
 		-1.0,
 		-1.0,
-		CHUNK_SIZE * WORLD_SIZE
+		(float)CHUNK_SIZE * (float)WORLD_SIZE / 2.0f,
 	};
 	this->camera.target =	(Vector3){ 1.0, 0.0, 0.0 };
 	this->camera.up = 		(Vector3){ 0.0, 0.0, 1.0 }; // Z is up here
