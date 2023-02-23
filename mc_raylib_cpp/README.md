@@ -2,9 +2,8 @@
 
 ## BUGS:
 
-- Leaves:
-	- Solid vs transparent
-	- Leaves being weird, likely something with translucent blocks??
+- Leaves and water??
+- One of the textures is upside down
 
 ## TODO:
 
@@ -26,12 +25,11 @@
 		- 2d Perlin noise
 		- Octaves
 		- Basic biomes
-	- Trees
-		- With leaves
-			- Semi transparent
-	- Textures
-		- Texture atlas
-		- Replaces colors
+		- Or??
+			- 3d perlin noise
+				- Highest value above .5 = surface level
+				- Sample every 4 blocks
+					- Linear interpolation
 - Everything 2
     - When under water, show the "top" of the water
 	- Glass blocks

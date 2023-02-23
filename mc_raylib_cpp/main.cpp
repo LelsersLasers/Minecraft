@@ -31,7 +31,6 @@ int main() {
 
 	bool cursor = false;
 	bool wireframe = false;
-	bool transparentWireframe = false;
 	bool chunkOutlines = false;
 	bool faces = true;
 
@@ -150,9 +149,6 @@ int main() {
 				faces = !faces;
 			}
 			if (IsKeyPressed(KEY_H)) {
-				transparentWireframe = !transparentWireframe;
-			}
-			if (IsKeyPressed(KEY_J)) {
 				chunkOutlines = !chunkOutlines;
 			}
 			if (IsKeyPressed(KEY_ZERO)) {
@@ -194,18 +190,13 @@ int main() {
 							PINK
 						);
 					}
-					// if (faces) {
-					// 	DrawModel(chunk.model, chunk.getWorldPos(), 1.0, WHITE);
-					// 	DrawModel(chunk.transparentModel, chunk.getWorldPos(), 1.0, WHITE);
-					// }
-					// if (wireframe) {
-					// 	DrawModelWires(chunk.model, chunk.getWorldPos(), 1.0, BLACK);
-					// }
-					// if (transparentWireframe) {
-					// 	DrawModelWires(chunk.transparentModel, chunk.getWorldPos(), 1.0, BLACK);
-					// }
 					for (size_t j = 0; j < TOTAL_CHUNK_MESHES; j++) {
-						DrawModel(chunk.models[j], chunk.getWorldPos(), 1.0, WHITE);
+						if (faces) {
+							DrawModel(chunk.models[j], chunk.getWorldPos(), 1.0, WHITE);
+						}
+						if (wireframe) {
+							DrawModelWires(chunk.models[j], chunk.getWorldPos(), 1.0, BLACK);
+						}
 					}
 				}
 
@@ -256,12 +247,14 @@ int main() {
 
 			std::string fpsText = "- FPS: " + std::to_string((int)(1.0 / delta));
 			std::string deltaText = "- Delta: " + std::to_string(delta * 1000);
+			std::string cameraPos = "- Camera: " + std::to_string(cameraController.camera.position.x) + ", " + std::to_string(cameraController.camera.position.y) + ", " + std::to_string(cameraController.camera.position.z);
 
 			std::string selectedBlockText = "- Selected: " + getBlockName(selectedBlock.blockType);
 
 			DrawText(fpsText.c_str(), 40, 40, 10, DARKGRAY);
 			DrawText(deltaText.c_str(), 40, 60, 10, DARKGRAY);
-			DrawText(selectedBlockText.c_str(), 40, 80, 10, DARKGRAY);
+			DrawText(cameraPos.c_str(), 40, 80, 10, DARKGRAY);
+			DrawText(selectedBlockText.c_str(), 40, 10, 10, DARKGRAY);
         }
         EndDrawing();
     }

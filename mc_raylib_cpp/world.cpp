@@ -134,16 +134,50 @@ void World::generateChunk(PerlinNoise& pn, Atlas& atlas) {
 
 
 int World::getHeightAt(PerlinNoise& pn, int x, int y) { // static
-	double height = PerlinNoise3DWithOctaves(
-		pn,
-		(double)x / PERLIN_NOISE_DIVISOR,
-		(double)y / PERLIN_NOISE_DIVISOR,
-		1.0,
-		OCTAVES
-	);
+
+	// double lowerResolutionX = round((double)x / PERLIN_NOISE_RESOLUTION_X);
+	// double lowerResolutionY = round((double)y / PERLIN_NOISE_RESOLUTION_Y);
+
 	int maxHeight = CHUNK_SIZE * WORLD_SIZE;
-	int scaledHeight = (int)((double)maxHeight * height);
-	return scaledHeight;
+
+	int height = LOWEST_SURFACE_Z;
+	for (int z = maxHeight; z >= LOWEST_SURFACE_Z; z--) {
+		// double lowerResolutionZ = round((double)z / PERLIN_NOISE_RESOLUTION_Z);
+
+		double noise = PerlinNoise3DWithOctaves(
+			pn,
+			// lowerResolutionX / PERLIN_NOISE_DIVISOR,
+			// lowerResolutionY / PERLIN_NOISE_DIVISOR,
+			// lowerResolutionZ / PERLIN_NOISE_DIVISOR,
+			(double)x / PERLIN_NOISE_DIVISOR,
+			(double)y / PERLIN_NOISE_DIVISOR,
+			(double)z / PERLIN_NOISE_DIVISOR,
+			OCTAVES
+		);
+
+		int distToBottom = maxHeight - z; // lower Z -> higher value
+		double distToBottomScale = (double)distToBottom / (double)maxHeight;
+		
+		double modifiedNoise = noise + distToBottomScale;
+
+		if (modifiedNoise >= 1.0) {
+			height = z;
+			break;
+		}
+	}
+
+	return height;
+
+
+	// double height = PerlinNoise3DWithOctaves(
+	// 	pn,
+	// 	(double)x / PERLIN_NOISE_DIVISOR,
+	// 	(double)y / PERLIN_NOISE_DIVISOR,
+	// 	1.0,
+	// 	OCTAVES
+	// );
+	// int scaledHeight = (int)((double)maxHeight * height);
+	// return scaledHeight;
 }
 void World::createBlockPlaceRequestAt(Chunk& chunk, int x, int y, int z, Block block, vector<BlockType> canOverwrite) {
 	int chunkXDiff = (x < 0) * -1 + (x >= CHUNK_SIZE) * 1;
