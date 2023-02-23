@@ -138,27 +138,27 @@ int World::getHeightAt(PerlinNoise& pn, int x, int y) { // static
 	// double lowerResolutionX = round((double)x / PERLIN_NOISE_RESOLUTION_X);
 	// double lowerResolutionY = round((double)y / PERLIN_NOISE_RESOLUTION_Y);
 
-	float floatX = (float)x;
-	float floatY = (float)y;
+	float lowerResolutionX = (float)x / NOISE_RESOLUTION;
+	float lowerResolutionY = (float)y / NOISE_RESOLUTION;
 
 	Vector2 lowerResolutions[4] = {
-		(Vector2){ floorf(floatX / NOISE_RESOLUTION),	floorf(floatY / NOISE_RESOLUTION) },
-		(Vector2){ ceilf (floatX / NOISE_RESOLUTION),	floorf(floatY / NOISE_RESOLUTION) },
-		(Vector2){ floorf(floatX / NOISE_RESOLUTION),	ceilf (floatY / NOISE_RESOLUTION) },
-		(Vector2){ ceilf (floatX / NOISE_RESOLUTION),	ceilf (floatY / NOISE_RESOLUTION) },
+		(Vector2){ floorf(lowerResolutionX),	floorf(lowerResolutionY) }, // (0,0)
+		(Vector2){ ceilf (lowerResolutionX),	floorf(lowerResolutionY) }, // (1,0)
+		(Vector2){ floorf(lowerResolutionX),	ceilf (lowerResolutionY) }, // (0,1)
+		(Vector2){ ceilf (lowerResolutionX),	ceilf (lowerResolutionY) }, // (1,1)
 	};
-	float distances[4];
+	Vector2 upscaleds[4];
 
-	int heights[4];
+	float heights[4];
 	int maxHeight = CHUNK_SIZE * WORLD_SIZE;
 
 	for (size_t i = 0; i < 4; i++) {
 
 		Vector2 lowerResolution = lowerResolutions[i];
 		Vector2 upscaled = Vector2Scale(lowerResolution, NOISE_RESOLUTION);
+		upscaleds[i] = upscaled;
 
-		float distance = Vector2Distance(upscaled, (Vector2){ floatX, floatY });
-		distances[i] = distance;
+		float distance = Vector2Distance(upscaled, (Vector2){ (float)x, (float)y });
 
 		int height = LOWEST_SURFACE_Z;
 		for (int z = maxHeight; z >= LOWEST_SURFACE_Z; z--) {
@@ -169,9 +169,6 @@ int World::getHeightAt(PerlinNoise& pn, int x, int y) { // static
 				(double)lowerResolution.y / NOISE_DIVISOR,
 				(double)z / (NOISE_DIVISOR * NOISE_RESOLUTION),
 				// lowerResolution / NOISE_DIVISOR,
-				// (double)x / NOISE_DIVISOR,
-				// (double)y / NOISE_DIVISOR,
-				// (double)z / NOISE_DIVISOR,
 				OCTAVES
 			);
 
@@ -186,34 +183,27 @@ int World::getHeightAt(PerlinNoise& pn, int x, int y) { // static
 			}
 		}
 
-		heights[i] = height;
+		heights[i] = (float)height;
 	}
 
-	float totalDistance = 0;
-	for (size_t i = 0; i < 4; i++) { totalDistance += distances[i]; }
+	auto linearInterpolation = [](float x1, float y1, float x2, float y2, float x3) -> float {
+		float rise = y2 - y1;
+		float run  = x2 - x1;
+		if (run == 0) {
+			return y1;
+		}
+		float slope = rise / run;
+		float y3 = slope * (x3 - x1) + y1;
+		return y3;
+	};
 
-	float distanceWeightMax = 0;
-	for (size_t i = 0; i < 4; i++) { distanceWeightMax += totalDistance - distances[i]; }
+	// bilinear interpolation
+	float height1 = linearInterpolation(upscaleds[0].x, heights[0], upscaleds[1].x, heights[1], (float)x); // (0,0) -> (1,0)
+	float height2 = linearInterpolation(upscaleds[2].x, heights[2], upscaleds[3].x, heights[3], (float)x); // (0,1) -> (1,1) 
+	float height3 = linearInterpolation(upscaleds[0].y, height1, upscaleds[2].y, height2, (float)y); // (0-y, height1) -> (1-y, height2)
 
-	float averageHeight = 0;
-	for (size_t i = 0; i < 4; i++) {
-		averageHeight += (float)heights[i] / (totalDistance - distances[i]) * (distanceWeightMax / 4.0f);
-	}
-
-	int scaledHeight = (int)roundf(averageHeight);
-
+	int scaledHeight = (int)roundf(height3);
 	return scaledHeight;
-
-
-	// double height = PerlinNoise3DWithOctaves(
-	// 	pn,
-	// 	(double)x / PERLIN_NOISE_DIVISOR,
-	// 	(double)y / PERLIN_NOISE_DIVISOR,
-	// 	1.0,
-	// 	OCTAVES
-	// );
-	// int scaledHeight = (int)((double)maxHeight * height);
-	// return scaledHeight;
 }
 void World::createBlockPlaceRequestAt(Chunk& chunk, int x, int y, int z, Block block, vector<BlockType> canOverwrite) {
 	int chunkXDiff = (x < 0) * -1 + (x >= CHUNK_SIZE) * 1;
@@ -347,7 +337,7 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 					int treeEnd = treeStart + treeHeight;
 
 					for (int z = treeStart; z < treeEnd; z++) {
-						this->createBlockPlaceRequestAt(chunk, x, y, z, LOG_BLOCK, vector<BlockType>({ BlockType::AIR }));	
+						this->createBlockPlaceRequestAt(chunk, x, y, z, LOG_BLOCK, vector<BlockType>({ BlockType::AIR, BlockType::LEAVES }));	
 					}
 
 					// tree leaves
