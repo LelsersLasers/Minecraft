@@ -3,7 +3,6 @@
 ## BUGS:
 
 - Leaves and water??
-- One of the textures is upside down
 
 ## TODO:
 

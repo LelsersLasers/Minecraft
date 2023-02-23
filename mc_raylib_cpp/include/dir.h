@@ -44,7 +44,8 @@ const size_t allTriangleOffsets[6][2][3] = {
 const size_t allTexcoordsTriangleOffsets[6][2][3] = {
     {{0, 1, 3}, {1, 2, 3}}, // top
     {{0, 3, 1}, {1, 3, 2}}, // bottom
-    {{3, 0, 2}, {2, 0, 1}}, // right
+    // {{3, 0, 2}, {2, 0, 1}}, // right
+    {{0, 3, 1}, {1, 3, 2}}, // right
     {{0, 1, 3}, {1, 2, 3}}, // left
     {{0, 1, 3}, {3, 1, 2}}, // forward
     {{0, 3, 1}, {3, 2, 1}}, // backward
