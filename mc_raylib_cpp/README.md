@@ -21,19 +21,62 @@
 - Block has array[6] of Colors (indexed by Dir) instead of getColorFn()/getColor()
 - Everything
 	- World gen
-		- 2d Perlin noise
-		- Octaves
 		- Basic biomes
-		- Or??
-			- 3d perlin noise
-				- Highest value above .5 = surface level
-				- Sample every 4 blocks
-					- Linear interpolation
+			- 2 noise maps
+				- Temperature
+				- Humidity
+			- Plains
+				- Flat
+				- Lower tree chance
+				- 40-75 temp
+				- 25-75 humidity
+				- Blocks:
+					- Top 1: Grass
+					- RAND(3, 5): Dirt
+					- Rest - Stone
+			- Forests
+				- Flat-ish
+				- Height tree change
+				- 40-75 temp
+				- 50-75 humidity
+				- Blocks:
+					- Top 1: Grass
+					- RAND(3, 5): Dirt
+					- Rest - Stone
+			- Deserts
+				- Flat
+				- Low tree chance
+					- Cactus??
+				- 75-100 temp
+				- 0-25 humidity
+				- Blocks:
+					- RAND(2, 4): Sand
+					- Rest - Stone
+			- Mountains
+				- High
+				- Low tree chance
+				- Most/all temp
+				- Most/all humidity
+				- Snow on top
+			- Beach
+				- Near WATER_LEVEL
+				- No trees
+			- Ocean
+				- 
+			- Rivers
+				- Near WATER_LEVEL
+				-
+		- Trilinear interpolation??
+		- Lower resolution Z noise?
+	- Performance
+		- Chunk loading
+			- Lots of calls to perlin noise calc
 - Everything 2
     - When under water, show the "top" of the water
 	- Glass blocks
 		- Sort blocks within a chunk?
 			- Or does it work already?
+		- New mesh?
 	- Directional blocks
 		- Wooden logs
 	- Working player
@@ -42,6 +85,7 @@
 	- Inventory
 		- Hotbar
 		- Break blocks -> add to inventory
+			- Or maybe "float" above ground like in the actual game
 		- Place blocks -> remove from inventory
 	- Day/night cycle
 		- Sun/moon

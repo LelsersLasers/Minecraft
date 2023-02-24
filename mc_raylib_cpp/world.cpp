@@ -133,57 +133,82 @@ void World::generateChunk(PerlinNoise& pn, Atlas& atlas) {
 }
 
 
-int World::getHeightAt(PerlinNoise& pn, int x, int y) { // static
-
-	// double lowerResolutionX = round((double)x / PERLIN_NOISE_RESOLUTION_X);
-	// double lowerResolutionY = round((double)y / PERLIN_NOISE_RESOLUTION_Y);
+int World::getHeightAt(PerlinNoise& pn, vector<pair<Vector2, float>>& lowerResolutions, int x, int y) { // static
 
 	float lowerResolutionX = (float)x / NOISE_RESOLUTION;
 	float lowerResolutionY = (float)y / NOISE_RESOLUTION;
 
-	Vector2 lowerResolutions[4] = {
-		(Vector2){ floorf(lowerResolutionX),	floorf(lowerResolutionY) }, // (0,0)
-		(Vector2){ ceilf (lowerResolutionX),	floorf(lowerResolutionY) }, // (1,0)
-		(Vector2){ floorf(lowerResolutionX),	ceilf (lowerResolutionY) }, // (0,1)
-		(Vector2){ ceilf (lowerResolutionX),	ceilf (lowerResolutionY) }, // (1,1)
+	Vector2 blockLowerResolutions[4] = {
+		(Vector2){ floorf(lowerResolutionX), floorf(lowerResolutionY) }, // (0,0)
+		(Vector2){ ceilf (lowerResolutionX), floorf(lowerResolutionY) }, // (1,0)
+		(Vector2){ floorf(lowerResolutionX), ceilf (lowerResolutionY) }, // (0,1)
+		(Vector2){ ceilf (lowerResolutionX), ceilf (lowerResolutionY) }, // (1,1)
 	};
 	Vector2 upscaleds[4];
 
 	float heights[4];
 	int maxHeight = CHUNK_SIZE * WORLD_SIZE;
 
+	size_t indexes[4];
+
 	for (size_t i = 0; i < 4; i++) {
 
-		Vector2 lowerResolution = lowerResolutions[i];
-		Vector2 upscaled = Vector2Scale(lowerResolution, NOISE_RESOLUTION);
-		upscaleds[i] = upscaled;
+		bool found = false;
+		
+		for (size_t j = 0; j < lowerResolutions.size(); j++) {
+			pair<Vector2, float> lowerResolution = lowerResolutions[j];
+			Vector2 lowerResolutionPos = lowerResolution.first;
 
-		float distance = Vector2Distance(upscaled, (Vector2){ (float)x, (float)y });
-
-		int height = LOWEST_SURFACE_Z;
-		for (int z = maxHeight; z >= LOWEST_SURFACE_Z; z--) {
-
-			double noise = PerlinNoise3DWithOctaves(
-				pn,
-				(double)lowerResolution.x / NOISE_DIVISOR,
-				(double)lowerResolution.y / NOISE_DIVISOR,
-				(double)z / (NOISE_DIVISOR * NOISE_RESOLUTION),
-				// lowerResolution / NOISE_DIVISOR,
-				OCTAVES
-			);
-
-			int distToBottom = maxHeight - z; // lower Z -> higher value
-			double distToBottomScale = (double)distToBottom / (double)maxHeight;
-			
-			double modifiedNoise = noise + distToBottomScale;
-
-			if (modifiedNoise >= 1.0) {
-				height = z;
+			if (Vector2Equals(lowerResolutionPos, blockLowerResolutions[i])) {
+				indexes[i] = j;
+				found = true;
 				break;
 			}
 		}
 
-		heights[i] = (float)height;
+		if (!found) {
+			lowerResolutions.push_back(std::make_pair(blockLowerResolutions[i], -1));
+			indexes[i] = lowerResolutions.size() - 1;
+		}
+	}
+
+	for (size_t i = 0; i < 4; i++) {
+
+		size_t index = indexes[i];
+		pair<Vector2, float>& lowerResolution = lowerResolutions[index];
+		Vector2 lowerResolutionPos = lowerResolution.first;
+
+		Vector2 upscaled = Vector2Scale(lowerResolutionPos, NOISE_RESOLUTION);
+		upscaleds[i] = upscaled;
+
+
+		if (lowerResolution.second < 0) {
+			int height = LOWEST_SURFACE_Z;
+			for (int z = maxHeight; z >= LOWEST_SURFACE_Z; z--) {
+
+				double noise = PerlinNoise3DWithOctaves(
+					pn,
+					(double)lowerResolutionPos.x / NOISE_DIVISOR,
+					(double)lowerResolutionPos.y / NOISE_DIVISOR,
+					(double)z / (NOISE_DIVISOR * NOISE_RESOLUTION),
+					// lowerResolution / NOISE_DIVISOR,
+					OCTAVES
+				);
+
+				int distToBottom = maxHeight - z; // lower Z -> higher value
+				double distToBottomScale = (double)distToBottom / (double)maxHeight;
+				
+				double modifiedNoise = noise + distToBottomScale;
+
+				if (modifiedNoise >= 1.0) {
+					height = z;
+					break;
+				}
+			}
+			lowerResolution.second = (float)height; // modifies the pair in the vector
+		}
+		heights[i] = (float)lowerResolution.second;
+
 	}
 
 	auto linearInterpolation = [](float x1, float y1, float x2, float y2, float x3) -> float {
@@ -234,13 +259,15 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 	int worldChunkY = std::get<1>(chunk.position) * CHUNK_SIZE;
 	int worldChunkZ = std::get<2>(chunk.position) * CHUNK_SIZE;
 
+	vector<pair<Vector2, float>> lowerResolutions = vector<pair<Vector2, float>>();
+
 	int scaledHeights[CHUNK_SIZE][CHUNK_SIZE];
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
 		int worldX = worldChunkX + (int)x;
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
 			int worldY = worldChunkY + (int)y;
 
-			int scaledHeight = World::getHeightAt(pn, worldX, worldY);
+			int scaledHeight = World::getHeightAt(pn, lowerResolutions, worldX, worldY);
 			scaledHeights[x][y] = scaledHeight;
 		}
 	}
