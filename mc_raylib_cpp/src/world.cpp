@@ -262,7 +262,7 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 	vector<pair<Vector2, float>> lowerResolutions = vector<pair<Vector2, float>>();
 
 	int scaledHeights[CHUNK_SIZE][CHUNK_SIZE];
-	BiomeType biomeTypeMap[CHUNK_SIZE][CHUNK_SIZE];
+	vector<Biome> biomeFlatMap = vector<Biome>();
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
 		int worldX = worldChunkX + (int)x;
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
@@ -271,7 +271,7 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 			int scaledHeight = World::getHeightAt(pn, lowerResolutions, worldX, worldY);
 			scaledHeights[x][y] = scaledHeight;
 
-			biomeTypeMap[x][y] = getBiomeFromHeight(scaledHeight);
+			biomeFlatMap.push_back(Biome::biomeFromType(getBiomeFromHeight(scaledHeight)));
 		}
 	}
 
@@ -323,13 +323,7 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 
 			int scaledHeight = scaledHeights[x][y];
 			int chunkZHeight = scaledHeight - worldChunkZ;
-			Biome biome = Biome::biomeFromType(biomeTypeMap[x][y]);
-
-			// std::cout << getBiomeName(biome.biomeType) << std::endl;
-			// std::cout << getBlockName(biome.topBlock.blockType) << std::endl;
-			// std::cout << getBlockName(biome.secondBlock.blockType) << std::endl;
-			// std::cout << biome.secondBlockLevelMin << std::endl;
-			// std::cout << biome.secondBlockLevelMax << std::endl;
+			Biome& biome = biomeFlatMap[x * CHUNK_SIZE + y];
 
 			if (chunkZHeight >= 0 && chunkZHeight < CHUNK_SIZE) { // only run for chunk that contains the scaledHeight
 
@@ -359,8 +353,8 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 			// int worldY = worldChunkY + (int)y;
 
 			int scaledHeight = scaledHeights[x][y];
-			BiomeType biomeType = biomeTypeMap[x][y];
-			if (biomeType == BiomeType::NEAR_WATER) { // don't place trees on water or on water's edge
+			Biome& biome = biomeFlatMap[x * CHUNK_SIZE + y];
+			if (biome.biomeType == BiomeType::NEAR_WATER) { // don't place trees on water or on water's edge
 				continue;
 			}
 

@@ -12,6 +12,7 @@
 #include "world.h"
 #include "PerlinNoise.h"
 #include "ChunkModelInfo.h"
+#include "atlas.h"
 
 #include "noCopy.h"
 

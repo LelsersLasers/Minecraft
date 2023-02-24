@@ -7,6 +7,8 @@
 
 class Biome {
 
+	// TODO: way to do without giving default values?
+
 	public:
 		BiomeType biomeType;
 
