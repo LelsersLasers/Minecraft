@@ -1,21 +1,27 @@
+buildAndRun: compile run
 
-# not sure what the args after ':' do...
+CC = g++
+RAYLIB_FLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+EXTRA_FLAGS = -Wall -Ofast -std=c++17
 
-compile: main.cpp cameraController.cpp block.cpp blockType.cpp chunk.cpp world.cpp PerlinNoise.cpp PerlinNoiseUtil.cpp atlas.cpp biome.cpp biomeType.cpp
-	mkdir -p build
-	g++ -o build/main main.cpp cameraController.cpp block.cpp blockType.cpp chunk.cpp world.cpp PerlinNoise.cpp PerlinNoiseUtil.cpp atlas.cpp biome.cpp biomeType.cpp -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -Wall -Ofast -std=c++17
+OUT_DIR = build
 
-compileWithProfile: main.cpp cameraController.cpp block.cpp blockType.cpp chunk.cpp world.cpp PerlinNoise.cpp PerlinNoiseUtil.cpp atlas.cpp biome.cpp biomeType.cpp
-	mkdir -p build
-	g++ -o build/mainWithProfile main.cpp cameraController.cpp block.cpp blockType.cpp chunk.cpp world.cpp PerlinNoise.cpp PerlinNoiseUtil.cpp atlas.cpp biome.cpp biomeType.cpp -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -Wall -Ofast -std=c++17 -pg
+compile:
+	mkdir -vp $(OUT_DIR)
+	$(CC) -o $(OUT_DIR)/main src/*.cpp $(RAYLIB_FLAGS) $(EXTRA_FLAGS)
+	
+
+compileWithProfile:
+	mkdir -vp $(OUT_DIR)
+	$(CC) -o $(OUT_DIR)/mainWithProfile src/*.cpp $(RAYLIB_FLAGS) $(EXTRA_FLAGS) -pg
 
 
 run:
-	./build/main
+	./$(OUT_DIR)/main
 
 runWithProfile:
-	./build/mainWithProfile
+	./$(OUT_DIR)/mainWithProfile
 
 
 clean:
-	rm -v build/*
+	rm -vr $(OUT_DIR)

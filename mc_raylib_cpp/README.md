@@ -6,55 +6,11 @@
 
 ## TODO 1 (aka things I might actually do)
 
-- Put *.cpp files in src/
 - C++ stuff
     - Constructor initalization list
 - World gen
 	- Trilinear interpolation??
 	- Lower resolution Z noise?
-	- Basic biomes
-		- 2 noise maps
-			- Temperature
-			- Humidity
-		- Plains
-			- Flat
-			- Lower tree chance
-			- 40-75 temp
-			- 25-75 humidity
-			- Blocks:
-				- Top 1: Grass
-				- RAND(3, 5): Dirt
-				- Rest - Stone
-		- Forests
-			- Flat-ish
-			- Height tree change
-			- 40-75 temp
-			- 50-75 humidity
-			- Blocks:
-				- Top 1: Grass
-				- RAND(3, 5): Dirt
-				- Rest - Stone
-		- Deserts
-			- Flat
-			- Low tree chance
-				- Cactus??
-			- 75-100 temp
-			- 0-25 humidity
-			- Blocks:
-				- RAND(2, 4): Sand
-				- Rest - Stone
-		- Mountains
-			- High
-			- Low tree chance
-			- Most/all temp
-			- Most/all humidity
-			- Snow on top
-		- Beach
-			- Near WATER_LEVEL
-			- No trees
-		- Ocean
-		- Rivers
-			- Near WATER_LEVEL
 - Performance
 	- Profile??
 		- `gprof build/mainWithProfile  > gprofOutput.txt`
@@ -84,9 +40,10 @@
 	- Hold only some chunks in memory
 		- Live read/write to file
 - World gen
-	- More biomes
+	- Biomes based on noise maps
+		- Ex: humidity and temperature
 	- 3d perlin noise
-	- Made from 5 diiferent noise setups
+	- Height made from multiple noise maps with different setups (octaves, etc)
 		- +spline interpolation (or something like that)
 	- Caves
 - Fog
