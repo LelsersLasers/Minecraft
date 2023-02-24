@@ -54,7 +54,8 @@ int main() {
 		WATER_BLOCK,
 		SAND_BLOCK,
 		LOG_BLOCK,
-		LEAVES_BLOCK
+		LEAVES_BLOCK,
+		SAND_STONE_BLOCK
 	};
 	// parrallel array to blockTypes
 	KeyboardKey blockKeys[BLOCK_MAX + 1] = {
@@ -66,7 +67,8 @@ int main() {
 		KEY_SIX,
 		KEY_SEVEN,
 		KEY_EIGHT,
-		KEY_NINE
+		KEY_NINE,
+		KEY_ZERO
 	};
 	Block selectedBlock = blockTypes[BlockType::GRASS]; // uses enum as int to index array
 
@@ -151,7 +153,7 @@ int main() {
 			if (IsKeyPressed(KEY_H)) {
 				chunkOutlines = !chunkOutlines;
 			}
-			if (IsKeyPressed(KEY_ZERO)) {
+			if (IsKeyPressed(KEY_R)) {
 				autoMove = !autoMove;
 			}
 		}

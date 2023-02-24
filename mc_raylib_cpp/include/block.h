@@ -33,6 +33,7 @@ const Block WATER_BLOCK(BlockType::WATER);
 const Block SAND_BLOCK(BlockType::SAND);
 const Block LOG_BLOCK(BlockType::LOG);
 const Block LEAVES_BLOCK(BlockType::LEAVES);
+const Block SAND_STONE_BLOCK(BlockType::SAND_STONE);
 
 
 

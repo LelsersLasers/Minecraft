@@ -6,11 +6,9 @@
 
 ## TODO 1 (aka things I might actually do)
 
+- Put *.cpp files in src/
 - C++ stuff
     - Constructor initalization list
-	- Improve iterating?
-		- Enhanced for loops?
-- Block has array[6] of Vector2 texcoords (indexed by Dir) instead of getTexcoordsFn()/getTexcoords()
 - World gen
 	- Trilinear interpolation??
 	- Lower resolution Z noise?
@@ -88,7 +86,6 @@
 - World gen
 	- More biomes
 	- 3d perlin noise
-		- "Instead of sampling the Perlin noise in two dimensions try sampling it in three and placing a cube wherever it’s greater than some threshold. It’s not as simple as a basic mesh but it lets you create complex features like caves and overhangs."
 	- Made from 5 diiferent noise setups
 		- +spline interpolation (or something like that)
 	- Caves
@@ -103,3 +100,6 @@
 	- Unload models from GPU when not in view
 	- Store chunk block data as a list of indexes to a vector of blocks
 		- Avoids repeating/duplicating block info
+	- Block has array[6] of Vector2 texcoords (indexed by Dir) instead of getTexcoordsFn()/getTexcoords() ??
+	- Enhanced (range based) for loops??
+	- Global texture instead of per model?

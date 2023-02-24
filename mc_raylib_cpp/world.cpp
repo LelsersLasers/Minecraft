@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <cmath>
 
-// #include <iostream>
+#include <iostream>
 
 #include <vector>
 #include <tuple>
@@ -24,6 +24,8 @@
 #include "include/PerlinNoiseUtil.h"
 #include "include/blockPlaceRequest.h"
 #include "include/ChunkModelInfo.h"
+#include "include/biome.h"
+#include "include/biomeType.h"
 
 #include "include/world.h"
 
@@ -94,8 +96,7 @@ void World::generateChunk(PerlinNoise& pn, Atlas& atlas) {
 	this->createChunkData(pn, chunk);
 	chunk.distanceFromCamera = chunkToGenerate.second;
 
-	// TODO: copies chunk!!!!!!
-	// this->chunks.insert(std::make_pair(key, chunk));
+	// Copies chunk!!!!!!
 	pair<string, Chunk> pair = std::make_pair(key, chunk);
 	this->chunks.insert(pair);
 
@@ -261,6 +262,7 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 	vector<pair<Vector2, float>> lowerResolutions = vector<pair<Vector2, float>>();
 
 	int scaledHeights[CHUNK_SIZE][CHUNK_SIZE];
+	BiomeType biomeTypeMap[CHUNK_SIZE][CHUNK_SIZE];
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
 		int worldX = worldChunkX + (int)x;
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
@@ -268,6 +270,8 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 
 			int scaledHeight = World::getHeightAt(pn, lowerResolutions, worldX, worldY);
 			scaledHeights[x][y] = scaledHeight;
+
+			biomeTypeMap[x][y] = getBiomeFromHeight(scaledHeight);
 		}
 	}
 
@@ -319,15 +323,23 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 
 			int scaledHeight = scaledHeights[x][y];
 			int chunkZHeight = scaledHeight - worldChunkZ;
+			Biome biome = Biome::biomeFromType(biomeTypeMap[x][y]);
+
+			// std::cout << getBiomeName(biome.biomeType) << std::endl;
+			// std::cout << getBlockName(biome.topBlock.blockType) << std::endl;
+			// std::cout << getBlockName(biome.secondBlock.blockType) << std::endl;
+			// std::cout << biome.secondBlockLevelMin << std::endl;
+			// std::cout << biome.secondBlockLevelMax << std::endl;
 
 			if (chunkZHeight >= 0 && chunkZHeight < CHUNK_SIZE) { // only run for chunk that contains the scaledHeight
-				int dirtDepth = RAND(3, 5);
-				int dirtStart = chunkZHeight - dirtDepth;
 
-				chunk.setBlockAt(x, y, chunkZHeight, GRASS_BLOCK);
+				int secondBlockDepth = RAND(biome.secondBlockLevelMin, biome.secondBlockLevelMax);
+				int secondBlockStart = chunkZHeight - secondBlockDepth;
 
-				for (int z = dirtStart; z < chunkZHeight; z++) {
-					this->createBlockPlaceRequestAt(chunk, x, y, z, DIRT_BLOCK, vector<BlockType>({ BlockType::STONE }));
+				chunk.setBlockAt(x, y, chunkZHeight, biome.topBlock);
+
+				for (int z = secondBlockStart; z < chunkZHeight; z++) {
+					this->createBlockPlaceRequestAt(chunk, x, y, z, biome.secondBlock, vector<BlockType>({ BlockType::STONE }));
 				}
 
 			}
@@ -347,7 +359,8 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 			// int worldY = worldChunkY + (int)y;
 
 			int scaledHeight = scaledHeights[x][y];
-			if (scaledHeight <= WATER_LEVEL) { // don't place trees underwater
+			BiomeType biomeType = biomeTypeMap[x][y];
+			if (biomeType == BiomeType::NEAR_WATER) { // don't place trees on water or on water's edge
 				continue;
 			}
 
@@ -579,11 +592,11 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 	int cameraChunkY = std::get<1>(cameraChunk);
 	int cameraChunkZ = std::get<2>(cameraChunk);
 
-	// int startX = MAX(cameraChunkX - VIEW_DIST, 0); // TEMP: delete MAX
-	// int startY = MAX(cameraChunkY - VIEW_DIST, 0); // TEMP: delete MAX
+	int startX = MAX(cameraChunkX - VIEW_DIST, 0); // TEMP: delete MAX
+	int startY = MAX(cameraChunkY - VIEW_DIST, 0); // TEMP: delete MAX
 
-	int startX = cameraChunkX - VIEW_DIST;
-	int startY = cameraChunkY - VIEW_DIST;
+	// int startX = cameraChunkX - VIEW_DIST;
+	// int startY = cameraChunkY - VIEW_DIST;
 	int startZ = MAX(cameraChunkZ - VIEW_DIST, LOWEST_CHUNK_Z);
 
 	int endX = cameraChunkX + VIEW_DIST;
