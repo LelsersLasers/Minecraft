@@ -1,0 +1,669 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 61.39     13.91    13.91     3650     3.81     4.19  World::updateChunkModels(Atlas&)
+  6.84     15.46     1.55                             DrawModelEx
+  4.55     16.49     1.03 35447104     0.00     0.00  PerlinNoise::noise(double, double, double)
+  4.19     17.44     0.95                             DrawMesh
+  3.18     18.16     0.72                             MatrixMultiply
+  2.82     18.80     0.64    17688     0.04     0.10  Chunk::generateModel(World&, Atlas&)
+  1.50     19.14     0.34 212865083     0.00     0.00  Chunk::getBlockInDirection(unsigned long, unsigned long, unsigned long, std::tuple<int, int, int>, World&)
+  1.24     19.42     0.28  8919852     0.00     0.00  Chunk::getBlockAt(unsigned long, unsigned long, unsigned long) const
+  1.24     19.70     0.28                             GetRayCollisionTriangle
+  1.06     19.94     0.24                             Vector3Transform
+  1.02     20.17     0.23 14162643     0.00     0.00  std::_Hashtable<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk>, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::find(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  1.02     20.40     0.23 14159109     0.00     0.00  World::getChunkAt(std::tuple<int, int, int>)
+  0.93     20.61     0.21                             Vector3DotProduct
+  0.93     20.82     0.21                             Vector3Subtract
+  0.88     21.02     0.20                             main
+  0.71     21.18     0.16  3877454     0.00     0.00  Chunk::getWorldPos() const
+  0.62     21.32     0.14                             MatrixIdentity
+  0.57     21.45     0.13     3649     0.04     0.47  World::generateChunk(PerlinNoise&, Atlas&)
+  0.53     21.57     0.12                             GetGlyphIndex
+  0.53     21.69     0.12                             _init
+  0.49     21.80     0.11  4430888     0.00     0.00  PerlinNoise3DWithOctaves(PerlinNoise&, double, double, double, int)
+  0.44     21.90     0.10     3534     0.03     0.35  World::createChunkData(PerlinNoise&, Chunk&)
+  0.40     21.99     0.09                             MatrixRotate
+  0.31     22.06     0.07                             GetRayCollisionMesh
+  0.31     22.13     0.07                             MatrixScale
+  0.31     22.20     0.07                             Vector3CrossProduct
+  0.31     22.27     0.07                             rlMatrixIdentity
+  0.29     22.34     0.07                             DrawModel
+  0.22     22.39     0.05                             DrawTextCodepoint
+  0.18     22.43     0.04                             MatrixTranslate
+  0.13     22.45     0.03  9441200     0.00     0.00  std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_invoke(std::_Any_data const&, std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)
+  0.09     22.48     0.02 13983008     0.00     0.00  World::getBlockAt(std::tuple<int, int, int>, int, int, int)
+  0.09     22.50     0.02                             rlDisableShader
+  0.07     22.51     0.01                             DrawTexturePro
+  0.04     22.52     0.01   423491     0.00     0.00  void std::__adjust_heap<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >)
+  0.04     22.53     0.01     1627     0.01     0.01  void std::__final_insertion_sort<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >)
+  0.04     22.54     0.01                             MatrixAdd
+  0.04     22.55     0.01                             rlActiveTextureSlot
+  0.04     22.56     0.01                             rlClearColor
+  0.04     22.57     0.01                             rlDisableVertexBufferElement
+  0.04     22.58     0.01                             rlEnableShader
+  0.04     22.59     0.01                             rlGetMatrixTransform
+  0.04     22.60     0.01                             rlSetMatrixModelview
+  0.04     22.61     0.01                             rlSetMatrixProjection
+  0.04     22.62     0.01                             rlSetTexture
+  0.04     22.63     0.01                             rlSetUniformMatrix
+  0.04     22.64     0.01                             rlVertex3f
+  0.02     22.64     0.01                             DrawModelWires
+  0.02     22.65     0.01                             DrawTextureRec
+  0.02     22.66     0.01                             rlDisableStereoRender
+  0.02     22.66     0.01                             rlIsStereoRenderEnabled
+  0.00     22.66     0.00 21909480     0.00     0.00  getTexcoordsStone(Dir)
+  0.00     22.66     0.00 11082606     0.00     0.00  getTexcoordsGrass(Dir)
+  0.00     22.66     0.00  8435250     0.00     0.00  getTexcoordsWater(Dir)
+  0.00     22.66     0.00  3653952     0.00     0.00  getTexcoordsLeaves(Dir)
+  0.00     22.66     0.00  3178530     0.00     0.00  getTexcoordsDirt(Dir)
+  0.00     22.66     0.00  2267247     0.00     0.00  std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_manager(std::_Any_data&, std::_Any_data const&, std::_Manager_operation)
+  0.00     22.66     0.00   372025     0.00     0.00  Chunk::setBlockAt(unsigned long, unsigned long, unsigned long, Block)
+  0.00     22.66     0.00   296626     0.00     0.00  World::createBlockPlaceRequestAt(Chunk&, int, int, int, Block, std::vector<BlockType, std::allocator<BlockType> >)
+  0.00     22.66     0.00   256080     0.00     0.00  getTexcoordsLog(Dir)
+  0.00     22.66     0.00    17670     0.00     0.00  void std::vector<std::pair<Vector2, float>, std::allocator<std::pair<Vector2, float> > >::_M_realloc_insert<std::pair<Vector2, float> >(__gnu_cxx::__normal_iterator<std::pair<Vector2, float>*, std::vector<std::pair<Vector2, float>, std::allocator<std::pair<Vector2, float> > > >, std::pair<Vector2, float>&&)
+  0.00     22.66     0.00    14596     0.00     0.00  std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > __gnu_cxx::__to_xstring<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...) [clone .constprop.0]
+  0.00     22.66     0.00    10602     0.00     0.00  Chunk::~Chunk()
+  0.00     22.66     0.00    10493     0.00     0.00  CameraController::getChunkPos() const
+  0.00     22.66     0.00     5234     0.00     0.00  CameraController::calcForward() const
+  0.00     22.66     0.00     3649     0.00     0.00  getBlockName[abi:cxx11](BlockType const&)
+  0.00     22.66     0.00     3649     0.00     0.00  CameraController::update()
+  0.00     22.66     0.00     3649     0.00     0.00  World::cameraIsSubmerged(CameraController const&)
+  0.00     22.66     0.00     3649     0.00     0.00  World::handleRaycastRequest(CameraController const&, RaycastRequest&, Block)
+  0.00     22.66     0.00     3534     0.00     0.00  Chunk::Chunk(std::tuple<int, int, int> const&)
+  0.00     22.66     0.00     1627     0.00     0.03  World::sortKeysToRender()
+  0.00     22.66     0.00     1627     0.00     0.00  void std::__insertion_sort<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >)
+  0.00     22.66     0.00     1627     0.00     0.02  void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >)
+  0.00     22.66     0.00     1585     0.00     0.00  CameraController::moveBy(Vector3 const&)
+  0.00     22.66     0.00     1575     0.00     0.00  void std::__make_heap<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >&)
+  0.00     22.66     0.00      128     0.00     0.00  PerlinNoise::PerlinNoise(unsigned int)
+  0.00     22.66     0.00       36     0.00     0.00  getTexcoordsFn(BlockType const&)
+  0.00     22.66     0.00       36     0.00     0.00  getTransparent(BlockType const&)
+  0.00     22.66     0.00       36     0.00     0.00  getChunkModelInfo(BlockType const&)
+  0.00     22.66     0.00       36     0.00     0.00  getSolid(BlockType const&)
+  0.00     22.66     0.00       36     0.00     0.00  Block::Block(BlockType const&)
+  0.00     22.66     0.00       25     0.00     0.07  World::cameraMoved(CameraController const&, PerlinNoise&)
+  0.00     22.66     0.00       25     0.00     0.00  void std::__insertion_sort<__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}>)
+  0.00     22.66     0.00       25     0.00     0.00  void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}>)
+  0.00     22.66     0.00       24     0.00     0.00  void std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > >::_M_realloc_insert<std::reference_wrapper<Chunk> >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, std::reference_wrapper<Chunk>&&)
+  0.00     22.66     0.00       14     0.00     0.00  void std::vector<BlockPlaceRequest, std::allocator<BlockPlaceRequest> >::_M_realloc_insert<BlockPlaceRequest const&>(__gnu_cxx::__normal_iterator<BlockPlaceRequest*, std::vector<BlockPlaceRequest, std::allocator<BlockPlaceRequest> > >, BlockPlaceRequest const&)
+  0.00     22.66     0.00       13     0.00     0.00  void std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > >::_M_realloc_insert<std::pair<std::tuple<int, int, int>, float> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, std::pair<std::tuple<int, int, int>, float>&&)
+  0.00     22.66     0.00        9     0.00     0.00  std::_Hashtable<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk>, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_rehash(unsigned long, unsigned long const&)
+  0.00     22.66     0.00        1     0.00     0.00  CameraController::CameraController()
+  0.00     22.66     0.00        1     0.00     0.00  Atlas::Atlas(char const*)
+  0.00     22.66     0.00        1     0.00     0.00  Atlas::~Atlas()
+  0.00     22.66     0.00        1     0.00     0.00  World::World()
+  0.00     22.66     0.00        1     0.00     0.00  World::~World()
+  0.00     22.66     0.00        1     0.00     0.00  std::vector<int, std::allocator<int> >::_M_default_append(unsigned long)
+  0.00     22.66     0.00        1     0.00     0.00  void std::shuffle<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::linear_congruential_engine<unsigned long, 16807ul, 0ul, 2147483647ul>&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::linear_congruential_engine<unsigned long, 16807ul, 0ul, 2147483647ul>&)
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2022 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 4 byte(s) for 0.04% of 22.66 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     76.9    0.20   17.23                 main [1]
+               13.91    1.39    3650/3650        World::updateChunkModels(Atlas&) [2]
+                0.13    1.59    3649/3649        World::generateChunk(PerlinNoise&, Atlas&) [4]
+                0.16    0.00 3857028/3877454     Chunk::getWorldPos() const [20]
+                0.00    0.05    1627/1627        World::sortKeysToRender() [31]
+                0.00    0.00    3649/3649        World::handleRaycastRequest(CameraController const&, RaycastRequest&, Block) [55]
+                0.00    0.00      25/25          World::cameraMoved(CameraController const&, PerlinNoise&) [56]
+                0.00    0.00    3649/3649        World::cameraIsSubmerged(CameraController const&) [57]
+                0.00    0.00   14596/14596       std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > __gnu_cxx::__to_xstring<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...) [clone .constprop.0] [2003]
+                0.00    0.00    3649/3649        CameraController::update() [2008]
+                0.00    0.00    3649/3649        getBlockName[abi:cxx11](BlockType const&) [2007]
+                0.00    0.00    3170/10493       CameraController::getChunkPos() const [2005]
+                0.00    0.00    1585/5234        CameraController::calcForward() const [2006]
+                0.00    0.00    1585/1585        CameraController::moveBy(Vector3 const&) [2010]
+                0.00    0.00       1/1           CameraController::CameraController() [2023]
+                0.00    0.00       1/1           Atlas::Atlas(char const*) [2024]
+                0.00    0.00       1/1           PerlinNoise::PerlinNoise(unsigned int) <cycle 1> [2011]
+                0.00    0.00       1/1           World::World() [2026]
+                0.00    0.00       1/1           World::~World() [2027]
+                0.00    0.00       1/1           Atlas::~Atlas() [2025]
+-----------------------------------------------
+               13.91    1.39    3650/3650        main [1]
+[2]     67.5   13.91    1.39    3650         World::updateChunkModels(Atlas&) [2]
+                0.51    0.87   14154/17688       Chunk::generateModel(World&, Atlas&) [3]
+                0.01    0.00  291447/8919852     Chunk::getBlockAt(unsigned long, unsigned long, unsigned long) const [15]
+                0.00    0.00  290768/372025      Chunk::setBlockAt(unsigned long, unsigned long, unsigned long, Block) [1999]
+-----------------------------------------------
+                0.13    0.22    3534/17688       World::generateChunk(PerlinNoise&, Atlas&) [4]
+                0.51    0.87   14154/17688       World::updateChunkModels(Atlas&) [2]
+[3]      7.6    0.64    1.08   17688         Chunk::generateModel(World&, Atlas&) [3]
+                0.34    0.74 212865083/212865083     Chunk::getBlockInDirection(unsigned long, unsigned long, unsigned long, std::tuple<int, int, int>, World&) [8]
+                0.00    0.00 21909480/21909480     getTexcoordsStone(Dir) [1993]
+                0.00    0.00 11082606/11082606     getTexcoordsGrass(Dir) [1994]
+                0.00    0.00 8435250/8435250     getTexcoordsWater(Dir) [1995]
+                0.00    0.00 3653952/3653952     getTexcoordsLeaves(Dir) [1996]
+                0.00    0.00 3178530/3178530     getTexcoordsDirt(Dir) [1997]
+                0.00    0.00  256080/256080      getTexcoordsLog(Dir) [2001]
+-----------------------------------------------
+                0.13    1.59    3649/3649        main [1]
+[4]      7.6    0.13    1.59    3649         World::generateChunk(PerlinNoise&, Atlas&) [4]
+                0.10    1.14    3534/3534        World::createChunkData(PerlinNoise&, Chunk&) [6]
+                0.13    0.22    3534/17688       Chunk::generateModel(World&, Atlas&) [3]
+                0.00    0.00   21204/14159109     World::getChunkAt(std::tuple<int, int, int>) [13]
+                0.00    0.00    3534/14162643     std::_Hashtable<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk>, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::find(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [17]
+                0.00    0.00    7068/10602       Chunk::~Chunk() [2004]
+                0.00    0.00    3534/3534        Chunk::Chunk(std::tuple<int, int, int> const&) [2009]
+                0.00    0.00      24/24          void std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > >::_M_realloc_insert<std::reference_wrapper<Chunk> >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, std::reference_wrapper<Chunk>&&) [2019]
+                0.00    0.00       9/9           std::_Hashtable<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk>, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_rehash(unsigned long, unsigned long const&) [2022]
+-----------------------------------------------
+                                                 <spontaneous>
+[5]      6.8    1.55    0.00                 DrawModelEx [5]
+-----------------------------------------------
+                0.10    1.14    3534/3534        World::generateChunk(PerlinNoise&, Atlas&) [4]
+[6]      5.5    0.10    1.14    3534         World::createChunkData(PerlinNoise&, Chunk&) [6]
+                0.11    1.03 4430888/4430888     PerlinNoise3DWithOctaves(PerlinNoise&, double, double, double, int) [7]
+                0.00    0.00  296626/296626      World::createBlockPlaceRequestAt(Chunk&, int, int, int, Block, std::vector<BlockType, std::allocator<BlockType> >) [2000]
+                0.00    0.00   81257/372025      Chunk::setBlockAt(unsigned long, unsigned long, unsigned long, Block) [1999]
+                0.00    0.00   17670/17670       void std::vector<std::pair<Vector2, float>, std::allocator<std::pair<Vector2, float> > >::_M_realloc_insert<std::pair<Vector2, float> >(__gnu_cxx::__normal_iterator<std::pair<Vector2, float>*, std::vector<std::pair<Vector2, float>, std::allocator<std::pair<Vector2, float> > > >, std::pair<Vector2, float>&&) [2002]
+-----------------------------------------------
+                0.11    1.03 4430888/4430888     World::createChunkData(PerlinNoise&, Chunk&) [6]
+[7]      5.0    0.11    1.03 4430888         PerlinNoise3DWithOctaves(PerlinNoise&, double, double, double, int) [7]
+                1.03    0.00 35447104/35447104     PerlinNoise::noise(double, double, double) [9]
+-----------------------------------------------
+                0.34    0.74 212865083/212865083     Chunk::generateModel(World&, Atlas&) [3]
+[8]      4.8    0.34    0.74 212865083         Chunk::getBlockInDirection(unsigned long, unsigned long, unsigned long, std::tuple<int, int, int>, World&) [8]
+                0.02    0.72 13983008/13983008     World::getBlockAt(std::tuple<int, int, int>, int, int, int) [11]
+-----------------------------------------------
+                1.03    0.00 35447104/35447104     PerlinNoise3DWithOctaves(PerlinNoise&, double, double, double, int) [7]
+[9]      4.5    1.03    0.00 35447104         PerlinNoise::noise(double, double, double) [9]
+-----------------------------------------------
+                                                 <spontaneous>
+[10]     4.2    0.95    0.00                 DrawMesh [10]
+-----------------------------------------------
+                0.02    0.72 13983008/13983008     Chunk::getBlockInDirection(unsigned long, unsigned long, unsigned long, std::tuple<int, int, int>, World&) [8]
+[11]     3.3    0.02    0.72 13983008         World::getBlockAt(std::tuple<int, int, int>, int, int, int) [11]
+                0.23    0.23 13983008/14159109     World::getChunkAt(std::tuple<int, int, int>) [13]
+                0.27    0.00 8624756/8919852     Chunk::getBlockAt(unsigned long, unsigned long, unsigned long) const [15]
+-----------------------------------------------
+                                                 <spontaneous>
+[12]     3.2    0.72    0.00                 MatrixMultiply [12]
+-----------------------------------------------
+                0.00    0.00    3649/14159109     World::cameraIsSubmerged(CameraController const&) [57]
+                0.00    0.00   21204/14159109     World::generateChunk(PerlinNoise&, Atlas&) [4]
+                0.00    0.00   52725/14159109     World::cameraMoved(CameraController const&, PerlinNoise&) [56]
+                0.00    0.00   98523/14159109     World::handleRaycastRequest(CameraController const&, RaycastRequest&, Block) [55]
+                0.23    0.23 13983008/14159109     World::getBlockAt(std::tuple<int, int, int>, int, int, int) [11]
+[13]     2.0    0.23    0.23 14159109         World::getChunkAt(std::tuple<int, int, int>) [13]
+                0.23    0.00 14159109/14162643     std::_Hashtable<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk>, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::find(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [17]
+-----------------------------------------------
+                                                 <spontaneous>
+[14]     1.2    0.28    0.00                 GetRayCollisionTriangle [14]
+-----------------------------------------------
+                0.00    0.00    3649/8919852     World::cameraIsSubmerged(CameraController const&) [57]
+                0.01    0.00  291447/8919852     World::updateChunkModels(Atlas&) [2]
+                0.27    0.00 8624756/8919852     World::getBlockAt(std::tuple<int, int, int>, int, int, int) [11]
+[15]     1.2    0.28    0.00 8919852         Chunk::getBlockAt(unsigned long, unsigned long, unsigned long) const [15]
+-----------------------------------------------
+                                                 <spontaneous>
+[16]     1.1    0.24    0.00                 Vector3Transform [16]
+-----------------------------------------------
+                0.00    0.00    3534/14162643     World::generateChunk(PerlinNoise&, Atlas&) [4]
+                0.23    0.00 14159109/14162643     World::getChunkAt(std::tuple<int, int, int>) [13]
+[17]     1.0    0.23    0.00 14162643         std::_Hashtable<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk>, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::find(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [17]
+-----------------------------------------------
+                                                 <spontaneous>
+[18]     0.9    0.21    0.00                 Vector3DotProduct [18]
+-----------------------------------------------
+                                                 <spontaneous>
+[19]     0.9    0.21    0.00                 Vector3Subtract [19]
+-----------------------------------------------
+                0.00    0.00   20426/3877454     World::handleRaycastRequest(CameraController const&, RaycastRequest&, Block) [55]
+                0.16    0.00 3857028/3877454     main [1]
+[20]     0.7    0.16    0.00 3877454         Chunk::getWorldPos() const [20]
+-----------------------------------------------
+                                                 <spontaneous>
+[21]     0.6    0.14    0.00                 MatrixIdentity [21]
+-----------------------------------------------
+                                                 <spontaneous>
+[22]     0.5    0.12    0.00                 GetGlyphIndex [22]
+-----------------------------------------------
+                                                 <spontaneous>
+[23]     0.5    0.12    0.00                 _init [23]
+-----------------------------------------------
+                                                 <spontaneous>
+[24]     0.4    0.09    0.00                 MatrixRotate [24]
+-----------------------------------------------
+                                                 <spontaneous>
+[25]     0.3    0.07    0.00                 GetRayCollisionMesh [25]
+-----------------------------------------------
+                                                 <spontaneous>
+[26]     0.3    0.07    0.00                 MatrixScale [26]
+-----------------------------------------------
+                                                 <spontaneous>
+[27]     0.3    0.07    0.00                 Vector3CrossProduct [27]
+-----------------------------------------------
+                                                 <spontaneous>
+[28]     0.3    0.07    0.00                 rlMatrixIdentity [28]
+-----------------------------------------------
+                                                 <spontaneous>
+[29]     0.3    0.07    0.00                 DrawModel [29]
+-----------------------------------------------
+                                                 <spontaneous>
+[30]     0.2    0.05    0.00                 DrawTextCodepoint [30]
+-----------------------------------------------
+                0.00    0.05    1627/1627        main [1]
+[31]     0.2    0.00    0.05    1627         World::sortKeysToRender() [31]
+                0.00    0.04    1627/1627        void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [33]
+                0.01    0.00    1627/1627        void std::__final_insertion_sort<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [38]
+                0.00    0.00   13016/2267247     std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_manager(std::_Any_data&, std::_Any_data const&, std::_Manager_operation) [1998]
+-----------------------------------------------
+                                                 <spontaneous>
+[32]     0.2    0.04    0.00                 MatrixTranslate [32]
+-----------------------------------------------
+                               37486             void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [33]
+                0.00    0.04    1627/1627        World::sortKeysToRender() [31]
+[33]     0.2    0.00    0.04    1627+37486   void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [33]
+                0.02    0.00 6493642/9441200     std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_invoke(std::_Any_data const&, std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&) [34]
+                0.01    0.00  282078/423491      void std::__adjust_heap<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [36]
+                0.00    0.01    1575/1575        void std::__make_heap<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >&) [50]
+                0.00    0.00  588266/2267247     std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_manager(std::_Any_data&, std::_Any_data const&, std::_Manager_operation) [1998]
+                               37486             void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [33]
+-----------------------------------------------
+                0.00    0.00   65259/9441200     void std::__insertion_sort<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [58]
+                0.00    0.00  618571/9441200     void std::__final_insertion_sort<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [38]
+                0.01    0.00 2263728/9441200     void std::__adjust_heap<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [36]
+                0.02    0.00 6493642/9441200     void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [33]
+[34]     0.1    0.03    0.00 9441200         std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_invoke(std::_Any_data const&, std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&) [34]
+-----------------------------------------------
+                                                 <spontaneous>
+[35]     0.1    0.02    0.00                 rlDisableShader [35]
+-----------------------------------------------
+                0.00    0.00  141413/423491      void std::__make_heap<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >&) [50]
+                0.01    0.00  282078/423491      void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [33]
+[36]     0.1    0.01    0.01  423491         void std::__adjust_heap<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [36]
+                0.01    0.00 2263728/9441200     std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_invoke(std::_Any_data const&, std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&) [34]
+                0.00    0.00  423491/2267247     std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_manager(std::_Any_data&, std::_Any_data const&, std::_Manager_operation) [1998]
+-----------------------------------------------
+                                                 <spontaneous>
+[37]     0.1    0.01    0.00                 DrawTexturePro [37]
+-----------------------------------------------
+                0.01    0.00    1627/1627        World::sortKeysToRender() [31]
+[38]     0.1    0.01    0.00    1627         void std::__final_insertion_sort<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [38]
+                0.00    0.00  618571/9441200     std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_invoke(std::_Any_data const&, std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&) [34]
+                0.00    0.00    1627/1627        void std::__insertion_sort<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [58]
+                0.00    0.00 1054826/2267247     std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_manager(std::_Any_data&, std::_Any_data const&, std::_Manager_operation) [1998]
+-----------------------------------------------
+                                                 <spontaneous>
+[39]     0.0    0.01    0.00                 MatrixAdd [39]
+-----------------------------------------------
+                                                 <spontaneous>
+[40]     0.0    0.01    0.00                 rlActiveTextureSlot [40]
+-----------------------------------------------
+                                                 <spontaneous>
+[41]     0.0    0.01    0.00                 rlClearColor [41]
+-----------------------------------------------
+                                                 <spontaneous>
+[42]     0.0    0.01    0.00                 rlDisableVertexBufferElement [42]
+-----------------------------------------------
+                                                 <spontaneous>
+[43]     0.0    0.01    0.00                 rlEnableShader [43]
+-----------------------------------------------
+                                                 <spontaneous>
+[44]     0.0    0.01    0.00                 rlGetMatrixTransform [44]
+-----------------------------------------------
+                                                 <spontaneous>
+[45]     0.0    0.01    0.00                 rlSetMatrixModelview [45]
+-----------------------------------------------
+                                                 <spontaneous>
+[46]     0.0    0.01    0.00                 rlSetMatrixProjection [46]
+-----------------------------------------------
+                                                 <spontaneous>
+[47]     0.0    0.01    0.00                 rlSetTexture [47]
+-----------------------------------------------
+                                                 <spontaneous>
+[48]     0.0    0.01    0.00                 rlSetUniformMatrix [48]
+-----------------------------------------------
+                                                 <spontaneous>
+[49]     0.0    0.01    0.00                 rlVertex3f [49]
+-----------------------------------------------
+                0.00    0.01    1575/1575        void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [33]
+[50]     0.0    0.00    0.01    1575         void std::__make_heap<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >&) [50]
+                0.00    0.00  141413/423491      void std::__adjust_heap<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [36]
+                0.00    0.00  141413/2267247     std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_manager(std::_Any_data&, std::_Any_data const&, std::_Manager_operation) [1998]
+-----------------------------------------------
+                                                 <spontaneous>
+[51]     0.0    0.01    0.00                 DrawModelWires [51]
+-----------------------------------------------
+                                                 <spontaneous>
+[52]     0.0    0.01    0.00                 DrawTextureRec [52]
+-----------------------------------------------
+                                                 <spontaneous>
+[53]     0.0    0.01    0.00                 rlDisableStereoRender [53]
+-----------------------------------------------
+                                                 <spontaneous>
+[54]     0.0    0.01    0.00                 rlIsStereoRenderEnabled [54]
+-----------------------------------------------
+                0.00    0.00    3649/3649        main [1]
+[55]     0.0    0.00    0.00    3649         World::handleRaycastRequest(CameraController const&, RaycastRequest&, Block) [55]
+                0.00    0.00   98523/14159109     World::getChunkAt(std::tuple<int, int, int>) [13]
+                0.00    0.00   20426/3877454     Chunk::getWorldPos() const [20]
+                0.00    0.00    3649/10493       CameraController::getChunkPos() const [2005]
+                0.00    0.00    3649/5234        CameraController::calcForward() const [2006]
+-----------------------------------------------
+                0.00    0.00      25/25          main [1]
+[56]     0.0    0.00    0.00      25         World::cameraMoved(CameraController const&, PerlinNoise&) [56]
+                0.00    0.00   52725/14159109     World::getChunkAt(std::tuple<int, int, int>) [13]
+                0.00    0.00      25/10493       CameraController::getChunkPos() const [2005]
+                0.00    0.00      25/25          void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}>) [2018]
+                0.00    0.00      25/25          void std::__insertion_sort<__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}>) [2017]
+                0.00    0.00      13/13          void std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > >::_M_realloc_insert<std::pair<std::tuple<int, int, int>, float> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, std::pair<std::tuple<int, int, int>, float>&&) [2021]
+-----------------------------------------------
+                0.00    0.00    3649/3649        main [1]
+[57]     0.0    0.00    0.00    3649         World::cameraIsSubmerged(CameraController const&) [57]
+                0.00    0.00    3649/14159109     World::getChunkAt(std::tuple<int, int, int>) [13]
+                0.00    0.00    3649/8919852     Chunk::getBlockAt(unsigned long, unsigned long, unsigned long) const [15]
+                0.00    0.00    3649/10493       CameraController::getChunkPos() const [2005]
+-----------------------------------------------
+                0.00    0.00    1627/1627        void std::__final_insertion_sort<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [38]
+[58]     0.0    0.00    0.00    1627         void std::__insertion_sort<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [58]
+                0.00    0.00   65259/9441200     std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_invoke(std::_Any_data const&, std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&) [34]
+                0.00    0.00   46234/2267247     std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_manager(std::_Any_data&, std::_Any_data const&, std::_Manager_operation) [1998]
+-----------------------------------------------
+[59]     0.0    0.00    0.00       1+128     <cycle 1 as a whole> [59]
+                0.00    0.00     128             PerlinNoise::PerlinNoise(unsigned int) <cycle 1> [2011]
+                0.00    0.00       1             void std::shuffle<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::linear_congruential_engine<unsigned long, 16807ul, 0ul, 2147483647ul>&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::linear_congruential_engine<unsigned long, 16807ul, 0ul, 2147483647ul>&) <cycle 1> [2029]
+-----------------------------------------------
+                0.00    0.00 21909480/21909480     Chunk::generateModel(World&, Atlas&) [3]
+[1993]   0.0    0.00    0.00 21909480         getTexcoordsStone(Dir) [1993]
+-----------------------------------------------
+                0.00    0.00 11082606/11082606     Chunk::generateModel(World&, Atlas&) [3]
+[1994]   0.0    0.00    0.00 11082606         getTexcoordsGrass(Dir) [1994]
+-----------------------------------------------
+                0.00    0.00 8435250/8435250     Chunk::generateModel(World&, Atlas&) [3]
+[1995]   0.0    0.00    0.00 8435250         getTexcoordsWater(Dir) [1995]
+-----------------------------------------------
+                0.00    0.00 3653952/3653952     Chunk::generateModel(World&, Atlas&) [3]
+[1996]   0.0    0.00    0.00 3653952         getTexcoordsLeaves(Dir) [1996]
+-----------------------------------------------
+                0.00    0.00 3178530/3178530     Chunk::generateModel(World&, Atlas&) [3]
+[1997]   0.0    0.00    0.00 3178530         getTexcoordsDirt(Dir) [1997]
+-----------------------------------------------
+                0.00    0.00       1/2267247     World::~World() [2027]
+                0.00    0.00   13016/2267247     World::sortKeysToRender() [31]
+                0.00    0.00   46234/2267247     void std::__insertion_sort<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [58]
+                0.00    0.00  141413/2267247     void std::__make_heap<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >&) [50]
+                0.00    0.00  423491/2267247     void std::__adjust_heap<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [36]
+                0.00    0.00  588266/2267247     void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [33]
+                0.00    0.00 1054826/2267247     void std::__final_insertion_sort<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >) [38]
+[1998]   0.0    0.00    0.00 2267247         std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_manager(std::_Any_data&, std::_Any_data const&, std::_Manager_operation) [1998]
+-----------------------------------------------
+                0.00    0.00   81257/372025      World::createChunkData(PerlinNoise&, Chunk&) [6]
+                0.00    0.00  290768/372025      World::updateChunkModels(Atlas&) [2]
+[1999]   0.0    0.00    0.00  372025         Chunk::setBlockAt(unsigned long, unsigned long, unsigned long, Block) [1999]
+-----------------------------------------------
+                0.00    0.00  296626/296626      World::createChunkData(PerlinNoise&, Chunk&) [6]
+[2000]   0.0    0.00    0.00  296626         World::createBlockPlaceRequestAt(Chunk&, int, int, int, Block, std::vector<BlockType, std::allocator<BlockType> >) [2000]
+                0.00    0.00      14/14          void std::vector<BlockPlaceRequest, std::allocator<BlockPlaceRequest> >::_M_realloc_insert<BlockPlaceRequest const&>(__gnu_cxx::__normal_iterator<BlockPlaceRequest*, std::vector<BlockPlaceRequest, std::allocator<BlockPlaceRequest> > >, BlockPlaceRequest const&) [2020]
+-----------------------------------------------
+                0.00    0.00  256080/256080      Chunk::generateModel(World&, Atlas&) [3]
+[2001]   0.0    0.00    0.00  256080         getTexcoordsLog(Dir) [2001]
+-----------------------------------------------
+                0.00    0.00   17670/17670       World::createChunkData(PerlinNoise&, Chunk&) [6]
+[2002]   0.0    0.00    0.00   17670         void std::vector<std::pair<Vector2, float>, std::allocator<std::pair<Vector2, float> > >::_M_realloc_insert<std::pair<Vector2, float> >(__gnu_cxx::__normal_iterator<std::pair<Vector2, float>*, std::vector<std::pair<Vector2, float>, std::allocator<std::pair<Vector2, float> > > >, std::pair<Vector2, float>&&) [2002]
+-----------------------------------------------
+                0.00    0.00   14596/14596       main [1]
+[2003]   0.0    0.00    0.00   14596         std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > __gnu_cxx::__to_xstring<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...) [clone .constprop.0] [2003]
+-----------------------------------------------
+                0.00    0.00    3534/10602       World::~World() [2027]
+                0.00    0.00    7068/10602       World::generateChunk(PerlinNoise&, Atlas&) [4]
+[2004]   0.0    0.00    0.00   10602         Chunk::~Chunk() [2004]
+-----------------------------------------------
+                0.00    0.00      25/10493       World::cameraMoved(CameraController const&, PerlinNoise&) [56]
+                0.00    0.00    3170/10493       main [1]
+                0.00    0.00    3649/10493       World::cameraIsSubmerged(CameraController const&) [57]
+                0.00    0.00    3649/10493       World::handleRaycastRequest(CameraController const&, RaycastRequest&, Block) [55]
+[2005]   0.0    0.00    0.00   10493         CameraController::getChunkPos() const [2005]
+-----------------------------------------------
+                0.00    0.00    1585/5234        main [1]
+                0.00    0.00    3649/5234        World::handleRaycastRequest(CameraController const&, RaycastRequest&, Block) [55]
+[2006]   0.0    0.00    0.00    5234         CameraController::calcForward() const [2006]
+-----------------------------------------------
+                0.00    0.00    3649/3649        main [1]
+[2007]   0.0    0.00    0.00    3649         getBlockName[abi:cxx11](BlockType const&) [2007]
+-----------------------------------------------
+                0.00    0.00    3649/3649        main [1]
+[2008]   0.0    0.00    0.00    3649         CameraController::update() [2008]
+-----------------------------------------------
+                0.00    0.00    3534/3534        World::generateChunk(PerlinNoise&, Atlas&) [4]
+[2009]   0.0    0.00    0.00    3534         Chunk::Chunk(std::tuple<int, int, int> const&) [2009]
+-----------------------------------------------
+                0.00    0.00    1585/1585        main [1]
+[2010]   0.0    0.00    0.00    1585         CameraController::moveBy(Vector3 const&) [2010]
+-----------------------------------------------
+                                 127             void std::shuffle<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::linear_congruential_engine<unsigned long, 16807ul, 0ul, 2147483647ul>&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::linear_congruential_engine<unsigned long, 16807ul, 0ul, 2147483647ul>&) <cycle 1> [2029]
+                0.00    0.00       1/1           main [1]
+[2011]   0.0    0.00    0.00     128         PerlinNoise::PerlinNoise(unsigned int) <cycle 1> [2011]
+                0.00    0.00       1/1           std::vector<int, std::allocator<int> >::_M_default_append(unsigned long) [2028]
+                                   1             void std::shuffle<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::linear_congruential_engine<unsigned long, 16807ul, 0ul, 2147483647ul>&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::linear_congruential_engine<unsigned long, 16807ul, 0ul, 2147483647ul>&) <cycle 1> [2029]
+-----------------------------------------------
+                0.00    0.00      36/36          Block::Block(BlockType const&) [2016]
+[2012]   0.0    0.00    0.00      36         getTexcoordsFn(BlockType const&) [2012]
+-----------------------------------------------
+                0.00    0.00      36/36          Block::Block(BlockType const&) [2016]
+[2013]   0.0    0.00    0.00      36         getTransparent(BlockType const&) [2013]
+-----------------------------------------------
+                0.00    0.00      36/36          Block::Block(BlockType const&) [2016]
+[2014]   0.0    0.00    0.00      36         getChunkModelInfo(BlockType const&) [2014]
+-----------------------------------------------
+                0.00    0.00      36/36          Block::Block(BlockType const&) [2016]
+[2015]   0.0    0.00    0.00      36         getSolid(BlockType const&) [2015]
+-----------------------------------------------
+                0.00    0.00       9/36          _GLOBAL__sub_I_main [2033]
+                0.00    0.00       9/36          _GLOBAL__sub_I__ZN5BlockC2ERK9BlockType [2030]
+                0.00    0.00       9/36          _GLOBAL__sub_I__ZN5ChunkC2ERKSt5tupleIJiiiEE [2031]
+                0.00    0.00       9/36          _GLOBAL__sub_I__ZN5WorldC2Ev [2032]
+[2016]   0.0    0.00    0.00      36         Block::Block(BlockType const&) [2016]
+                0.00    0.00      36/36          getTransparent(BlockType const&) [2013]
+                0.00    0.00      36/36          getSolid(BlockType const&) [2015]
+                0.00    0.00      36/36          getTexcoordsFn(BlockType const&) [2012]
+                0.00    0.00      36/36          getChunkModelInfo(BlockType const&) [2014]
+-----------------------------------------------
+                0.00    0.00      25/25          World::cameraMoved(CameraController const&, PerlinNoise&) [56]
+[2017]   0.0    0.00    0.00      25         void std::__insertion_sort<__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}>) [2017]
+-----------------------------------------------
+                                2647             void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}>) [2018]
+                0.00    0.00      25/25          World::cameraMoved(CameraController const&, PerlinNoise&) [56]
+[2018]   0.0    0.00    0.00      25+2647    void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}>) [2018]
+                                2647             void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}>) [2018]
+-----------------------------------------------
+                0.00    0.00      24/24          World::generateChunk(PerlinNoise&, Atlas&) [4]
+[2019]   0.0    0.00    0.00      24         void std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > >::_M_realloc_insert<std::reference_wrapper<Chunk> >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, std::reference_wrapper<Chunk>&&) [2019]
+-----------------------------------------------
+                0.00    0.00      14/14          World::createBlockPlaceRequestAt(Chunk&, int, int, int, Block, std::vector<BlockType, std::allocator<BlockType> >) [2000]
+[2020]   0.0    0.00    0.00      14         void std::vector<BlockPlaceRequest, std::allocator<BlockPlaceRequest> >::_M_realloc_insert<BlockPlaceRequest const&>(__gnu_cxx::__normal_iterator<BlockPlaceRequest*, std::vector<BlockPlaceRequest, std::allocator<BlockPlaceRequest> > >, BlockPlaceRequest const&) [2020]
+-----------------------------------------------
+                0.00    0.00      13/13          World::cameraMoved(CameraController const&, PerlinNoise&) [56]
+[2021]   0.0    0.00    0.00      13         void std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > >::_M_realloc_insert<std::pair<std::tuple<int, int, int>, float> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, std::pair<std::tuple<int, int, int>, float>&&) [2021]
+-----------------------------------------------
+                0.00    0.00       9/9           World::generateChunk(PerlinNoise&, Atlas&) [4]
+[2022]   0.0    0.00    0.00       9         std::_Hashtable<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk>, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_rehash(unsigned long, unsigned long const&) [2022]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[2023]   0.0    0.00    0.00       1         CameraController::CameraController() [2023]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[2024]   0.0    0.00    0.00       1         Atlas::Atlas(char const*) [2024]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[2025]   0.0    0.00    0.00       1         Atlas::~Atlas() [2025]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[2026]   0.0    0.00    0.00       1         World::World() [2026]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[2027]   0.0    0.00    0.00       1         World::~World() [2027]
+                0.00    0.00    3534/10602       Chunk::~Chunk() [2004]
+                0.00    0.00       1/2267247     std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_manager(std::_Any_data&, std::_Any_data const&, std::_Manager_operation) [1998]
+-----------------------------------------------
+                0.00    0.00       1/1           PerlinNoise::PerlinNoise(unsigned int) <cycle 1> [2011]
+[2028]   0.0    0.00    0.00       1         std::vector<int, std::allocator<int> >::_M_default_append(unsigned long) [2028]
+-----------------------------------------------
+                                   1             PerlinNoise::PerlinNoise(unsigned int) <cycle 1> [2011]
+[2029]   0.0    0.00    0.00       1         void std::shuffle<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::linear_congruential_engine<unsigned long, 16807ul, 0ul, 2147483647ul>&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::linear_congruential_engine<unsigned long, 16807ul, 0ul, 2147483647ul>&) <cycle 1> [2029]
+                                 127             PerlinNoise::PerlinNoise(unsigned int) <cycle 1> [2011]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2022 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+  [10] DrawMesh                [9] PerlinNoise::noise(double, double, double) [1998] std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_manager(std::_Any_data&, std::_Any_data const&, std::_Manager_operation)
+  [29] DrawModel            [2011] PerlinNoise::PerlinNoise(unsigned int) [34] std::_Function_handler<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&), World::World()::{lambda(std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)#1}>::_M_invoke(std::_Any_data const&, std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)
+   [5] DrawModelEx          [2010] CameraController::moveBy(Vector3 const&) [2020] void std::vector<BlockPlaceRequest, std::allocator<BlockPlaceRequest> >::_M_realloc_insert<BlockPlaceRequest const&>(__gnu_cxx::__normal_iterator<BlockPlaceRequest*, std::vector<BlockPlaceRequest, std::allocator<BlockPlaceRequest> > >, BlockPlaceRequest const&)
+  [51] DrawModelWires       [2008] CameraController::update() [2019] void std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > >::_M_realloc_insert<std::reference_wrapper<Chunk> >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, std::reference_wrapper<Chunk>&&)
+  [30] DrawTextCodepoint    [2023] CameraController::CameraController() [2002] void std::vector<std::pair<Vector2, float>, std::allocator<std::pair<Vector2, float> > >::_M_realloc_insert<std::pair<Vector2, float> >(__gnu_cxx::__normal_iterator<std::pair<Vector2, float>*, std::vector<std::pair<Vector2, float>, std::allocator<std::pair<Vector2, float> > > >, std::pair<Vector2, float>&&)
+  [37] DrawTexturePro       [2024] Atlas::Atlas(char const*) [2021] void std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > >::_M_realloc_insert<std::pair<std::tuple<int, int, int>, float> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, std::pair<std::tuple<int, int, int>, float>&&)
+  [52] DrawTextureRec       [2025] Atlas::~Atlas()      [2028] std::vector<int, std::allocator<int> >::_M_default_append(unsigned long)
+  [22] GetGlyphIndex        [2016] Block::Block(BlockType const&) [50] void std::__make_heap<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >&)
+  [25] GetRayCollisionMesh  [1999] Chunk::setBlockAt(unsigned long, unsigned long, unsigned long, Block) [36] void std::__adjust_heap<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, long, std::reference_wrapper<Chunk>, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >)
+  [14] GetRayCollisionTriangle [3] Chunk::generateModel(World&, Atlas&) [58] void std::__insertion_sort<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >)
+  [39] MatrixAdd               [8] Chunk::getBlockInDirection(unsigned long, unsigned long, unsigned long, std::tuple<int, int, int>, World&) [2017] void std::__insertion_sort<__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}>)
+  [21] MatrixIdentity       [2009] Chunk::Chunk(std::tuple<int, int, int> const&) [33] void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >)
+  [12] MatrixMultiply       [2004] Chunk::~Chunk()      [2018] void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}> >(__gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, __gnu_cxx::__normal_iterator<std::pair<std::tuple<int, int, int>, float>*, std::vector<std::pair<std::tuple<int, int, int>, float>, std::allocator<std::pair<std::tuple<int, int, int>, float> > > >, long, __gnu_cxx::__ops::_Iter_comp_iter<World::sortChunksToGenerate()::{lambda(std::pair<std::tuple<int, int, int>, float> const&, std::pair<std::tuple<int, int, int>, float> const&)#1}>)
+  [24] MatrixRotate           [11] World::getBlockAt(std::tuple<int, int, int>, int, int, int) [38] void std::__final_insertion_sort<__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> > >(__gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__normal_iterator<std::reference_wrapper<Chunk>*, std::vector<std::reference_wrapper<Chunk>, std::allocator<std::reference_wrapper<Chunk> > > >, __gnu_cxx::__ops::_Iter_comp_iter<std::function<bool (std::reference_wrapper<Chunk> const&, std::reference_wrapper<Chunk> const&)> >)
+  [26] MatrixScale            [13] World::getChunkAt(std::tuple<int, int, int>) [2029] void std::shuffle<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::linear_congruential_engine<unsigned long, 16807ul, 0ul, 2147483647ul>&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::linear_congruential_engine<unsigned long, 16807ul, 0ul, 2147483647ul>&)
+  [32] MatrixTranslate        [56] World::cameraMoved(CameraController const&, PerlinNoise&) [23] _init
+  [27] Vector3CrossProduct     [4] World::generateChunk(PerlinNoise&, Atlas&) [1] main
+  [18] Vector3DotProduct       [6] World::createChunkData(PerlinNoise&, Chunk&) [40] rlActiveTextureSlot
+  [19] Vector3Subtract        [31] World::sortKeysToRender() [41] rlClearColor
+  [16] Vector3Transform       [57] World::cameraIsSubmerged(CameraController const&) [35] rlDisableShader
+ [2007] getBlockName[abi:cxx11](BlockType const&) [2] World::updateChunkModels(Atlas&) [53] rlDisableStereoRender
+ [2012] getTexcoordsFn(BlockType const&) [55] World::handleRaycastRequest(CameraController const&, RaycastRequest&, Block) [42] rlDisableVertexBufferElement
+ [2013] getTransparent(BlockType const&) [2000] World::createBlockPlaceRequestAt(Chunk&, int, int, int, Block, std::vector<BlockType, std::allocator<BlockType> >) [43] rlEnableShader
+ [2001] getTexcoordsLog(Dir) [2026] World::World()        [44] rlGetMatrixTransform
+ [1997] getTexcoordsDirt(Dir) [2027] World::~World()      [54] rlIsStereoRenderEnabled
+ [2014] getChunkModelInfo(BlockType const&) [2003] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > __gnu_cxx::__to_xstring<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...) [clone .constprop.0] [28] rlMatrixIdentity (rlgl.h)
+ [1994] getTexcoordsGrass(Dir) [2006] CameraController::calcForward() const [45] rlSetMatrixModelview
+ [1993] getTexcoordsStone(Dir) [2005] CameraController::getChunkPos() const [46] rlSetMatrixProjection
+ [1995] getTexcoordsWater(Dir) [15] Chunk::getBlockAt(unsigned long, unsigned long, unsigned long) const [47] rlSetTexture
+ [1996] getTexcoordsLeaves(Dir) [20] Chunk::getWorldPos() const [48] rlSetUniformMatrix
+   [7] PerlinNoise3DWithOctaves(PerlinNoise&, double, double, double, int) [17] std::_Hashtable<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk>, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::find(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [49] rlVertex3f
+ [2015] getSolid(BlockType const&) [2022] std::_Hashtable<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk>, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Chunk> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::_M_rehash(unsigned long, unsigned long const&) [59] <cycle 1>

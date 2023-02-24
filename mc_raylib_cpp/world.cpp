@@ -144,12 +144,11 @@ int World::getHeightAt(PerlinNoise& pn, vector<pair<Vector2, float>>& lowerResol
 		(Vector2){ floorf(lowerResolutionX), ceilf (lowerResolutionY) }, // (0,1)
 		(Vector2){ ceilf (lowerResolutionX), ceilf (lowerResolutionY) }, // (1,1)
 	};
+
 	Vector2 upscaleds[4];
-
 	float heights[4];
-	int maxHeight = CHUNK_SIZE * WORLD_SIZE;
 
-	size_t indexes[4];
+	size_t indexes[4]; // indexes to lowerResolutions
 
 	for (size_t i = 0; i < 4; i++) {
 
@@ -183,7 +182,10 @@ int World::getHeightAt(PerlinNoise& pn, vector<pair<Vector2, float>>& lowerResol
 
 
 		if (lowerResolution.second < 0) {
+
 			int height = LOWEST_SURFACE_Z;
+			int maxHeight = CHUNK_SIZE * WORLD_SIZE;
+			
 			for (int z = maxHeight; z >= LOWEST_SURFACE_Z; z--) {
 
 				double noise = PerlinNoise3DWithOctaves(
@@ -198,7 +200,7 @@ int World::getHeightAt(PerlinNoise& pn, vector<pair<Vector2, float>>& lowerResol
 				int distToBottom = maxHeight - z; // lower Z -> higher value
 				double distToBottomScale = (double)distToBottom / (double)maxHeight;
 				
-				double modifiedNoise = noise + distToBottomScale;
+				double modifiedNoise = (noise + distToBottomScale);
 
 				if (modifiedNoise >= 1.0) {
 					height = z;
@@ -583,8 +585,11 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 	int cameraChunkY = std::get<1>(cameraChunk);
 	int cameraChunkZ = std::get<2>(cameraChunk);
 
-	int startX = MAX(cameraChunkX - VIEW_DIST, 0); // TEMP: delete MAX
-	int startY = MAX(cameraChunkY - VIEW_DIST, 0); // TEMP: delete MAX
+	// int startX = MAX(cameraChunkX - VIEW_DIST, 0); // TEMP: delete MAX
+	// int startY = MAX(cameraChunkY - VIEW_DIST, 0); // TEMP: delete MAX
+
+	int startX = cameraChunkX - VIEW_DIST;
+	int startY = cameraChunkY - VIEW_DIST;
 	int startZ = MAX(cameraChunkZ - VIEW_DIST, LOWEST_CHUNK_Z);
 
 	int endX = cameraChunkX + VIEW_DIST;
