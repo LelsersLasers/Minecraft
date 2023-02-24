@@ -88,16 +88,16 @@ int main() {
 
 		{
 			if (IsKeyDown(KEY_UP)) {
-				cameraController.pitch += delta * PI / 2.0;
+				cameraController.pitch += delta * PI / 2.0f;
 			}
 			if (IsKeyDown(KEY_DOWN)) {
-				cameraController.pitch -= delta * PI / 2.0;
+				cameraController.pitch -= delta * PI / 2.0f;
 			}
 			if (IsKeyDown(KEY_LEFT)) {
-				cameraController.yaw += delta * PI / 2.0;
+				cameraController.yaw += delta * PI / 2.0f;
 			}
 			if (IsKeyDown(KEY_RIGHT)) {
-				cameraController.yaw -= delta * PI / 2.0;
+				cameraController.yaw -= delta * PI / 2.0f;
 			}
 		}
         cameraController.update();
@@ -121,7 +121,7 @@ int main() {
 			}
 
 			if (!Vector3Equals(moveVec, Vector3Zero())) {
-				moveVec = Vector3Scale(Vector3Normalize(moveVec), delta * 20.0);
+				moveVec = Vector3Scale(Vector3Normalize(moveVec), delta * 20.0f);
 
 				tuple<int, int, int> oldCameraChunk = cameraController.getChunkPos();
 				cameraController.moveBy(moveVec);
@@ -185,17 +185,17 @@ int main() {
 
 					if (chunkOutlines) {
 						DrawCubeWiresV(
-							Vector3Add(chunk.getWorldPos(), Vector3Scale(Vector3One(), (float)CHUNK_SIZE / 2.0)),
+							Vector3Add(chunk.getWorldPos(), Vector3Scale(Vector3One(), (float)CHUNK_SIZE / 2.0f)),
 							Vector3Scale(Vector3One(), (float)CHUNK_SIZE),
 							PINK
 						);
 					}
 					for (size_t j = 0; j < TOTAL_CHUNK_MESHES; j++) {
 						if (faces) {
-							DrawModel(chunk.models[j], chunk.getWorldPos(), 1.0, WHITE);
+							DrawModel(chunk.models[j], chunk.getWorldPos(), 1.0f, WHITE);
 						}
 						if (wireframe) {
-							DrawModelWires(chunk.models[j], chunk.getWorldPos(), 1.0, BLACK);
+							DrawModelWires(chunk.models[j], chunk.getWorldPos(), 1.0f, BLACK);
 						}
 					}
 				}
@@ -223,7 +223,7 @@ int main() {
 
 
 			if (world.cameraIsSubmerged(cameraController) && faces) {
-				DrawRectangle(0, 0, windowWidth, windowHeight, ColorAlpha(BLUE, 0.6));
+				DrawRectangle(0, 0, windowWidth, windowHeight, ColorAlpha(BLUE, 0.6f));
 			}
 
 
@@ -248,7 +248,7 @@ int main() {
 
 			std::string selectedBlockText = "- Selected block: " + getBlockName(selectedBlock.blockType);
 			std::string fpsText = "- FPS: " + std::to_string((int)(1.0 / delta));
-			std::string deltaText = "- Delta: " + std::to_string(delta * 1000) + " ms";
+			std::string deltaText = "- Delta: " + std::to_string(delta * 1000.0f) + " ms";
 			std::string cameraPosText = "- Camera: " + std::to_string((int)cameraController.camera.position.x) + ", " + std::to_string((int)cameraController.camera.position.y) + ", " + std::to_string((int)cameraController.camera.position.z);
 			std::string chunksToGenerateText = "- Chunks to generate: " + std::to_string(world.chunksToGenerate.size());
 			std::string chunksToRenderText = "- Chunks to render: " + std::to_string(world.chunksToRender.size());

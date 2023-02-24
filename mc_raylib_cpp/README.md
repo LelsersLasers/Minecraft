@@ -10,7 +10,6 @@
     - Constructor initalization list
 	- Improve iterating?
 		- Enhanced for loops?
-	- Add `f` to floats
 - Block has array[6] of Vector2 texcoords (indexed by Dir) instead of getTexcoordsFn()/getTexcoords()
 - World gen
 	- Trilinear interpolation??

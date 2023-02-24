@@ -596,9 +596,9 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 
 				tuple<int, int, int> idx = std::make_tuple(x, y, z);
 
-				int diffX = x - cameraChunkX;
-				int diffY = y - cameraChunkY;
-				int diffZ = z - cameraChunkZ;
+				float diffX = (float)x - (float)cameraChunkX;
+				float diffY = (float)y - (float)cameraChunkY;
+				float diffZ = (float)z - (float)cameraChunkZ;
 
 				float dist = sqrtf(diffX * diffX + diffY * diffY + diffZ * diffZ);
 

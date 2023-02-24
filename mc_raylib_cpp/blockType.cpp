@@ -12,28 +12,28 @@ Vector2 getTexcoordsAir(Dir _dir)		{ return (Vector2){ -1, -1 }; }
 Vector2 getTexcoordsGrass(Dir dir) {
 	switch (dir) {
 		case Dir::Top:
-			return (Vector2){ 0, 0 };
+			return (Vector2){ 0.0f, 0.0f };
 		case Dir::Bottom:
-			return (Vector2){ 2, 0 };
+			return (Vector2){ 2.0f, 0.0f };
 		default: // sides
-			return (Vector2){ 3, 0 };
+			return (Vector2){ 3.0f, 0.0f };
 	}
 }
-Vector2 getTexcoordsDirt(Dir dir)		{ return (Vector2){ 2, 0 }; }
-Vector2 getTexcoordsStone(Dir dir)		{ return (Vector2){ 1, 0 }; }
-Vector2 getTexcoordsBedrock(Dir _dir)	{ return (Vector2){ 5, 2 }; }
-Vector2 getTexcoordsWater(Dir _dir)		{ return (Vector2){ 3, 4 }; }
-Vector2 getTexcoordsSand(Dir dir)		{ return (Vector2){ 2, 1 }; }
+Vector2 getTexcoordsDirt(Dir dir)		{ return (Vector2){ 2.0f, 0.0f }; }
+Vector2 getTexcoordsStone(Dir dir)		{ return (Vector2){ 1.0f, 0.0f }; }
+Vector2 getTexcoordsBedrock(Dir _dir)	{ return (Vector2){ 5.0f, 2.0f }; }
+Vector2 getTexcoordsWater(Dir _dir)		{ return (Vector2){ 3.0f, 4.0f }; }
+Vector2 getTexcoordsSand(Dir dir)		{ return (Vector2){ 2.0f, 1.0f }; }
 Vector2 getTexcoordsLog(Dir dir) {
 	switch (dir) {
 		case Dir::Top:
 		case Dir::Bottom:
-			return (Vector2){ 5, 1 };
+			return (Vector2){ 5.0f, 1.0f };
 		default: // sides
-			return (Vector2){ 4, 1 };
+			return (Vector2){ 4.0f, 1.0f };
 	}
 }
-Vector2 getTexcoordsLeaves(Dir dir)		{ return (Vector2){ 4, 3 }; }
+Vector2 getTexcoordsLeaves(Dir dir)		{ return (Vector2){ 4.0f, 3.0f }; }
 
 Vector2 (*getTexcoordsFn(const BlockType& blockType))(Dir dir) {
 	switch (blockType) {
