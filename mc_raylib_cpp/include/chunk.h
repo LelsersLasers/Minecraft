@@ -44,6 +44,7 @@ class Chunk { // : public NoCopy { TODO:
 		void generateModel(World& world, Atlas& atlas);
 
 		static bool inBounds(int x, int y, int z);
+		bool allBlankModels() const;
 		// static bool onEdge(int x, int y, int z);
 
 		tuple<size_t, size_t, size_t> handleRayCollision(RayCollision rayCollision) const;

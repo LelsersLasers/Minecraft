@@ -122,10 +122,7 @@ void World::generateChunk(PerlinNoise& pn, Atlas& atlas) {
 	chunkRef.generateModel(*this, atlas);
 	this->nearbyChunks.push_back(chunkRef);
 
-	bool allBlank = true;
-	for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
-		allBlank = allBlank && chunkRef.isBlankModels[i];
-	}
+	bool allBlank = chunkRef.allBlankModels();
 	if (!allBlank) {
 		this->chunksToRender.push_back(chunkRef);	
 		this->shouldSortChunksToRender = true;
@@ -446,10 +443,7 @@ void World::updateChunkModels(Atlas& atlas) {
 
 			// TODO: better way to do this?
 
-			bool allBlank = true;
-			for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
-				allBlank = allBlank && chunk.isBlankModels[i];
-			}
+			bool allBlank = chunk.allBlankModels();
 			if (!allBlank) { // newly not blank
 
 				// can't use binary search, because keysToRender is not sorted yet
@@ -616,11 +610,7 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 
 						this->nearbyChunks.push_back(chunk);
 
-						bool allBlank = true;
-						for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
-							allBlank = allBlank && chunk.isBlankModels[i];
-						}
-
+						bool allBlank = chunk.allBlankModels();
 						if (!allBlank) {
 							this->chunksToRender.push_back(chunk);	
 						}

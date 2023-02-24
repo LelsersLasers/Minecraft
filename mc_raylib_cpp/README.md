@@ -13,6 +13,8 @@
 	- Add `f` to floats
 - Block has array[6] of Vector2 texcoords (indexed by Dir) instead of getTexcoordsFn()/getTexcoords()
 - World gen
+	- Trilinear interpolation??
+	- Lower resolution Z noise?
 	- Basic biomes
 		- 2 noise maps
 			- Temperature
@@ -56,8 +58,6 @@
 		- Ocean
 		- Rivers
 			- Near WATER_LEVEL
-	- Trilinear interpolation??
-	- Lower resolution Z noise?
 - Performance
 	- Profile??
 		- `gprof build/mainWithProfile  > gprofOutput.txt`

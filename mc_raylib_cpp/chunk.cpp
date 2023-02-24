@@ -191,13 +191,11 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 	}
 
 
-	bool allBlank = true;
 	for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
 		this->isBlankModels[i] = newVertexCounts[i] == 0;
-		allBlank = allBlank && this->isBlankModels[i];
 	}
 
-
+	bool allBlank = this->allBlankModels();
 	if (!allBlank) {
 
 		for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
@@ -235,6 +233,14 @@ void Chunk::generateModel(World& world, Atlas& atlas) {
 
 bool Chunk::inBounds(int x, int y, int z) { // static
 	return x >= 0 && x < CHUNK_SIZE && y >= 0 && y < CHUNK_SIZE && z >= 0 && z < CHUNK_SIZE;
+}
+bool Chunk::allBlankModels() const {
+	for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
+		if (!this->isBlankModels[i]) {
+			return false;
+		}
+	}
+	return true;
 }
 
 tuple<size_t, size_t, size_t> Chunk::handleRayCollision(RayCollision rayCollision) const {
