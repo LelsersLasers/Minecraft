@@ -203,9 +203,9 @@ int main() {
 				}
 
 				RaycastRequest raycastRequest = RaycastRequest::NONE;
-				if (IsKeyPressed(KEY_Q) || IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+				if (IsKeyPressed(KEY_Q) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 					raycastRequest = RaycastRequest::DESTROY_BLOCK;
-				} else if (IsKeyPressed(KEY_E) || IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
+				} else if (IsKeyPressed(KEY_E) || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
 					raycastRequest = RaycastRequest::PLACE_BLOCK;
 				}
 
