@@ -7,18 +7,13 @@
 
 ## TODO 1 (aka things I might actually do)
 
-- C++ stuff
-    - Constructor initalization list
-- Performance
-	- Profile??
-		- `gprof build/mainWithProfile  > gprofOutput.txt`
 - Windows build
-- Texture atlas relativity
 
 ## TODO 2 (aka everything I don't actually want to do)
 
 - C++ stuff
 	- C++ style casts
+    - Constructor initalization list
 - When under water, show the "top" of the water
 - Glass blocks
 	- Sort blocks within a chunk?
@@ -64,3 +59,4 @@
 	- Block has array[6] of Vector2 texcoords (indexed by Dir) instead of getTexcoordsFn()/getTexcoords() ??
 	- Enhanced (range based) for loops??
 	- Global texture instead of per model?
+	- Profile

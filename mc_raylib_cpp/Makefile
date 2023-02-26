@@ -27,7 +27,11 @@ run:
 
 runWithProfile:
 	./$(OUT_DIR)/mainWithProfile
+	gprof build/mainWithProfile > gprofOutput.txt
 
 
 clean:
 	rm -vr $(OUT_DIR)
+
+cleanProfiles:
+	rm -v gmon.out gprofOutput.txt
