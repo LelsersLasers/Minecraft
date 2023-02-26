@@ -3,68 +3,60 @@
 ## BUGS:
 
 - Leaves and water??
+- Leaves on leaves??
 
-## TODO:
+## TODO 1 (aka things I might actually do)
+
+- Windows build
+
+## TODO 2 (aka everything I don't actually want to do)
 
 - C++ stuff
-	- When to return/take a reference?
-	- Better usage of pointers
-		- Avoid creating object and then reassinging it
-		- Can create some objects as `Type* var = new Type(args)`
-	- Pointers vs references vs reference_wrapper
-        - Preference order: reference, reference_wrapper, pointer
-    - [ ] Constructor initalization list
-	- Improve iterating
-		- Enhanced for loops?
-		- RN: Loop through chunkOrder multiple times
-	- Add `f` to floats
-- Block has array[6] of Colors (indexed by Dir) instead of getColorFn()/getColor()
-- Everything
-	- World gen
-		- 2d Perlin noise
-		- Octaves
-		- Basic biomes
-		- Or??
-			- 3d perlin noise
-				- Highest value above .5 = surface level
-				- Sample every 4 blocks
-					- Linear interpolation
-- Everything 2
-    - When under water, show the "top" of the water
-	- Glass blocks
-		- Sort blocks within a chunk?
-			- Or does it work already?
-	- Directional blocks
-		- Wooden logs
-	- Working player
-		- Collision physics
-		- Player::IsSubmerged()
-	- Inventory
-		- Hotbar
-		- Break blocks -> add to inventory
-		- Place blocks -> remove from inventory
-	- Day/night cycle
-		- Sun/moon
-		- Skybox
-		- Lighting
-	- Infinite world
-		- Hold only some chunks in memory
-			- Live read/write to file
-	- World gen
-		- More biomes
-        - 3d perlin noise
-			- "Instead of sampling the Perlin noise in two dimensions try sampling it in three and placing a cube wherever it’s greater than some threshold. It’s not as simple as a basic mesh but it lets you create complex features like caves and overhangs."
-        - Made from 5 diiferent noise setups
-            - +spline interpolation (or something like that)
-        - Caves
-	- Fog
-		- For far away chunks
-	- Flowing water
-	- Falling sand blocks
-	- "Ticks"
-		- Dirt -> grass
-		- Etc
-	- Preformance
-		- Unload models from GPU when not in view
-		- Store chunk block data as a list of indexes to a vector of blocks
-			- Avoids repeating/duplicating block info
+	- C++ style casts
+    - Constructor initalization list
+- When under water, show the "top" of the water
+- Glass blocks
+	- Sort blocks within a chunk?
+		- Or does it work already?
+	- New mesh?
+- Directional blocks
+	- Wooden logs
+- Working player
+	- Collision physics
+	- Player::IsSubmerged()
+- Inventory
+	- Hotbar
+	- Break blocks -> add to inventory
+		- Or maybe "float" above ground like in the actual game
+	- Place blocks -> remove from inventory
+- Day/night cycle
+	- Sun/moon
+	- Skybox
+	- Lighting
+- Infinite world
+	- Hold only some chunks in memory
+		- Live read/write to file
+- World gen
+	- Biomes based on noise maps
+		- Ex: humidity and temperature
+	- 3d perlin noise
+	- Height made from multiple noise maps with different setups (octaves, etc)
+		- +spline interpolation (or something like that)
+	- Caves
+	- Trilinear interpolation??
+	- Lower resolution Z noise
+- Fog
+	- For far away chunks
+- Flowing water
+- Falling sand blocks
+- "Ticks"
+	- Dirt -> grass
+	- Etc
+- Preformance
+	- Unload models from GPU when not in view
+	- Store chunk block data as a list of indexes to a vector of blocks
+		- Avoids repeating/duplicating block info
+	- Block has array[6] of Vector2 texcoords (indexed by Dir) instead of getTexcoordsFn()/getTexcoords() ??
+	- Enhanced (range based) for loops??
+	- Global texture instead of per model?
+	- Profile

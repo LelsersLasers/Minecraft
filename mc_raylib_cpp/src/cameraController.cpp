@@ -11,23 +11,23 @@
 CameraController::CameraController() {
 	this->camera = { 0 };
 	this->camera.position =	(Vector3){
-		-1.0,
-		-1.0,
+		-1.0f,
+		-1.0f,
 		(float)CHUNK_SIZE * (float)WORLD_SIZE / 2.0f,
 	};
-	this->camera.target =	(Vector3){ 1.0, 0.0, 0.0 };
-	this->camera.up = 		(Vector3){ 0.0, 0.0, 1.0 }; // Z is up here
+	this->camera.target =	(Vector3){ 1.0f, 0.0f, 0.0f };
+	this->camera.up = 		(Vector3){ 0.0f, 0.0f, 1.0f }; // Z is up here
 	this->camera.fovy =		60.0f;
 	this->camera.projection = CAMERA_PERSPECTIVE;
 
 	this->mousePosition = (Vector2){
-		WINDOW_WIDTH_START / 2.0,
-		WINDOW_HEIGHT_START / 2.0,
+		(float)WINDOW_WIDTH_START  / 2.0f,
+		(float)WINDOW_HEIGHT_START / 2.0f,
 	};
 	this->mouseSensitivity = MOUSE_SENSITIVITY;
 
-	this->yaw = 0.0;
-	this->pitch = 0.0;
+	this->yaw = 0.0f;
+	this->pitch = 0.0f;
 }
 
 void CameraController::moveBy(const Vector3 &vec) {
@@ -49,7 +49,7 @@ Vector3 CameraController::calcForward() const {
 	};
 }
 Vector3 CameraController::calcRight() const {
-	float rightYaw = this->yaw - PI / 2.0;
+	float rightYaw = this->yaw - PI / 2.0f;
 	float yawSin = sin(rightYaw);
 	float yawCos = cos(rightYaw);
 
@@ -71,11 +71,11 @@ void CameraController::update() {
 	this->yaw += mouseDelta.x * this->mouseSensitivity;
 	this->pitch += mouseDelta.y * this->mouseSensitivity;
 
-	if (this->pitch >= PI / 2.0) {
-		this->pitch = PI / 2.0 - 0.01;
+	if (this->pitch >= PI / 2.0f) {
+		this->pitch = PI / 2.0f - 0.01f;
 	}
-	else if (this->pitch <= -PI / 2.0) {
-		this->pitch = -PI / 2.0 + 0.01;
+	else if (this->pitch <= -PI / 2.0f) {
+		this->pitch = -PI / 2.0f + 0.01f;
 	}
 	
 	this->camera.target = Vector3Add(this->camera.position, this->calcForward());

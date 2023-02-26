@@ -12,28 +12,37 @@ Vector2 getTexcoordsAir(Dir _dir)		{ return (Vector2){ -1, -1 }; }
 Vector2 getTexcoordsGrass(Dir dir) {
 	switch (dir) {
 		case Dir::Top:
-			return (Vector2){ 0, 0 };
+			return (Vector2){ 0.0f, 0.0f };
 		case Dir::Bottom:
-			return (Vector2){ 2, 0 };
+			return (Vector2){ 2.0f, 0.0f };
 		default: // sides
-			return (Vector2){ 3, 0 };
+			return (Vector2){ 3.0f, 0.0f };
 	}
 }
-Vector2 getTexcoordsDirt(Dir dir)		{ return (Vector2){ 2, 0 }; }
-Vector2 getTexcoordsStone(Dir dir)		{ return (Vector2){ 1, 0 }; }
-Vector2 getTexcoordsBedrock(Dir _dir)	{ return (Vector2){ 5, 2 }; }
-Vector2 getTexcoordsWater(Dir _dir)		{ return (Vector2){ 3, 4 }; }
-Vector2 getTexcoordsSand(Dir dir)		{ return (Vector2){ 2, 1 }; }
+Vector2 getTexcoordsDirt	(Dir _dir)	{ return (Vector2){ 2.0f, 0.0f }; }
+Vector2 getTexcoordsStone	(Dir _dir)	{ return (Vector2){ 1.0f, 0.0f }; }
+Vector2 getTexcoordsBedrock	(Dir _dir)	{ return (Vector2){ 5.0f, 2.0f }; }
+Vector2 getTexcoordsWater	(Dir _dir)	{ return (Vector2){ 3.0f, 4.0f }; }
+Vector2 getTexcoordsSand	(Dir _dir)	{ return (Vector2){ 0.0f, 11.0f }; }
 Vector2 getTexcoordsLog(Dir dir) {
 	switch (dir) {
 		case Dir::Top:
 		case Dir::Bottom:
-			return (Vector2){ 5, 1 };
+			return (Vector2){ 5.0f, 1.0f };
 		default: // sides
-			return (Vector2){ 4, 1 };
+			return (Vector2){ 4.0f, 1.0f };
 	}
 }
-Vector2 getTexcoordsLeaves(Dir dir)		{ return (Vector2){ 4, 3 }; }
+Vector2 getTexcoordsLeaves(Dir _dir)		{ return (Vector2){ 4.0f, 3.0f }; }
+Vector2 getTexcoordsSandStoneBlock(Dir dir) {
+	switch (dir) {
+		case Dir::Top:
+		case Dir::Bottom:
+			return (Vector2){ 0.0f, 13.0f };
+		default: // sides
+			return (Vector2){ 0.0f, 12.0f };
+	}
+}
 
 Vector2 (*getTexcoordsFn(const BlockType& blockType))(Dir dir) {
 	switch (blockType) {
@@ -55,6 +64,8 @@ Vector2 (*getTexcoordsFn(const BlockType& blockType))(Dir dir) {
 			return getTexcoordsLog;
 		case BlockType::LEAVES:
 			return getTexcoordsLeaves;
+		case BlockType::SAND_STONE:
+			return getTexcoordsSandStoneBlock;
         default: // should not be reached
             return getTexcoordsAir; 
 	}
@@ -72,6 +83,7 @@ bool getTransparent(const BlockType& blockType) {
 		case BlockType::BEDROCK:
 		case BlockType::SAND:
 		case BlockType::LOG:
+		case BlockType::SAND_STONE:
 			return false;
         default: // should not be reached
             return false;
@@ -79,23 +91,17 @@ bool getTransparent(const BlockType& blockType) {
 }
 bool getSolid(const BlockType& blockType) {
 	switch (blockType) {
+		case BlockType::WATER:
 		case BlockType::AIR:
 			return false;
 		case BlockType::GRASS:
-			return true;
 		case BlockType::DIRT:
-			return true;
 		case BlockType::STONE:
-			return true;
 		case BlockType::BEDROCK:
-			return true;
-		case BlockType::WATER:
-			return false;
 		case BlockType::SAND:
-			return true;
 		case BlockType::LOG:
-			return true;
 		case BlockType::LEAVES:
+		case BlockType::SAND_STONE:
 			return true;
 		default: // should not be reached
 			return false;
@@ -111,6 +117,7 @@ ChunkModelInfo getChunkModelInfo(const BlockType& blockType) {
 		case BlockType::BEDROCK:
 		case BlockType::SAND:
 		case BlockType::LOG:
+		case BlockType::SAND_STONE:
 			return ChunkModelInfo::FULL_BLOCKS;
 		case BlockType::WATER:
 			return ChunkModelInfo::WATER_BLOCKS;
@@ -121,9 +128,9 @@ ChunkModelInfo getChunkModelInfo(const BlockType& blockType) {
 	}
 }
 
-BlockType getRandomBlockType() {
-	return (BlockType)(rand() % (BLOCK_MAX + 1));
-}
+// BlockType getRandomBlockType() {
+// 	return (BlockType)(rand() % (BLOCK_MAX + 1));
+// }
 
 
 std::string getBlockName(const BlockType& BlockType) {
@@ -146,6 +153,8 @@ std::string getBlockName(const BlockType& BlockType) {
 			return "Log";
 		case BlockType::LEAVES:
 			return "Leaves";
+		case BlockType::SAND_STONE:
+			return "Sand Stone";
 		default: // should not be reached
 			return "Air";
 	}

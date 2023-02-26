@@ -56,7 +56,7 @@ class World : public NoCopy {
 
 		void generateChunk(PerlinNoise& pn, Atlas& atlas);
 
-		int getHeightAt(PerlinNoise& pn, int x, int z);
+		int getHeightAt(PerlinNoise& pn, vector<pair<Vector2, float>>& lowerResolutions, int x, int y);
 		void createBlockPlaceRequestAt(Chunk& chunk, int x, int y, int z, Block block, vector<BlockType> canOverwrite);
 		void createChunkData(PerlinNoise& pn, Chunk& chunk);
 

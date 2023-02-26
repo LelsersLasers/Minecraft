@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <cmath>
 
-// #include <iostream>
+#include <iostream>
 
 #include <vector>
 #include <tuple>
@@ -24,6 +24,8 @@
 #include "include/PerlinNoiseUtil.h"
 #include "include/blockPlaceRequest.h"
 #include "include/ChunkModelInfo.h"
+#include "include/biome.h"
+#include "include/biomeType.h"
 
 #include "include/world.h"
 
@@ -71,9 +73,7 @@ Block World::getBlockAt(tuple<int, int, int> chunkPos, int x, int y, int z) {
 		Chunk& chunk = possibleChunk.value();
 		return chunk.getBlockAt(x, y, z);
 	} else {
-		// TEMP: should usally return BEDROCK_BLOCK
-		// return BEDROCK_BLOCK;
-		return AIR_BLOCK;
+		return BEDROCK_BLOCK;
 	}
 }
 
@@ -94,8 +94,7 @@ void World::generateChunk(PerlinNoise& pn, Atlas& atlas) {
 	this->createChunkData(pn, chunk);
 	chunk.distanceFromCamera = chunkToGenerate.second;
 
-	// TODO: copies chunk!!!!!!
-	// this->chunks.insert(std::make_pair(key, chunk));
+	// Copies chunk!!!!!!
 	pair<string, Chunk> pair = std::make_pair(key, chunk);
 	this->chunks.insert(pair);
 
@@ -122,10 +121,7 @@ void World::generateChunk(PerlinNoise& pn, Atlas& atlas) {
 	chunkRef.generateModel(*this, atlas);
 	this->nearbyChunks.push_back(chunkRef);
 
-	bool allBlank = true;
-	for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
-		allBlank = allBlank && chunkRef.isBlankModels[i];
-	}
+	bool allBlank = chunkRef.allBlankModels();
 	if (!allBlank) {
 		this->chunksToRender.push_back(chunkRef);	
 		this->shouldSortChunksToRender = true;
@@ -133,51 +129,104 @@ void World::generateChunk(PerlinNoise& pn, Atlas& atlas) {
 }
 
 
-int World::getHeightAt(PerlinNoise& pn, int x, int y) { // static
+int World::getHeightAt(PerlinNoise& pn, vector<pair<Vector2, float>>& lowerResolutions, int x, int y) { // static
 
-	// double lowerResolutionX = round((double)x / PERLIN_NOISE_RESOLUTION_X);
-	// double lowerResolutionY = round((double)y / PERLIN_NOISE_RESOLUTION_Y);
+	float lowerResolutionX = (float)x / NOISE_RESOLUTION;
+	float lowerResolutionY = (float)y / NOISE_RESOLUTION;
 
-	int maxHeight = CHUNK_SIZE * WORLD_SIZE;
+	Vector2 blockLowerResolutions[4] = {
+		(Vector2){ floorf(lowerResolutionX), floorf(lowerResolutionY) }, // (0,0)
+		(Vector2){ ceilf (lowerResolutionX), floorf(lowerResolutionY) }, // (1,0)
+		(Vector2){ floorf(lowerResolutionX), ceilf (lowerResolutionY) }, // (0,1)
+		(Vector2){ ceilf (lowerResolutionX), ceilf (lowerResolutionY) }, // (1,1)
+	};
 
-	int height = LOWEST_SURFACE_Z;
-	for (int z = maxHeight; z >= LOWEST_SURFACE_Z; z--) {
-		// double lowerResolutionZ = round((double)z / PERLIN_NOISE_RESOLUTION_Z);
+	Vector2 upscaleds[4];
+	float heights[4];
 
-		double noise = PerlinNoise3DWithOctaves(
-			pn,
-			// lowerResolutionX / PERLIN_NOISE_DIVISOR,
-			// lowerResolutionY / PERLIN_NOISE_DIVISOR,
-			// lowerResolutionZ / PERLIN_NOISE_DIVISOR,
-			(double)x / PERLIN_NOISE_DIVISOR,
-			(double)y / PERLIN_NOISE_DIVISOR,
-			(double)z / PERLIN_NOISE_DIVISOR,
-			OCTAVES
-		);
+	size_t indexes[4]; // indexes to lowerResolutions
 
-		int distToBottom = maxHeight - z; // lower Z -> higher value
-		double distToBottomScale = (double)distToBottom / (double)maxHeight;
+	for (size_t i = 0; i < 4; i++) {
+
+		bool found = false;
 		
-		double modifiedNoise = noise + distToBottomScale;
+		for (size_t j = 0; j < lowerResolutions.size(); j++) {
+			pair<Vector2, float> lowerResolution = lowerResolutions[j];
+			Vector2 lowerResolutionPos = lowerResolution.first;
 
-		if (modifiedNoise >= 1.0) {
-			height = z;
-			break;
+			if (Vector2Equals(lowerResolutionPos, blockLowerResolutions[i])) {
+				indexes[i] = j;
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			lowerResolutions.push_back(std::make_pair(blockLowerResolutions[i], -1));
+			indexes[i] = lowerResolutions.size() - 1;
 		}
 	}
 
-	return height;
+	for (size_t i = 0; i < 4; i++) {
+
+		size_t index = indexes[i];
+		pair<Vector2, float>& lowerResolution = lowerResolutions[index];
+		Vector2 lowerResolutionPos = lowerResolution.first;
+
+		Vector2 upscaled = Vector2Scale(lowerResolutionPos, NOISE_RESOLUTION);
+		upscaleds[i] = upscaled;
 
 
-	// double height = PerlinNoise3DWithOctaves(
-	// 	pn,
-	// 	(double)x / PERLIN_NOISE_DIVISOR,
-	// 	(double)y / PERLIN_NOISE_DIVISOR,
-	// 	1.0,
-	// 	OCTAVES
-	// );
-	// int scaledHeight = (int)((double)maxHeight * height);
-	// return scaledHeight;
+		if (lowerResolution.second < 0) {
+
+			int height = LOWEST_SURFACE_Z;
+			int maxHeight = CHUNK_SIZE * WORLD_SIZE;
+			
+			for (int z = maxHeight; z >= LOWEST_SURFACE_Z; z--) {
+
+				double noise = PerlinNoise3DWithOctaves(
+					pn,
+					(double)lowerResolutionPos.x / NOISE_DIVISOR,
+					(double)lowerResolutionPos.y / NOISE_DIVISOR,
+					(double)z / (NOISE_DIVISOR * NOISE_RESOLUTION),
+					// lowerResolution / NOISE_DIVISOR,
+					OCTAVES
+				);
+
+				int distToBottom = maxHeight - z; // lower Z -> higher value
+				double distToBottomScale = (double)distToBottom / (double)maxHeight;
+				
+				double modifiedNoise = (noise + distToBottomScale);
+
+				if (modifiedNoise >= 1.0) {
+					height = z;
+					break;
+				}
+			}
+			lowerResolution.second = (float)height; // modifies the pair in the vector
+		}
+		heights[i] = (float)lowerResolution.second;
+
+	}
+
+	auto linearInterpolation = [](float x1, float y1, float x2, float y2, float x3) -> float {
+		float rise = y2 - y1;
+		float run  = x2 - x1;
+		if (run == 0) {
+			return y1;
+		}
+		float slope = rise / run;
+		float y3 = slope * (x3 - x1) + y1;
+		return y3;
+	};
+
+	// bilinear interpolation
+	float height1 = linearInterpolation(upscaleds[0].x, heights[0], upscaleds[1].x, heights[1], (float)x); // (0,0) -> (1,0)
+	float height2 = linearInterpolation(upscaleds[2].x, heights[2], upscaleds[3].x, heights[3], (float)x); // (0,1) -> (1,1) 
+	float height3 = linearInterpolation(upscaleds[0].y, height1, upscaleds[2].y, height2, (float)y); // (0-y, height1) -> (1-y, height2)
+
+	int scaledHeight = (int)roundf(height3);
+	return scaledHeight;
 }
 void World::createBlockPlaceRequestAt(Chunk& chunk, int x, int y, int z, Block block, vector<BlockType> canOverwrite) {
 	int chunkXDiff = (x < 0) * -1 + (x >= CHUNK_SIZE) * 1;
@@ -208,14 +257,19 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 	int worldChunkY = std::get<1>(chunk.position) * CHUNK_SIZE;
 	int worldChunkZ = std::get<2>(chunk.position) * CHUNK_SIZE;
 
+	vector<pair<Vector2, float>> lowerResolutions = vector<pair<Vector2, float>>();
+
 	int scaledHeights[CHUNK_SIZE][CHUNK_SIZE];
+	vector<Biome> biomeFlatMap = vector<Biome>();
 	for (size_t x = 0; x < CHUNK_SIZE; x++) {
 		int worldX = worldChunkX + (int)x;
 		for (size_t y = 0; y < CHUNK_SIZE; y++) {
 			int worldY = worldChunkY + (int)y;
 
-			int scaledHeight = World::getHeightAt(pn, worldX, worldY);
+			int scaledHeight = World::getHeightAt(pn, lowerResolutions, worldX, worldY);
 			scaledHeights[x][y] = scaledHeight;
+
+			biomeFlatMap.push_back(Biome::biomeFromType(getBiomeFromHeight(scaledHeight)));
 		}
 	}
 
@@ -267,15 +321,17 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 
 			int scaledHeight = scaledHeights[x][y];
 			int chunkZHeight = scaledHeight - worldChunkZ;
+			Biome& biome = biomeFlatMap[x * CHUNK_SIZE + y];
 
 			if (chunkZHeight >= 0 && chunkZHeight < CHUNK_SIZE) { // only run for chunk that contains the scaledHeight
-				int dirtDepth = RAND(3, 5);
-				int dirtStart = chunkZHeight - dirtDepth;
 
-				chunk.setBlockAt(x, y, chunkZHeight, GRASS_BLOCK);
+				int secondBlockDepth = RAND(biome.secondBlockLevelMin, biome.secondBlockLevelMax);
+				int secondBlockStart = chunkZHeight - secondBlockDepth;
 
-				for (int z = dirtStart; z < chunkZHeight; z++) {
-					this->createBlockPlaceRequestAt(chunk, x, y, z, DIRT_BLOCK, vector<BlockType>({ BlockType::STONE }));
+				chunk.setBlockAt(x, y, chunkZHeight, biome.topBlock);
+
+				for (int z = secondBlockStart; z < chunkZHeight; z++) {
+					this->createBlockPlaceRequestAt(chunk, x, y, z, biome.secondBlock, vector<BlockType>({ BlockType::STONE }));
 				}
 
 			}
@@ -295,7 +351,8 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 			// int worldY = worldChunkY + (int)y;
 
 			int scaledHeight = scaledHeights[x][y];
-			if (scaledHeight <= WATER_LEVEL) { // don't place trees underwater
+			Biome& biome = biomeFlatMap[x * CHUNK_SIZE + y];
+			if (biome.biomeType == BiomeType::NEAR_WATER) { // don't place trees on water or on water's edge
 				continue;
 			}
 
@@ -311,7 +368,7 @@ void World::createChunkData(PerlinNoise& pn, Chunk& chunk) {
 					int treeEnd = treeStart + treeHeight;
 
 					for (int z = treeStart; z < treeEnd; z++) {
-						this->createBlockPlaceRequestAt(chunk, x, y, z, LOG_BLOCK, vector<BlockType>({ BlockType::AIR }));	
+						this->createBlockPlaceRequestAt(chunk, x, y, z, LOG_BLOCK, vector<BlockType>({ BlockType::AIR, BlockType::LEAVES }));	
 					}
 
 					// tree leaves
@@ -391,10 +448,7 @@ void World::updateChunkModels(Atlas& atlas) {
 
 			// TODO: better way to do this?
 
-			bool allBlank = true;
-			for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
-				allBlank = allBlank && chunk.isBlankModels[i];
-			}
+			bool allBlank = chunk.allBlankModels();
 			if (!allBlank) { // newly not blank
 
 				// can't use binary search, because keysToRender is not sorted yet
@@ -530,8 +584,8 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 	int cameraChunkY = std::get<1>(cameraChunk);
 	int cameraChunkZ = std::get<2>(cameraChunk);
 
-	int startX = MAX(cameraChunkX - VIEW_DIST, 0); // TEMP: delete MAX
-	int startY = MAX(cameraChunkY - VIEW_DIST, 0); // TEMP: delete MAX
+	int startX = cameraChunkX - VIEW_DIST;
+	int startY = cameraChunkY - VIEW_DIST;
 	int startZ = MAX(cameraChunkZ - VIEW_DIST, LOWEST_CHUNK_Z);
 
 	int endX = cameraChunkX + VIEW_DIST;
@@ -544,9 +598,9 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 
 				tuple<int, int, int> idx = std::make_tuple(x, y, z);
 
-				int diffX = x - cameraChunkX;
-				int diffY = y - cameraChunkY;
-				int diffZ = z - cameraChunkZ;
+				float diffX = (float)x - (float)cameraChunkX;
+				float diffY = (float)y - (float)cameraChunkY;
+				float diffZ = (float)z - (float)cameraChunkZ;
 
 				float dist = sqrtf(diffX * diffX + diffY * diffY + diffZ * diffZ);
 
@@ -558,11 +612,7 @@ void World::cameraMoved(const CameraController& cameraController, PerlinNoise& p
 
 						this->nearbyChunks.push_back(chunk);
 
-						bool allBlank = true;
-						for (size_t i = 0; i < TOTAL_CHUNK_MESHES; i++) {
-							allBlank = allBlank && chunk.isBlankModels[i];
-						}
-
+						bool allBlank = chunk.allBlankModels();
 						if (!allBlank) {
 							this->chunksToRender.push_back(chunk);	
 						}

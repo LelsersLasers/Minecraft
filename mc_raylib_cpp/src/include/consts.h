@@ -29,18 +29,16 @@
 const int WINDOW_WIDTH_START = 1280;
 const int WINDOW_HEIGHT_START = 720;
 
-const float MOUSE_SENSITIVITY = 1.0 / 400.0;
+const float MOUSE_SENSITIVITY = 1.0f / 400.0f;
 
 const int CHUNK_SIZE = 16; // blocks per chunk ^3
 const int WORLD_SIZE = 16; // approx. max world size vertically for chunk generation (in chunks)
 
 
 const int OCTAVES = 8;
-const double PERLIN_NOISE_DIVISOR = CHUNK_SIZE * 11.0;
+const double NOISE_DIVISOR = CHUNK_SIZE * 1.5;
 
-const double PERLIN_NOISE_RESOLUTION_X = 8.0;
-const double PERLIN_NOISE_RESOLUTION_Y = 8.0;
-const double PERLIN_NOISE_RESOLUTION_Z = 4.0;
+const float NOISE_RESOLUTION = 8.0f;
 
 const int LOWEST_SURFACE_Z = CHUNK_SIZE;
 
@@ -52,28 +50,28 @@ const int LOWEST_CHUNK_Z = 0;
 const float TREE_CHANCE = 0.01f;
 
 const Vector3 CUBE_VERTICES[] = {
-	(Vector3){0.0, 0.0, 0.0}, // 0
-	(Vector3){1.0, 0.0, 0.0}, // 1
-	(Vector3){1.0, 1.0, 0.0}, // 2
-	(Vector3){0.0, 1.0, 0.0}, // 3
-	(Vector3){0.0, 0.0, 1.0}, // 4
-	(Vector3){1.0, 0.0, 1.0}, // 5
-	(Vector3){1.0, 1.0, 1.0}, // 6
-	(Vector3){0.0, 1.0, 1.0}, // 7
+	(Vector3){0.0f, 0.0f, 0.0f}, // 0
+	(Vector3){1.0f, 0.0f, 0.0f}, // 1
+	(Vector3){1.0f, 1.0f, 0.0f}, // 2
+	(Vector3){0.0f, 1.0f, 0.0f}, // 3
+	(Vector3){0.0f, 0.0f, 1.0f}, // 4
+	(Vector3){1.0f, 0.0f, 1.0f}, // 5
+	(Vector3){1.0f, 1.0f, 1.0f}, // 6
+	(Vector3){0.0f, 1.0f, 1.0f}, // 7
 };
 
 // note: Y values are flipped
 const Vector2 CUBE_TEXCOORDS[] =  {
-	(Vector2){0.0, 1.0}, // top left		// 0
-	(Vector2){1.0, 1.0}, // top right		// 1
-	(Vector2){1.0, 0.0}, // bottom left		// 2
-	(Vector2){0.0, 0.0}, // bottom right	// 3
+	(Vector2){0.0f, 1.0f}, // top left		// 0
+	(Vector2){1.0f, 1.0f}, // top right		// 1
+	(Vector2){1.0f, 0.0f}, // bottom left		// 2
+	(Vector2){0.0f, 0.0f}, // bottom right	// 3
 };
 
 const float TEXCOORDS_DIVISOR = 16.0f;
 
 
-const int REACH = 5;
+const float REACH = 5.0f;
 
 
 #endif

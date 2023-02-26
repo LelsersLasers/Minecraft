@@ -54,7 +54,8 @@ int main() {
 		WATER_BLOCK,
 		SAND_BLOCK,
 		LOG_BLOCK,
-		LEAVES_BLOCK
+		LEAVES_BLOCK,
+		SAND_STONE_BLOCK
 	};
 	// parrallel array to blockTypes
 	KeyboardKey blockKeys[BLOCK_MAX + 1] = {
@@ -66,14 +67,16 @@ int main() {
 		KEY_SIX,
 		KEY_SEVEN,
 		KEY_EIGHT,
-		KEY_NINE
+		KEY_NINE,
+		KEY_ZERO
 	};
 	Block selectedBlock = blockTypes[BlockType::GRASS]; // uses enum as int to index array
 
 
 	CameraController cameraController; // uses default defined constructor
 
-	Atlas atlas("assets/terrain2.png"); // must be square png
+	// path is relative to where the executable is run from
+	Atlas atlas("assets/terrain.png"); // must be square png
 
 	PerlinNoise pn(rand() % UINT_MAX);
 
@@ -88,16 +91,16 @@ int main() {
 
 		{
 			if (IsKeyDown(KEY_UP)) {
-				cameraController.pitch += delta * PI / 2.0;
+				cameraController.pitch += delta * PI / 2.0f;
 			}
 			if (IsKeyDown(KEY_DOWN)) {
-				cameraController.pitch -= delta * PI / 2.0;
+				cameraController.pitch -= delta * PI / 2.0f;
 			}
 			if (IsKeyDown(KEY_LEFT)) {
-				cameraController.yaw += delta * PI / 2.0;
+				cameraController.yaw += delta * PI / 2.0f;
 			}
 			if (IsKeyDown(KEY_RIGHT)) {
-				cameraController.yaw -= delta * PI / 2.0;
+				cameraController.yaw -= delta * PI / 2.0f;
 			}
 		}
         cameraController.update();
@@ -121,7 +124,7 @@ int main() {
 			}
 
 			if (!Vector3Equals(moveVec, Vector3Zero())) {
-				moveVec = Vector3Scale(Vector3Normalize(moveVec), delta * 20.0);
+				moveVec = Vector3Scale(Vector3Normalize(moveVec), delta * 20.0f);
 
 				tuple<int, int, int> oldCameraChunk = cameraController.getChunkPos();
 				cameraController.moveBy(moveVec);
@@ -151,7 +154,7 @@ int main() {
 			if (IsKeyPressed(KEY_H)) {
 				chunkOutlines = !chunkOutlines;
 			}
-			if (IsKeyPressed(KEY_ZERO)) {
+			if (IsKeyPressed(KEY_R)) {
 				autoMove = !autoMove;
 			}
 		}
@@ -185,31 +188,32 @@ int main() {
 
 					if (chunkOutlines) {
 						DrawCubeWiresV(
-							Vector3Add(chunk.getWorldPos(), Vector3Scale(Vector3One(), (float)CHUNK_SIZE / 2.0)),
+							Vector3Add(chunk.getWorldPos(), Vector3Scale(Vector3One(), (float)CHUNK_SIZE / 2.0f)),
 							Vector3Scale(Vector3One(), (float)CHUNK_SIZE),
 							PINK
 						);
 					}
 					for (size_t j = 0; j < TOTAL_CHUNK_MESHES; j++) {
 						if (faces) {
-							DrawModel(chunk.models[j], chunk.getWorldPos(), 1.0, WHITE);
+							DrawModel(chunk.models[j], chunk.getWorldPos(), 1.0f, WHITE);
 						}
 						if (wireframe) {
-							DrawModelWires(chunk.models[j], chunk.getWorldPos(), 1.0, BLACK);
+							DrawModelWires(chunk.models[j], chunk.getWorldPos(), 1.0f, BLACK);
 						}
 					}
 				}
 
 				RaycastRequest raycastRequest = RaycastRequest::NONE;
-				if (IsKeyPressed(KEY_Q)) {
+				if (IsKeyPressed(KEY_Q) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 					raycastRequest = RaycastRequest::DESTROY_BLOCK;
-				} else if (IsKeyPressed(KEY_E)) {
+				} else if (IsKeyPressed(KEY_E) || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
 					raycastRequest = RaycastRequest::PLACE_BLOCK;
 				}
 
-				optional<Vector3> outlinedBlock = world.handleRaycastRequest(cameraController, raycastRequest, selectedBlock);
-				if (outlinedBlock.has_value()) {
-					DrawCubeWiresV(outlinedBlock.value(), Vector3One(), RED);
+				optional<Vector3> possibleOutlinedBlock = world.handleRaycastRequest(cameraController, raycastRequest, selectedBlock);
+				if (possibleOutlinedBlock.has_value()) {
+					Vector3 outlinedBlock = possibleOutlinedBlock.value();
+					DrawCubeWiresV(outlinedBlock, Vector3One(), RED);
 				}
 
 
@@ -222,7 +226,7 @@ int main() {
 
 
 			if (world.cameraIsSubmerged(cameraController) && faces) {
-				DrawRectangle(0, 0, windowWidth, windowHeight, ColorAlpha(BLUE, 0.6));
+				DrawRectangle(0, 0, windowWidth, windowHeight, ColorAlpha(BLUE, 0.6f));
 			}
 
 
@@ -241,20 +245,25 @@ int main() {
 				BLACK
 			);
 
-			DrawRectangle(10, 10, 220, 130, SKYBLUE);
-			DrawRectangleLines(10, 10, 220, 130, BLUE);
+			DrawRectangle(10, 10, 220, 170, SKYBLUE);
+			DrawRectangleLines(10, 10, 220, 170, BLUE);
 			DrawText("Info:", 20, 20, 10, BLACK);
 
+			std::string selectedBlockText = "- Selected block: " + getBlockName(selectedBlock.blockType);
 			std::string fpsText = "- FPS: " + std::to_string((int)(1.0 / delta));
-			std::string deltaText = "- Delta: " + std::to_string(delta * 1000);
-			std::string cameraPos = "- Camera: " + std::to_string(cameraController.camera.position.x) + ", " + std::to_string(cameraController.camera.position.y) + ", " + std::to_string(cameraController.camera.position.z);
+			std::string deltaText = "- Delta: " + std::to_string(delta * 1000.0f) + " ms";
+			std::string cameraPosText = "- Camera: " + std::to_string((int)cameraController.camera.position.x) + ", " + std::to_string((int)cameraController.camera.position.y) + ", " + std::to_string((int)cameraController.camera.position.z);
+			std::string chunksToGenerateText = "- Chunks to generate: " + std::to_string(world.chunksToGenerate.size());
+			std::string chunksToRenderText = "- Chunks to render: " + std::to_string(world.chunksToRender.size());
+			std::string totalChunksText = "- Total chunks: " + std::to_string(world.chunks.size());
 
-			std::string selectedBlockText = "- Selected: " + getBlockName(selectedBlock.blockType);
-
-			DrawText(fpsText.c_str(), 40, 40, 10, DARKGRAY);
-			DrawText(deltaText.c_str(), 40, 60, 10, DARKGRAY);
-			DrawText(cameraPos.c_str(), 40, 80, 10, DARKGRAY);
-			DrawText(selectedBlockText.c_str(), 40, 10, 10, DARKGRAY);
+			DrawText(selectedBlockText.c_str(),		40, 40,  10, DARKGRAY);
+			DrawText(fpsText.c_str(), 				40, 60,  10, DARKGRAY);
+			DrawText(deltaText.c_str(),				40, 80,  10, DARKGRAY);
+			DrawText(cameraPosText.c_str(),			40, 100, 10, DARKGRAY);
+			DrawText(chunksToGenerateText.c_str(),	40, 120, 10, DARKGRAY);
+			DrawText(chunksToRenderText.c_str(),	40, 140, 10, DARKGRAY);
+			DrawText(totalChunksText.c_str(),		40, 160, 10, DARKGRAY);
         }
         EndDrawing();
     }
