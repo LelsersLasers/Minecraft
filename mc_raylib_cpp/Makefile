@@ -4,15 +4,21 @@ CC = g++
 RAYLIB_FLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 EXTRA_FLAGS = -Wall -Ofast -std=c++17
 
+ASSETS_DIR = assets
 OUT_DIR = build
 
-compile:
+
+makeDirs:
 	mkdir -vp $(OUT_DIR)
+
+copyAssets:
+	cp -vr $(ASSETS_DIR) $(OUT_DIR)
+
+
+compile: makeDirs copyAssets
 	$(CC) -o $(OUT_DIR)/main src/*.cpp $(RAYLIB_FLAGS) $(EXTRA_FLAGS)
 	
-
-compileWithProfile:
-	mkdir -vp $(OUT_DIR)
+compileWithProfile: makeDirs copyAssets
 	$(CC) -o $(OUT_DIR)/mainWithProfile src/*.cpp $(RAYLIB_FLAGS) $(EXTRA_FLAGS) -pg
 
 

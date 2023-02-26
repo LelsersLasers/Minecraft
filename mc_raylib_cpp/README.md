@@ -12,6 +12,8 @@
 - Performance
 	- Profile??
 		- `gprof build/mainWithProfile  > gprofOutput.txt`
+- Windows build
+- Texture atlas relativity
 
 ## TODO 2 (aka everything I don't actually want to do)
 
