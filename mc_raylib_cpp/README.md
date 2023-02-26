@@ -3,20 +3,20 @@
 ## BUGS:
 
 - Leaves and water??
+- Leaves on leaves??
 
 ## TODO 1 (aka things I might actually do)
 
 - C++ stuff
     - Constructor initalization list
-- World gen
-	- Trilinear interpolation??
-	- Lower resolution Z noise?
 - Performance
 	- Profile??
 		- `gprof build/mainWithProfile  > gprofOutput.txt`
 
 ## TODO 2 (aka everything I don't actually want to do)
 
+- C++ stuff
+	- C++ style casts
 - When under water, show the "top" of the water
 - Glass blocks
 	- Sort blocks within a chunk?
@@ -46,6 +46,8 @@
 	- Height made from multiple noise maps with different setups (octaves, etc)
 		- +spline interpolation (or something like that)
 	- Caves
+	- Trilinear interpolation??
+	- Lower resolution Z noise
 - Fog
 	- For far away chunks
 - Flowing water

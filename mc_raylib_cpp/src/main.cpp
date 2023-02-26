@@ -75,7 +75,9 @@ int main() {
 
 	CameraController cameraController; // uses default defined constructor
 
-	Atlas atlas("assets/terrain2.png"); // must be square png
+	// TODO: path? should be relative to the executable?
+	Atlas atlas("assets/terrain.png"); // must be square png
+	Atlas atlas("../assets/terrain.png"); // must be square png
 
 	PerlinNoise pn(rand() % UINT_MAX);
 
