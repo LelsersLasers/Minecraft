@@ -5,8 +5,6 @@
 #include <cstring>		// memcpy
 #include <cmath>		// sqrtf
 
-#include <iostream>
-
 #include <vector>
 #include <tuple>
 #include <optional>

@@ -2,8 +2,6 @@
 #include "include/consts.h"
 #include "include/block.h"
 
-#include <iostream>
-
 #include "include/biome.h"
 
 
@@ -11,8 +9,6 @@ Biome::Biome(const BiomeType& biomeType) {
 	this->biomeType = biomeType;
 
 	this->topBlock = getTopBlock(biomeType);
-
-	std::cout << getBlockName(this->topBlock.blockType) << std::endl;
 
 	this->secondBlock = getSecondBlock(biomeType);
 	this->secondBlockLevelMin = getSecondBlockLevelMin(biomeType);
