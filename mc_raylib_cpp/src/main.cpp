@@ -29,9 +29,6 @@ using std::optional;
 int main() {
 
 	bool cursor = false;
-	bool wireframe = false;
-	bool chunkOutlines = false;
-	bool faces = true;
 
 	bool autoMove = false;
 
@@ -144,15 +141,6 @@ int main() {
 					DisableCursor();
 				}
 			}
-			if (IsKeyPressed(KEY_F)) {
-				wireframe = !wireframe;
-			}
-			if (IsKeyPressed(KEY_G)) {
-				faces = !faces;
-			}
-			if (IsKeyPressed(KEY_H)) {
-				chunkOutlines = !chunkOutlines;
-			}
 			if (IsKeyPressed(KEY_R)) {
 				autoMove = !autoMove;
 			}
@@ -185,20 +173,8 @@ int main() {
 				for (size_t i = 0; i < world.chunksToRender.size(); i++) {
 					Chunk& chunk = world.chunksToRender[i];
 
-					if (chunkOutlines) {
-						DrawCubeWiresV(
-							Vector3Add(chunk.getWorldPos(), Vector3Scale(Vector3One(), (float)CHUNK_SIZE / 2.0f)),
-							Vector3Scale(Vector3One(), (float)CHUNK_SIZE),
-							PINK
-						);
-					}
 					for (size_t j = 0; j < TOTAL_CHUNK_MESHES; j++) {
-						if (faces) {
-							DrawModel(chunk.models[j], chunk.getWorldPos(), 1.0f, WHITE);
-						}
-						if (wireframe) {
-							DrawModelWires(chunk.models[j], chunk.getWorldPos(), 1.0f, BLACK);
-						}
+						DrawModel(chunk.models[j], chunk.getWorldPos(), 1.0f, WHITE);
 					}
 				}
 
@@ -224,7 +200,7 @@ int main() {
 			int windowHeight = GetScreenHeight();
 
 
-			if (world.cameraIsSubmerged(cameraController) && faces) {
+			if (world.cameraIsSubmerged(cameraController)) {
 				DrawRectangle(0, 0, windowWidth, windowHeight, ColorAlpha(BLUE, 0.6f));
 			}
 
@@ -245,8 +221,8 @@ int main() {
 				);
 			}
 			{
-				DrawRectangle		(10, 10, 220, 270, SKYBLUE);
-				DrawRectangleLines	(10, 10, 220, 270, BLUE);
+				DrawRectangle		(10, 10, 220, 290, SKYBLUE);
+				DrawRectangleLines	(10, 10, 220, 290, BLUE);
 
 				{
 					DrawText("Info:", 20, 20, 10, BLACK);
@@ -274,6 +250,8 @@ int main() {
                     DrawText("- Break block: Q/LMB", 40, 220, 10, DARKGRAY);
                     DrawText("- Place block: E/RMB", 40, 240, 10, DARKGRAY);
                     DrawText("- Select block: 1-9",  40, 260, 10, DARKGRAY);
+					DrawText("- Toggle cursor: C",	 40, 280, 10, DARKGRAY);
+
 				}
 			}
         }

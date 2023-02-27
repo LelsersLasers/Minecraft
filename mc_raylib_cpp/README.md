@@ -8,6 +8,7 @@
 ## TODO 1 (aka things I might actually do)
 
 - Windows build
+- Make sure camera is spawns above ground
 
 ## TODO 2 (aka everything I don't actually want to do)
 
