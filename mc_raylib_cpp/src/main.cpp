@@ -3,7 +3,6 @@
 
 #include <time.h>
 #include <stdlib.h>
-// #include <iostream>
 #include <climits>
 
 #include <vector>
@@ -45,8 +44,8 @@ int main() {
 
 
 	// index = enum of block type
-	Block blockTypes[BLOCK_MAX + 1] = {
-		AIR_BLOCK,
+	Block blockTypes[BLOCK_MAX] = {
+		// AIR_BLOCK, // skip air block so blocks  are 1-9 instead of 1-0
 		GRASS_BLOCK,
 		DIRT_BLOCK,
 		STONE_BLOCK,
@@ -58,7 +57,7 @@ int main() {
 		SAND_STONE_BLOCK
 	};
 	// parrallel array to blockTypes
-	KeyboardKey blockKeys[BLOCK_MAX + 1] = {
+	KeyboardKey blockKeys[BLOCK_MAX] = {
 		KEY_ONE,
 		KEY_TWO,
 		KEY_THREE,
@@ -68,9 +67,9 @@ int main() {
 		KEY_SEVEN,
 		KEY_EIGHT,
 		KEY_NINE,
-		KEY_ZERO
+		// KEY_ZERO
 	};
-	Block selectedBlock = blockTypes[BlockType::GRASS]; // uses enum as int to index array
+	Block selectedBlock = blockTypes[BlockType::GRASS - 1]; // uses enum as int to index array
 
 
 	CameraController cameraController; // uses default defined constructor
@@ -161,7 +160,7 @@ int main() {
 
 
 		{
-			for (size_t i = 0; i < BLOCK_MAX + 1; i++) {
+			for (size_t i = 0; i < BLOCK_MAX; i++) {
 				if (IsKeyPressed(blockKeys[i])) {
 					selectedBlock = blockTypes[i];
 				}
@@ -229,41 +228,54 @@ int main() {
 				DrawRectangle(0, 0, windowWidth, windowHeight, ColorAlpha(BLUE, 0.6f));
 			}
 
+			{
+				DrawLine(
+					windowWidth / 2 - 10,
+					windowHeight / 2,
+					windowWidth / 2 + 10,
+					windowHeight / 2,
+					BLACK
+				);
+				DrawLine(
+					windowWidth / 2,
+					windowHeight / 2 - 10,
+					windowWidth / 2,
+					windowHeight / 2 + 10,
+					BLACK
+				);
+			}
+			{
+				DrawRectangle		(10, 10, 220, 270, SKYBLUE);
+				DrawRectangleLines	(10, 10, 220, 270, BLUE);
 
-			DrawLine(
-				windowWidth / 2 - 10,
-				windowHeight / 2,
-				windowWidth / 2 + 10,
-				windowHeight / 2,
-				BLACK
-			);
-			DrawLine(
-				windowWidth / 2,
-				windowHeight / 2 - 10,
-				windowWidth / 2,
-				windowHeight / 2 + 10,
-				BLACK
-			);
+				{
+					DrawText("Info:", 20, 20, 10, BLACK);
 
-			DrawRectangle(10, 10, 220, 170, SKYBLUE);
-			DrawRectangleLines(10, 10, 220, 170, BLUE);
-			DrawText("Info:", 20, 20, 10, BLACK);
+					std::string selectedBlockText = "- Selected block: " + getBlockName(selectedBlock.blockType);
+					std::string fpsText = "- FPS: " + std::to_string((int)(1.0 / delta));
+					std::string deltaText = "- Delta: " + std::to_string(delta * 1000.0f) + " ms";
+					std::string cameraPosText = "- Camera: " + std::to_string((int)cameraController.camera.position.x) + ", " + std::to_string((int)cameraController.camera.position.y) + ", " + std::to_string((int)cameraController.camera.position.z);
+					std::string chunksToGenerateText = "- Chunks to generate: " + std::to_string(world.chunksToGenerate.size());
+					std::string chunksToRenderText = "- Chunks to render: " + std::to_string(world.chunksToRender.size());
+					std::string totalChunksText = "- Total chunks: " + std::to_string(world.chunks.size());
 
-			std::string selectedBlockText = "- Selected block: " + getBlockName(selectedBlock.blockType);
-			std::string fpsText = "- FPS: " + std::to_string((int)(1.0 / delta));
-			std::string deltaText = "- Delta: " + std::to_string(delta * 1000.0f) + " ms";
-			std::string cameraPosText = "- Camera: " + std::to_string((int)cameraController.camera.position.x) + ", " + std::to_string((int)cameraController.camera.position.y) + ", " + std::to_string((int)cameraController.camera.position.z);
-			std::string chunksToGenerateText = "- Chunks to generate: " + std::to_string(world.chunksToGenerate.size());
-			std::string chunksToRenderText = "- Chunks to render: " + std::to_string(world.chunksToRender.size());
-			std::string totalChunksText = "- Total chunks: " + std::to_string(world.chunks.size());
+					DrawText(selectedBlockText.c_str(),		40, 40,  10, DARKGRAY);
+					DrawText(fpsText.c_str(), 				40, 60,  10, DARKGRAY);
+					DrawText(deltaText.c_str(),				40, 80,  10, DARKGRAY);
+					DrawText(cameraPosText.c_str(),			40, 100, 10, DARKGRAY);
+					DrawText(chunksToGenerateText.c_str(),	40, 120, 10, DARKGRAY);
+					DrawText(chunksToRenderText.c_str(),	40, 140, 10, DARKGRAY);
+					DrawText(totalChunksText.c_str(),		40, 160, 10, DARKGRAY);
+				}
+				{
+					DrawText("Controls:", 20, 180, 10, BLACK);
 
-			DrawText(selectedBlockText.c_str(),		40, 40,  10, DARKGRAY);
-			DrawText(fpsText.c_str(), 				40, 60,  10, DARKGRAY);
-			DrawText(deltaText.c_str(),				40, 80,  10, DARKGRAY);
-			DrawText(cameraPosText.c_str(),			40, 100, 10, DARKGRAY);
-			DrawText(chunksToGenerateText.c_str(),	40, 120, 10, DARKGRAY);
-			DrawText(chunksToRenderText.c_str(),	40, 140, 10, DARKGRAY);
-			DrawText(totalChunksText.c_str(),		40, 160, 10, DARKGRAY);
+                    DrawText("- Move: WASD",         40, 200, 10, DARKGRAY);
+                    DrawText("- Break block: Q/LMB", 40, 220, 10, DARKGRAY);
+                    DrawText("- Place block: E/RMB", 40, 240, 10, DARKGRAY);
+                    DrawText("- Select block: 1-9",  40, 260, 10, DARKGRAY);
+				}
+			}
         }
         EndDrawing();
     }
