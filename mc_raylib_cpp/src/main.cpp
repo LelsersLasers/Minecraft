@@ -221,8 +221,8 @@ int main() {
 				);
 			}
 			{
-				DrawRectangle		(10, 10, 220, 290, SKYBLUE);
-				DrawRectangleLines	(10, 10, 220, 290, BLUE);
+				DrawRectangle		(10, 10, 220, 310, SKYBLUE);
+				DrawRectangleLines	(10, 10, 220, 310, BLUE);
 
 				{
 					DrawText("Info:", 20, 20, 10, BLACK);
@@ -251,7 +251,7 @@ int main() {
                     DrawText("- Place block: E/RMB", 40, 240, 10, DARKGRAY);
                     DrawText("- Select block: 1-9",  40, 260, 10, DARKGRAY);
 					DrawText("- Toggle cursor: C",	 40, 280, 10, DARKGRAY);
-
+					DrawText("- Toggle auto move: R",40, 300, 10, DARKGRAY);
 				}
 			}
         }
