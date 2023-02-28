@@ -17,7 +17,7 @@ CameraController::CameraController() {
 	};
 	this->camera.target =	(Vector3){ 1.0f, 0.0f, 0.0f };
 	this->camera.up = 		(Vector3){ 0.0f, 0.0f, 1.0f }; // Z is up here
-	this->camera.fovy =		60.0f;
+	this->camera.fovy =		70.0f;
 	this->camera.projection = CAMERA_PERSPECTIVE;
 
 	this->mousePosition = (Vector2){
